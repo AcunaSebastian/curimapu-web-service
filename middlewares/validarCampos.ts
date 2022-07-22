@@ -13,7 +13,8 @@ export const validarCampos  = (req:Request, res:Response, next:NextFunction) => 
         
         return res.status(httpResponses.HTTP_BAD_REQUEST).json({
             ok:false,
-            message:`Se han encontrado los siguientes errores:\n ${errors.map( (el:ValidationError, index:number) => `${index + 1}.- msg:${el.msg}, param:${el.param}`).join(`\n`)}`
+            message:`Se han encontrado los siguientes errores:\n ${errors.map( (el:ValidationError, index:number) => `${index + 1}.- msg:${el.msg}, param:${el.param}`).join(`\n`)}`,
+            data:null
         });
     }
 

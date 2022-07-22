@@ -1,0 +1,132 @@
+import { IUsuario } from "../../interfaces";
+import { Constants } from "../../utils";
+import { DatabaseService } from "../database";
+
+export default class Quotation {
+
+    constructor(private dbConnection:DatabaseService){}
+
+
+    async getQuotationCard( usuario:IUsuario, id_temporada?:number ) {
+
+
+        let filtro = ``;
+        let inner = ``;
+
+        if(id_temporada){
+            filtro += ` AND Q.id_tempo = '${id_temporada}' `;
+        }
+
+        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
+
+            filtro += ` AND U.id_usuario = '${ usuario.id_usuario }' `;
+            inner += ` LEFT JOIN usuario_det_quo UDQ ON (UDQ.id_de_quo = DQ.id_de_quo)
+            LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
+        }
+
+        const sql = ` SELECT COUNT(DISTINCT(Q.id_quotation)) AS total
+        FROM quotation Q
+        INNER JOIN detalle_quotation DQ ON (DQ.id_quotation = Q.id_quotation)
+        ${inner} 
+        WHERE 1 ${filtro }`;
+
+        
+        const quotations = await this.dbConnection.select( sql );
+        return {
+            titulo:`Quotations`,
+            total:quotations[0].total
+        };
+
+    }
+
+
+    async getSurfaceQuotation( usuario:IUsuario, id_temporada?:number ) {
+
+
+        let filtro = ``;
+        let inner = ``;
+
+        if(id_temporada){
+            filtro += ` AND Q.id_tempo = '${id_temporada}' `;
+        }
+
+        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
+
+            filtro += ` AND U.id_usuario = '${ usuario.id_usuario }' `;
+            inner += ` LEFT JOIN usuario_det_quo UDQ ON (UDQ.id_de_quo = DQ.id_de_quo)
+            LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
+        }
+
+        const sql = ` SELECT DISTINCT ( DQ.id_de_quo  ) AS id, SUM( DQ.superficie_contr ) AS total, DQ.id_um
+        FROM detalle_quotation DQ
+        INNER JOIN quotation Q ON Q.id_quotation = DQ.id_quotation
+        ${inner} 
+        WHERE (DQ.id_um = 2 OR DQ.id_um = 3) ${filtro }
+        GROUP BY DQ.id_um`;
+        const surfaces = await this.dbConnection.select( sql );
+
+
+        const sql2 = `SELECT DISTINCT ( AC.id_ac  )  AS id, SUM( AC.has_gps ) AS total
+        FROM anexo_contrato AC
+        INNER JOIN detalle_quotation DQ ON DQ.id_de_quo = AC.id_de_quo
+        INNER JOIN quotation Q ON Q.id_quotation = DQ.id_quotation
+        ${inner} 
+        WHERE 1 ${filtro } `;
+        const surfaceGPSs = await this.dbConnection.select( sql2 );
+
+
+        const surface = surfaces[0];
+        const surfaceGPS = surfaceGPSs[0];
+
+
+        let superficieContratada = (surface.id_um === 2) ?  surface.total / 10000 : surface.total;
+        let superficieGPS = surfaceGPS.total;
+        let porcentajeAsignado = ((superficieGPS / 100) / superficieContratada);
+
+
+
+
+        
+
+
+        return { 
+            titulo:`Surface, Data:`,
+            superficieContratada:{titulo:`Ha Contracted`, total:superficieContratada}, 
+            superficieGPS:{titulo:`Ha Asigned`, total:superficieGPS}, 
+            porcentajeAsignado:{titulo:` % Asigned `, total:porcentajeAsignado}
+        };
+
+    }
+
+    async getKgContracted (usuario:IUsuario, id_temporada?:number) {
+
+        let filtro = ``;
+        let inner = ``;
+
+        if(id_temporada){
+            filtro += ` AND Q.id_tempo = '${id_temporada}' `;
+        }
+
+        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
+
+            filtro += ` AND U.id_usuario = '${ usuario.id_usuario }' `;
+            inner += ` LEFT JOIN usuario_det_quo UDQ ON (UDQ.id_de_quo = DQ.id_de_quo)
+            LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
+        }
+
+        const sql = ` SELECT DISTINCT ( DQ.id_de_quo  ) AS ides, SUM( DQ.kg_contratados ) AS total
+        FROM detalle_quotation DQ
+        INNER JOIN quotation Q ON Q.id_quotation = DQ.id_quotation
+        ${inner} 
+        WHERE 1 ${filtro }`;
+
+        
+        const kgContracted = await this.dbConnection.select( sql );
+        return {
+            titulo:`Kg Contracted`,
+            total:kgContracted[0].total
+        };
+
+    }
+
+}

@@ -2,7 +2,7 @@ import express, {Application} from 'express';
 import cors from 'cors'
 import fileUpload from 'express-fileupload';
 
-// import { authRouter, authFilter, homeRouter, dteRouter } from '../routes';
+import { authRouter, filterRouter, homeRouter, resumenRouter } from '../router/';
 
 
 export default class Server {
@@ -31,9 +31,10 @@ export default class Server {
 
 
     routes():void{
-        // this.app.use('/api/auth', authRouter);
-        // this.app.use('/api/filters', authFilter);
-        // this.app.use('/api/home', homeRouter);
+        this.app.use('/api/auth', authRouter);
+        this.app.use('/api/filters', filterRouter);
+        this.app.use('/api/home', homeRouter);
+        this.app.use('/api/resumen', resumenRouter);
         // this.app.use('/api/dte', dteRouter);
     }
 
