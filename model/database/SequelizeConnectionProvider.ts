@@ -10,6 +10,7 @@ export class SequelizeConnection implements DatabaseProvider {
     private bdConnection:Sequelize;
 
     constructor( public params:ISystemParameters ){
+        console.log(this.params)
         try {
             this.bdConnection = new Sequelize(this.params.bd_name, this.params.bd_user, this.params.bd_pass, {
                 host:this.params.ip_bd,
@@ -19,7 +20,7 @@ export class SequelizeConnection implements DatabaseProvider {
             })
 
              this.authenticate();
-             console.log('Database connected successfully.')
+             console.log(`Database connected successfully. 💾  in database ${this.params.bd_name} `)
 
         } catch (error) {
             throw new Error(` Cant connect to the database ${ error }`);

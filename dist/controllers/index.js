@@ -18,3 +18,4 @@ __exportStar(require("./auth"), exports);
 __exportStar(require("./filter"), exports);
 __exportStar(require("./home"), exports);
 __exportStar(require("./resumen"), exports);
+__exportStar(require("./visitas"), exports);

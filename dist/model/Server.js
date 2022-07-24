@@ -10,7 +10,7 @@ const router_1 = require("../router/");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT;
+        this.port = Number(process.env.PORT) | 3000;
         this.middlewares();
         this.routes();
     }
@@ -25,6 +25,7 @@ class Server {
         this.app.use('/api/filters', router_1.filterRouter);
         this.app.use('/api/home', router_1.homeRouter);
         this.app.use('/api/resumen', router_1.resumenRouter);
+        this.app.use('/api/visitas', router_1.visitasRouter);
         // this.app.use('/api/dte', dteRouter);
     }
     listen() {

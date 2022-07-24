@@ -45,6 +45,8 @@ export default class Resumen {
             }
 
             
+
+            
             if(tmp.length > 0){
                 filtro += ` AND ( ${tmp} ) `;
             }

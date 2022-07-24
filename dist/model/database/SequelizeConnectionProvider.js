@@ -6,6 +6,7 @@ require("dotenv/config");
 class SequelizeConnection {
     constructor(params) {
         this.params = params;
+        console.log(this.params);
         try {
             this.bdConnection = new sequelize_1.Sequelize(this.params.bd_name, this.params.bd_user, this.params.bd_pass, {
                 host: this.params.ip_bd,
@@ -14,7 +15,7 @@ class SequelizeConnection {
                 logging: false
             });
             this.authenticate();
-            console.log('Database connected successfully.');
+            console.log(`Database connected successfully. 💾  in database ${this.params.bd_name} `);
         }
         catch (error) {
             throw new Error(` Cant connect to the database ${error}`);
