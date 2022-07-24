@@ -7,55 +7,58 @@ const getVisitas = async (req, res) => {
     const { num_anexo, lote, agricultor, ready_batch, id_variedad, id_temporada, id_especie, fecha_visita, } = req.query;
     const usuario = req.usuario;
     const db = req.bd_conection;
-    const filter = {
-        usuario
-    };
-    if (num_anexo) {
-        Object.assign(filter, { num_anexo });
+    try {
+        const filter = {
+            usuario,
+            num_anexo: num_anexo,
+            lote: lote,
+            agricultor: agricultor,
+            ready_batch: ready_batch,
+            id_variedad: id_variedad,
+            id_temporada: id_temporada,
+            id_especie: id_especie,
+            fecha_visita: fecha_visita
+        };
+        const visita = new model_1.Visita(db);
+        const visitas = await visita.getVisitas(filter);
+        return res.status(httpResponses_1.httpResponses.HTTP_OK).json({
+            ok: true,
+            message: 'Visitas',
+            data: {
+                visitas
+            }
+        });
     }
-    if (lote) {
-        Object.assign(filter, { lote });
+    catch (error) {
+        return res.status(httpResponses_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `Problemas en funcion getVisitas : ${error}`,
+            data: null
+        });
     }
-    if (agricultor) {
-        Object.assign(filter, { agricultor });
-    }
-    if (ready_batch) {
-        Object.assign(filter, { ready_batch });
-    }
-    if (id_variedad) {
-        Object.assign(filter, { id_variedad });
-    }
-    if (id_temporada) {
-        Object.assign(filter, { id_temporada });
-    }
-    if (id_especie) {
-        Object.assign(filter, { id_especie });
-    }
-    if (fecha_visita) {
-        Object.assign(filter, { fecha_visita });
-    }
-    const visita = new model_1.Visita(db);
-    const visitas = await visita.getVisitas(filter);
-    return res.status(httpResponses_1.httpResponses.HTTP_OK).json({
-        ok: true,
-        message: 'Visitas',
-        data: {
-            visitas
-        }
-    });
 };
 exports.getVisitas = getVisitas;
 const getPDFVisita = async (req, res) => {
     const { id_visita } = req.query;
     const db = req.bd_conection;
-    const visita = new model_1.Visita(db);
-    const pdf = await visita.getPDF(Number(id_visita));
-    return res.status(200).json({
-        ok: true,
-        message: `PDF`,
-        data: {
-            pdf
-        }
-    });
+    const bd_params = req.bd_params;
+    try {
+        const visita = new model_1.Visita(db);
+        const pdf = await visita.getPDF(Number(id_visita), bd_params);
+        return res.status(httpResponses_1.httpResponses.HTTP_OK).json({
+            ok: true,
+            message: `PDF`,
+            data: {
+                pdf
+            }
+        });
+    }
+    catch (error) {
+        return res.status(httpResponses_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `Problemas en funcion getPDFVisita : ${error}`,
+            data: null
+        });
+    }
 };
 exports.getPDFVisita = getPDFVisita;

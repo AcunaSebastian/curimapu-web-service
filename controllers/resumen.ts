@@ -21,8 +21,6 @@ export const getResumen = async (req: Request, res:Response) => {
         
         const preData = await resumen.getData(id_temporada, id_especie, usuario);
 
-        console.log(preData)
-
         return res.status(httpResponses.HTTP_OK).json({
             ok:true,
             response:`resumen`,

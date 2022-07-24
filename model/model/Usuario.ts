@@ -1,6 +1,16 @@
 import { IUsuario } from '../../interfaces/';
 import { DatabaseService } from '../database/';
 
+interface IFiltersIngresos {
+    usuario:IUsuario;
+    id?:number;
+    rut?:string;
+    nombre?:string;
+    fecha?:string;
+    hora?:string;
+    system:string;
+}
+
 export default class Usuario {
 
 
@@ -159,5 +169,54 @@ export default class Usuario {
         return {...user, usuarios_enlazados:userEnlazado.map( el => Number(el.id_enlazado)), isUsuarioDetQuo};
     }
 
+    
+
+    async getIngresos( filtros:IFiltersIngresos ) {
+
+
+        const { 
+            usuario, id,
+            rut, nombre,
+            fecha, hora, system
+         } = filtros;
+
+
+
+         if(usuario.ve_ingresos === 'NO'){
+            return [];
+         }
+
+         const sistema = (system === 'EXPORT') ? 'c.curimapu' : 'c.vegetables';
+
+
+         let filtro = ` AND sistema_login = '${ sistema }' `;
+
+         if( id ){
+            filtro += ` AND id_registro_login = '${id}' `;
+         }
+
+         if(rut){
+            filtro += ` AND rut_ingresa LIKE '%${rut}%' `;
+         }
+
+         if(nombre){
+            filtro += ` AND nombre_ingresa LIKE '%${nombre}%' `;
+         }
+
+         if( fecha && hora ){
+            filtro += ` AND fecha_hora_ingresa = '${fecha} ${hora}'`
+         }else if (fecha && !hora){
+            filtro += ` AND fecha_hora_ingresa BETWEEN '${fecha} 00:00:00' AND '${fecha} 23:59:59' `;
+         }else if(!fecha && hora){
+            filtro += ` AND hora = '${hora}' `;
+         }
+
+
+        const ingresos = await this.dbConnection.select(` SELECT * FROM registro_login 
+        WHERE 1 ${ filtro } ORDER BY fecha_hora_ingresa DESC `); 
+
+
+        return ingresos;
+    }
 
 }

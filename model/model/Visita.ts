@@ -1,5 +1,5 @@
-import { DatabaseService } from '../database/DataBaseService';
-import { IUsuario } from '../../interfaces/';
+import { DatabaseService } from '../database/';
+import { ISystemParameters, IUsuario } from '../../interfaces/';
 import { Constants } from '../../utils';
 import axios from 'axios';
 
@@ -32,8 +32,6 @@ interface IVisitaCompuesta  {
 export default class Visita {
 
     constructor(private dbConnection:DatabaseService){}
-
-
 
     async getVisitas(filters:IFiltroVisitas){
 
@@ -167,11 +165,11 @@ export default class Visita {
     }
 
 
-    async getPDF(id_visita:number){
+    async getPDF(id_visita:number, bd_params:ISystemParameters){
 
         try {
 
-            const {data} = await axios.get(`http://www.zcloud.cl/c.curimapu/info_visita.php?visita=${id_visita}`, {
+            const {data} = await axios.get(`http://${bd_params.ip_host}/${bd_params.proyect_folder}/info_visita.php?visita=${id_visita}`, {
                 responseType:'blob'
             });
 
@@ -180,16 +178,10 @@ export default class Visita {
         } catch (error) {
 
             if(axios.isAxiosError(error)){
-                console.log(error.message)
+                console.log(error.request)
             }
 
             return [];
-            
         }
-
-        
-        // console.log(data)
-
     }
-
 }

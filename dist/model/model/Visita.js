@@ -95,20 +95,19 @@ class Visita {
         const visitas = await this.dbConnection.select(sql);
         return { titulo: `Visits`, total: visitas[0].total };
     }
-    async getPDF(id_visita) {
+    async getPDF(id_visita, bd_params) {
         try {
-            const { data } = await axios_1.default.get(`http://www.zcloud.cl/c.curimapu/info_visita.php?visita=${id_visita}`, {
+            const { data } = await axios_1.default.get(`http://${bd_params.ip_host}/${bd_params.proyect_folder}/info_visita.php?visita=${id_visita}`, {
                 responseType: 'blob'
             });
             return data;
         }
         catch (error) {
             if (axios_1.default.isAxiosError(error)) {
-                console.log(error.message);
+                console.log(error.request);
             }
             return [];
         }
-        // console.log(data)
     }
 }
 exports.default = Visita;

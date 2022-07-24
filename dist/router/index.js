@@ -19,3 +19,4 @@ __exportStar(require("./filter"), exports);
 __exportStar(require("./home"), exports);
 __exportStar(require("./resumen"), exports);
 __exportStar(require("./visitas"), exports);
+__exportStar(require("./ingresos"), exports);
