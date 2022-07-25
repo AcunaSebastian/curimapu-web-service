@@ -40,7 +40,6 @@ const login = async (req, res) => {
         const dbVegetables = new DataBaseService_1.DatabaseService(dbProviderVegetables);
         const usuarioVegetables = new Usuario_1.default(dbVegetables);
         const userVegetables = await usuarioVegetables.getUserForLogin(username, password);
-        const isVegetablesUser = (userVegetables) ? false : true;
         if (userExport === null && userVegetables === null) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
@@ -55,11 +54,13 @@ const login = async (req, res) => {
                 sistemas: [
                     {
                         id: exportParams._id,
-                        imagen: exportParams.system_image_path
+                        imagen: exportParams.system_image_path,
+                        id_usuario: userExport.id_usuario
                     },
                     {
                         id: vegetablesParams._id,
-                        imagen: vegetablesParams.system_image_path
+                        imagen: vegetablesParams.system_image_path,
+                        id_usuario: userVegetables.id_usuario
                     }
                 ]
             };
@@ -84,7 +85,8 @@ const login = async (req, res) => {
                 sistemas: [
                     {
                         id: exportParams._id,
-                        imagen: exportParams.system_image_path
+                        imagen: exportParams.system_image_path,
+                        id_usuario: userExport.id_usuario
                     }
                 ]
             };
@@ -109,7 +111,8 @@ const login = async (req, res) => {
                 sistemas: [
                     {
                         id: vegetablesParams._id,
-                        imagen: vegetablesParams.system_image_path
+                        imagen: vegetablesParams.system_image_path,
+                        id_usuario: userVegetables.id_usuario
                     }
                 ]
             };
@@ -166,7 +169,8 @@ const setSystem = async (req, res) => {
             sistemas: [
                 {
                     id: params._id,
-                    imagen: params.system_image_path
+                    imagen: params.system_image_path,
+                    id_usuario: user.id_usuario
                 }
             ]
         };

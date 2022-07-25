@@ -45,7 +45,6 @@ export const login = async (req:Request,  res:Response)  => {
         const dbVegetables = new DatabaseService(dbProviderVegetables);
         const usuarioVegetables = new Usuario(dbVegetables);
         const userVegetables = await usuarioVegetables.getUserForLogin(username, password);
-        const isVegetablesUser = (userVegetables)  ? false : true;
 
 
         if(userExport === null && userVegetables === null){
@@ -65,11 +64,13 @@ export const login = async (req:Request,  res:Response)  => {
                 sistemas:[
                     {
                         id:exportParams._id,
-                        imagen:exportParams.system_image_path
+                        imagen:exportParams.system_image_path,
+                        id_usuario:userExport.id_usuario
                     },
                     {
                         id:vegetablesParams._id,
-                        imagen:vegetablesParams.system_image_path
+                        imagen:vegetablesParams.system_image_path,
+                        id_usuario:userVegetables.id_usuario
                     }
                 ]
             }
@@ -103,7 +104,8 @@ export const login = async (req:Request,  res:Response)  => {
                 sistemas:[
                     {
                         id:exportParams._id,
-                        imagen:exportParams.system_image_path
+                        imagen:exportParams.system_image_path,
+                        id_usuario:userExport.id_usuario
                     }
                 ]
             }
@@ -135,7 +137,8 @@ export const login = async (req:Request,  res:Response)  => {
                 sistemas:[
                     {
                         id:vegetablesParams._id,
-                        imagen:vegetablesParams.system_image_path
+                        imagen:vegetablesParams.system_image_path,
+                        id_usuario:userVegetables.id_usuario
                     }
                 ]
             }
@@ -206,7 +209,8 @@ export const setSystem = async (req:Request, res:Response) => {
             sistemas:[
                 {
                     id:params._id,
-                    imagen:params.system_image_path
+                    imagen:params.system_image_path,
+                    id_usuario:user.id_usuario
                 }
             ]
         }
