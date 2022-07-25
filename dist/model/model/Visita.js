@@ -58,6 +58,7 @@ class Visita {
         const sql = `SELECT 
         V.id_visita,
         L.nombre AS lote,
+        P.nombre AS predio,
         AC.num_anexo,
         A.razon_social AS nombre_agricultor,
         AC.ready_batch,
@@ -65,7 +66,8 @@ class Visita {
         Q.id_esp AS id_especie,
         M.nom_hibrido AS desc_variedad,
         DQ.id_materiales AS id_variedad,
-        V.fecha_r AS fecha_visita
+        V.fecha_r AS fecha_visita,
+        temporada.nombre AS temporada
         FROM visita V
         INNER JOIN anexo_contrato AC USING (id_ac) 
         INNER JOIN detalle_quotation DQ USING (id_de_quo)
@@ -73,8 +75,10 @@ class Visita {
         INNER JOIN ficha F USING (id_ficha)
         INNER JOIN agricultor A USING (id_agric)
         INNER JOIN lote L ON (F.id_lote = L.id_lote)
+        INNER JOIN predio P ON (F.id_pred = P.id_pred)
         INNER JOIN materiales M ON ( DQ.id_materiales = M.id_materiales )
         INNER JOIN especie E ON (Q.id_esp = E.id_esp)
+        INNER JOIN temporada ON (Q.id_tempo = temporada.id_tempo)
 
         ${inner} WHERE 1 ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
         const visitas = await this.dbConnection.select(sql);
