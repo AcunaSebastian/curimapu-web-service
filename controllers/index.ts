@@ -4,3 +4,4 @@ export * from "./home";
 export * from "./resumen";
 export * from "./visitas";
 export * from "./ingresos";
+export * from "./libroCampo";

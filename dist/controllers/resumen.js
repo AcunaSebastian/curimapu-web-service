@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getResumen = void 0;
+exports.getExcel = exports.getResumen = void 0;
 const model_1 = require("../model");
 const utils_1 = require("../utils");
 const getResumen = async (req, res) => {
@@ -16,7 +16,7 @@ const getResumen = async (req, res) => {
             response: `resumen`,
             data: {
                 cabeceras,
-                preData
+                data: preData
             }
         });
     }
@@ -29,3 +29,16 @@ const getResumen = async (req, res) => {
     }
 };
 exports.getResumen = getResumen;
+const getExcel = async (req, res) => {
+    const { id_especie, id_temporada } = req.query;
+    const db = req.bd_conection;
+    const usuario = req.usuario;
+    const excel = new model_1.ExcelClass(db);
+    const downloadExcel = await excel.generarExcel('RESUMEN', Number(id_temporada), Number(id_especie), usuario);
+    return res.status(utils_1.httpResponses.HTTP_OK).json({
+        ok: true,
+        response: `EXCEL`,
+        data: downloadExcel
+    });
+};
+exports.getExcel = getExcel;

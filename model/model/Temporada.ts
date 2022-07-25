@@ -3,8 +3,16 @@ import { IVariedad,IUsuario, ITemporada } from '../../interfaces/';
 import { Constants } from '../../utils';
 
 export default class Temporada {
+    
 
     constructor(private dbConnection:DatabaseService){}
+
+    async getTemporadaById(id_temporada: number):Promise<ITemporada> {
+        
+        const temporadas = await this.dbConnection.select(` SELECT * FROM temporada WHERE id_tempo = '${id_temporada}' `);
+        return temporadas[0];
+    }
+
 
     async getTemporadas( usuario:IUsuario):Promise<ITemporada[]>{
 

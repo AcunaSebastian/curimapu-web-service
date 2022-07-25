@@ -27,6 +27,7 @@ class Server {
         this.app.use('/api/resumen', router_1.resumenRouter);
         this.app.use('/api/visitas', router_1.visitasRouter);
         this.app.use('/api/ingresos', router_1.ingresosRouter);
+        this.app.use('/api/libro-campo', router_1.libroCampoRouter);
         // this.app.use('/api/dte', dteRouter);
     }
     listen() {

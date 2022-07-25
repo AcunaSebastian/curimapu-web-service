@@ -5,10 +5,18 @@ import { ITemporada } from '../../interfaces/Temporada';
 import { Constants } from '../../utils';
 
 export default class Especie {
+    
 
     constructor(private dbConnection:DatabaseService){}
 
 
+
+    async getEspecieById(id_especie: number):Promise<IEspecie> {
+    
+        const especie:IEspecie[] = await this.dbConnection.select(`SELECT * FROM especie WHERE id_esp = '${id_especie}' LIMIT 1`);
+        return especie[0];
+
+    }
 
 
     async getEspecies():Promise<IEspecie[]>{

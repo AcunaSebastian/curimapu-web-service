@@ -5,6 +5,10 @@ class Especie {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
     }
+    async getEspecieById(id_especie) {
+        const especie = await this.dbConnection.select(`SELECT * FROM especie WHERE id_esp = '${id_especie}' LIMIT 1`);
+        return especie[0];
+    }
     async getEspecies() {
         const especie = await this.dbConnection.select(`SELECT * FROM especie ORDER BY nombre ASC`);
         return especie;

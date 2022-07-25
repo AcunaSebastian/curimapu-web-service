@@ -20,3 +20,4 @@ __exportStar(require("./home"), exports);
 __exportStar(require("./resumen"), exports);
 __exportStar(require("./visitas"), exports);
 __exportStar(require("./ingresos"), exports);
+__exportStar(require("./libroCampo"), exports);

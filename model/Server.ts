@@ -2,7 +2,8 @@ import express, {Application} from 'express';
 import cors from 'cors'
 import fileUpload from 'express-fileupload';
 
-import { authRouter, filterRouter, homeRouter, ingresosRouter, resumenRouter, visitasRouter } from '../router/';
+import { authRouter, filterRouter, homeRouter, ingresosRouter, resumenRouter, visitasRouter, libroCampoRouter } from '../router/';
+
 
 
 export default class Server {
@@ -37,6 +38,7 @@ export default class Server {
         this.app.use('/api/resumen', resumenRouter);
         this.app.use('/api/visitas', visitasRouter);
         this.app.use('/api/ingresos', ingresosRouter);
+        this.app.use('/api/libro-campo', libroCampoRouter);
         // this.app.use('/api/dte', dteRouter);
     }
 

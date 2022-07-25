@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Resumen } from "../model";
+import { Resumen, ExcelClass } from "../model";
 import { httpResponses } from "../utils";
 
 
@@ -9,9 +9,6 @@ export const getResumen = async (req: Request, res:Response) => {
     const db = req.bd_conection;
 
     const { id_especie, id_temporada } = req.query as unknown as { id_especie:number; id_temporada:number;};
-
-  
-
 
     try {
 
@@ -26,7 +23,7 @@ export const getResumen = async (req: Request, res:Response) => {
             response:`resumen`,
             data:{
                 cabeceras,
-                preData
+                data:preData
             }
         })
 
@@ -38,6 +35,24 @@ export const getResumen = async (req: Request, res:Response) => {
             data:null
         });
     }
-
-
 } 
+
+export const getExcel = async (req: Request, res:Response) => {
+
+    const { id_especie, id_temporada } = req.query;
+
+    const db = req.bd_conection;
+    const usuario = req.usuario;
+
+
+    const excel = new ExcelClass( db );
+
+    const downloadExcel = await excel.generarExcel('RESUMEN', Number(id_temporada), Number(id_especie) , usuario);
+
+    return res.status(httpResponses.HTTP_OK).json({
+        ok:true,
+        response:`EXCEL`,
+        data:downloadExcel
+    })
+        
+}

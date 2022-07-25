@@ -103,9 +103,6 @@ export default class Resumen {
             for( const cabecera of cabeceras ){
                 console.log('cabecera', cabecera.nombre_sub_propiedad);
                 if(cabecera.foraneo === 'NO'){
-                    console.log('foraneo', 'NO');
-
-                    console.log('id', cabecera.id_prop_mat_cli)
 
                     const elementos = datosVisita.filter( dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);
                     elementos.sort(el => el.id_det_vis_prop - el.id_det_vis_prop);
@@ -119,9 +116,6 @@ export default class Resumen {
                     const foraneo = new Foraneo( this.dbConnection );
 
                     const datoForaneo = await foraneo.getForaneo(cabecera, anexo.id_ac);
-                    console.log('foraneo', 'SI');
-                    console.log(datoForaneo);
-
                     tpmData.push({
                         id_prop_mat_cli:cabecera.id_prop_mat_cli, 
                         id_det_vis_prop:null, 
@@ -131,8 +125,6 @@ export default class Resumen {
                 }
 
             }
-
-        
 
             respuestaAnexos.push({
                 ...anexo,
