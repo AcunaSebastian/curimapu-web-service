@@ -79,7 +79,7 @@ export default class Quotation {
         const surfaceGPS = surfaceGPSs[0];
 
 
-        let superficieContratada = (surface.id_um === 2) ?  surface.total / 10000 : surface.total;
+        let superficieContratada = (surface?.id_um === 2) ?  surface.total / 10000 : surface.total;
         let superficieGPS = surfaceGPS.total;
         let porcentajeAsignado = ((superficieGPS / 100) / superficieContratada);
 

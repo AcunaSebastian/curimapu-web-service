@@ -136,3 +136,16 @@ export const getExcelLC = async (req:Request, res:Response) => {
         })
     }
 }
+
+export const getImagenesAnexo = async (req:Request, res:Response) => {
+
+    const usuario = req.usuario;
+    const db = req.bd_conection;
+
+
+    const { id_anexo } = req.query;
+
+
+    // const libroCampo  = new LibroCampo(); 
+
+}

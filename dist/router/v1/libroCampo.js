@@ -19,3 +19,8 @@ exports.libroCampoRouter.get('/get-excel', [
     (0, express_validator_1.check)("id_temporada", "Debes incluir el id de temporada").notEmpty(),
     middlewares_1.validarCampos
 ], controllers_1.getExcelLC);
+exports.libroCampoRouter.get('/get-images', [
+    jwtService.validarJWT,
+    (0, express_validator_1.check)("id_anexo", "Debes incluir el id del anexo").notEmpty(),
+    middlewares_1.validarCampos
+], controllers_1.getImagenesAnexo);
