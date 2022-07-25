@@ -12,7 +12,7 @@ class Visita {
         this.dbConnection = dbConnection;
     }
     async getVisitas(filters) {
-        const { usuario, id_temporada, id_especie, id_variedad, fecha_visita, agricultor, ready_batch, lote, num_anexo } = filters;
+        const { usuario, id_temporada, id_especie, id_variedad, fecha_visita, agricultor, ready_batch, lote, num_anexo, limit, page } = filters;
         let filtro = ``;
         let inner = ``;
         if (id_temporada) {
@@ -38,6 +38,10 @@ class Visita {
         }
         if (lote) {
             filtro += ` AND L.nombre LIKE '%${lote}%' `;
+        }
+        let limite = ``;
+        if (limit) {
+            limite = ` LIMIT ${page}, ${limit}`;
         }
         if (usuario.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE) {
             let tmp = ` Q.id_cli = '${usuario.id_usuario}' `;
@@ -72,7 +76,7 @@ class Visita {
         INNER JOIN materiales M ON ( DQ.id_materiales = M.id_materiales )
         INNER JOIN especie E ON (Q.id_esp = E.id_esp)
 
-        ${inner} WHERE 1 ${filtro} ORDER BY V.fecha_r DESC `;
+        ${inner} WHERE 1 ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
         const visitas = await this.dbConnection.select(sql);
         return visitas;
     }

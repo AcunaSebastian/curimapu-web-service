@@ -12,10 +12,12 @@ export const getVisitas = async (req:Request, res:Response) => {
         lote,
         agricultor,
         ready_batch,
-        id_variedad,
+        id_variedad, 
         id_temporada,
         id_especie,
         fecha_visita,
+        limit,
+        page= 0
      } = req.query;
 
 
@@ -33,7 +35,9 @@ export const getVisitas = async (req:Request, res:Response) => {
             id_variedad: id_variedad as unknown as number,
             id_temporada: id_temporada as unknown as number,
             id_especie: id_especie as unknown as number,
-            fecha_visita: fecha_visita as string
+            fecha_visita: fecha_visita as string,
+            limit:limit as unknown as number,
+            page
          
          }
 

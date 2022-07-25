@@ -16,6 +16,8 @@ interface IFiltroVisitas {
     id_temporada?:number;
     id_especie?:number;
     fecha_visita?:string;
+    limit?:number;
+    page:number
 }
 
 interface IVisitaCompuesta  { 
@@ -46,7 +48,9 @@ export default class Visita {
             agricultor,
             ready_batch,
             lote,
-            num_anexo
+            num_anexo,
+            limit,
+            page
           } = filters;
 
 
@@ -84,6 +88,11 @@ export default class Visita {
             filtro += ` AND L.nombre LIKE '%${lote}%' `;
         }
 
+
+        let limite = ``;
+        if(limit){
+            limite = ` LIMIT ${page}, ${limit}`;
+        }
 
 
         if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
@@ -127,7 +136,7 @@ export default class Visita {
         INNER JOIN materiales M ON ( DQ.id_materiales = M.id_materiales )
         INNER JOIN especie E ON (Q.id_esp = E.id_esp)
 
-        ${inner} WHERE 1 ${filtro} ORDER BY V.fecha_r DESC `;
+        ${inner} WHERE 1 ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
 
         const visitas:IVisitaCompuesta[] = await this.dbConnection.select( sql );
 

@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const model_1 = require("../model/");
 const httpResponses_1 = require("../utils/httpResponses");
 const getVisitas = async (req, res) => {
-    const { num_anexo, lote, agricultor, ready_batch, id_variedad, id_temporada, id_especie, fecha_visita, } = req.query;
+    const { num_anexo, lote, agricultor, ready_batch, id_variedad, id_temporada, id_especie, fecha_visita, limit, page = 0 } = req.query;
     const usuario = req.usuario;
     const db = req.bd_conection;
     try {
@@ -21,7 +21,9 @@ const getVisitas = async (req, res) => {
             id_variedad: id_variedad,
             id_temporada: id_temporada,
             id_especie: id_especie,
-            fecha_visita: fecha_visita
+            fecha_visita: fecha_visita,
+            limit: limit,
+            page
         };
         const visita = new model_1.Visita(db);
         const visitas = await visita.getVisitas(filter);
