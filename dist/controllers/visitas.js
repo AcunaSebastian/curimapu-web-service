@@ -23,7 +23,7 @@ const getVisitas = async (req, res) => {
             id_especie: id_especie,
             fecha_visita: fecha_visita,
             limit: limit,
-            page
+            page: Number(page)
         };
         const visita = new model_1.Visita(db);
         const visitas = await visita.getVisitas(filter);

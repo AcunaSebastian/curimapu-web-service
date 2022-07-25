@@ -37,7 +37,7 @@ export const getVisitas = async (req:Request, res:Response) => {
             id_especie: id_especie as unknown as number,
             fecha_visita: fecha_visita as string,
             limit:limit as unknown as number,
-            page
+            page:Number(page)
          
          }
 
