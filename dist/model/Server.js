@@ -21,13 +21,13 @@ class Server {
         this.app.use((0, express_fileupload_1.default)({ useTempFiles: true, tempFileDir: '/tmp/' }));
     }
     routes() {
-        this.app.use('/api/auth/v1', router_1.authRouter);
-        this.app.use('/api/filters', router_1.filterRouter);
-        this.app.use('/api/home', router_1.homeRouter);
-        this.app.use('/api/resumen', router_1.resumenRouter);
-        this.app.use('/api/visitas', router_1.visitasRouter);
-        this.app.use('/api/ingresos', router_1.ingresosRouter);
-        this.app.use('/api/libro-campo', router_1.libroCampoRouter);
+        this.app.use('/api/v1/auth', router_1.authRouter);
+        this.app.use('/api/v1/filters', router_1.filterRouter);
+        this.app.use('/api/v1/home', router_1.homeRouter);
+        this.app.use('/api/v1/resumen', router_1.resumenRouter);
+        this.app.use('/api/v1/visitas', router_1.visitasRouter);
+        this.app.use('/api/v1/ingresos', router_1.ingresosRouter);
+        this.app.use('/api/v1/libro-campo', router_1.libroCampoRouter);
         // this.app.use('/api/dte', dteRouter);
     }
     listen() {

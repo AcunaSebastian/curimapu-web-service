@@ -32,13 +32,13 @@ export default class Server {
 
 
     routes():void{
-        this.app.use('/api/auth/v1', authRouter);
-        this.app.use('/api/filters', filterRouter);
-        this.app.use('/api/home', homeRouter);
-        this.app.use('/api/resumen', resumenRouter);
-        this.app.use('/api/visitas', visitasRouter);
-        this.app.use('/api/ingresos', ingresosRouter);
-        this.app.use('/api/libro-campo', libroCampoRouter);
+        this.app.use('/api/v1/auth', authRouter);
+        this.app.use('/api/v1/filters', filterRouter);
+        this.app.use('/api/v1/home', homeRouter);
+        this.app.use('/api/v1/resumen', resumenRouter);
+        this.app.use('/api/v1/visitas', visitasRouter);
+        this.app.use('/api/v1/ingresos', ingresosRouter);
+        this.app.use('/api/v1/libro-campo', libroCampoRouter);
         // this.app.use('/api/dte', dteRouter);
     }
 
