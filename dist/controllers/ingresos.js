@@ -4,7 +4,7 @@ exports.getIngresos = void 0;
 const model_1 = require("../model/model/");
 const utils_1 = require("../utils");
 const getIngresos = async (req, res) => {
-    const { id, rut, nombre, fecha, hora, } = req.query;
+    const { id, rut, nombre, fecha, hora, limit, page = 0 } = req.query;
     const usuario = req.usuario;
     const { _id } = req.bd_params;
     const db = req.bd_conection;
@@ -16,7 +16,9 @@ const getIngresos = async (req, res) => {
             nombre: (nombre) && nombre,
             fecha: (fecha) && fecha,
             hora: (hora) && hora,
-            system: _id
+            system: _id,
+            limit: limit,
+            page: page
         };
         const user = new model_1.Usuario(db);
         const ingresos = await user.getIngresos(filterParams);

@@ -132,7 +132,7 @@ class Usuario {
         return { ...user, usuarios_enlazados: userEnlazado.map(el => Number(el.id_enlazado)), isUsuarioDetQuo };
     }
     async getIngresos(filtros) {
-        const { usuario, id, rut, nombre, fecha, hora, system } = filtros;
+        const { usuario, id, rut, nombre, fecha, hora, system, limit, page } = filtros;
         if (usuario.ve_ingresos === 'NO') {
             return [];
         }
@@ -156,8 +156,12 @@ class Usuario {
         else if (!fecha && hora) {
             filtro += ` AND hora = '${hora}' `;
         }
+        let limite = ``;
+        if (limit) {
+            limite = ` LIMIT ${page}, ${limit}`;
+        }
         const ingresos = await this.dbConnection.select(` SELECT * FROM registro_login 
-        WHERE 1 ${filtro} ORDER BY fecha_hora_ingresa DESC `);
+        WHERE 1 ${filtro} ORDER BY fecha_hora_ingresa DESC ${limite}`);
         return ingresos;
     }
 }

@@ -9,6 +9,8 @@ interface IFiltersIngresos {
     fecha?:string;
     hora?:string;
     system:string;
+    limit?:number;
+    page:number;
 }
 
 export default class Usuario {
@@ -177,7 +179,7 @@ export default class Usuario {
         const { 
             usuario, id,
             rut, nombre,
-            fecha, hora, system
+            fecha, hora, system, limit, page
          } = filtros;
 
 
@@ -212,8 +214,13 @@ export default class Usuario {
          }
 
 
+         let limite = ``;
+         if(limit){
+            limite = ` LIMIT ${page}, ${limit}`;
+         }
+
         const ingresos = await this.dbConnection.select(` SELECT * FROM registro_login 
-        WHERE 1 ${ filtro } ORDER BY fecha_hora_ingresa DESC `); 
+        WHERE 1 ${ filtro } ORDER BY fecha_hora_ingresa DESC ${limite}`); 
 
 
         return ingresos;
