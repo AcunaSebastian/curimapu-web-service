@@ -83,7 +83,6 @@ export default class Resumen {
         const respuestaAnexos:any[] = []
 
         for (const anexo of anexos) {
-            console.log('anexo', anexo.num_anexo);
             const sql = `SELECT 
                 DVP.id_prop_mat_cli,
                 DVP.valor,
@@ -101,7 +100,6 @@ export default class Resumen {
             const tpmData = [];
 
             for( const cabecera of cabeceras ){
-                console.log('cabecera', cabecera.nombre_sub_propiedad);
                 if(cabecera.foraneo === 'NO'){
 
                     const elementos = datosVisita.filter( dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);

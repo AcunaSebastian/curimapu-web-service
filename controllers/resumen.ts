@@ -1,5 +1,6 @@
+import fs from 'fs';
 import { Request, Response } from "express";
-import { Resumen, ExcelClass } from "../model";
+import { Resumen, ExcelClass, tipoExcel } from "../model";
 import { httpResponses } from "../utils";
 
 
@@ -45,14 +46,21 @@ export const getExcel = async (req: Request, res:Response) => {
     const usuario = req.usuario;
 
 
+    const params  = {
+        usuario,
+        id_especie:Number(id_especie), 
+        id_temporada:Number(id_temporada), 
+        type:'RESUMEN' as tipoExcel
+    }
+
     const excel = new ExcelClass( db );
 
-    const downloadExcel = await excel.generarExcel('RESUMEN', Number(id_temporada), Number(id_especie) , usuario);
+    const downloadExcel = await excel.generarExcel(params);
 
-    return res.status(httpResponses.HTTP_OK).json({
-        ok:true,
-        response:`EXCEL`,
-        data:downloadExcel
-    })
+    const excelFile = fs.readFileSync(`./`+downloadExcel);
+
+    fs.unlinkSync(`./`+downloadExcel);
+    
+    return res.status(httpResponses.HTTP_OK).contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').send(excelFile);
         
 }

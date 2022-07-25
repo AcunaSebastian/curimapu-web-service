@@ -1,5 +1,6 @@
+import fs from 'fs';
 import { Request, Response } from "express";
-import {Visita} from '../model/model/';
+import { Visita } from '../model/';
 import { httpResponses } from '../utils/httpResponses';
 
 
@@ -57,9 +58,6 @@ export const getVisitas = async (req:Request, res:Response) => {
          });
       
      }
-
-
-
 }
 
 
@@ -78,14 +76,11 @@ export const getPDFVisita = async (req:Request, res:Response) => {
 
       const pdf = await visita.getPDF( Number(id_visita) , bd_params);
 
-      return res.status(httpResponses.HTTP_OK).json({
-         ok:true,
-         message:`PDF`,
-         data:{
-            pdf
-         }
-      })
-      
+      const pdfFile = fs.readFileSync(`./`+pdf);
+      fs.unlinkSync(`./`+pdf);
+
+      return res.status(httpResponses.HTTP_OK).contentType(`application/pdf`).send(pdfFile)
+         
    } catch (error) {
       return res.status(httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
          ok:false,

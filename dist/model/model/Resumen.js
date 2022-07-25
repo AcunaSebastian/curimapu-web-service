@@ -65,7 +65,6 @@ class Resumen {
             return anexos;
         const respuestaAnexos = [];
         for (const anexo of anexos) {
-            console.log('anexo', anexo.num_anexo);
             const sql = `SELECT 
                 DVP.id_prop_mat_cli,
                 DVP.valor,
@@ -81,7 +80,6 @@ class Resumen {
             const datosVisita = await this.dbConnection.select(sql);
             const tpmData = [];
             for (const cabecera of cabeceras) {
-                console.log('cabecera', cabecera.nombre_sub_propiedad);
                 if (cabecera.foraneo === 'NO') {
                     const elementos = datosVisita.filter(dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);
                     elementos.sort(el => el.id_det_vis_prop - el.id_det_vis_prop);

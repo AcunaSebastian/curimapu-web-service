@@ -1,7 +1,7 @@
 import { DatabaseService } from '../database/';
 import { IResumen, IUsuario } from '../../interfaces/';
 import { Constants } from '../../utils';
-import {Foraneo} from './';
+import { Foraneo } from './';
 
 
 interface IParamsLC {
@@ -80,7 +80,7 @@ export default class LibroCampo {
 
     }
 
-    async getData( params:IParamsLC){
+    async getData( params:IParamsLC ){
 
 
         const { id_temporada, id_especie, usuario, limit, page = 0,
@@ -239,6 +239,7 @@ export default class LibroCampo {
         return respuestaAnexos;
 
     }
+
 
 
 }

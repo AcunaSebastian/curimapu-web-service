@@ -2,6 +2,8 @@ import { DatabaseService } from '../database/';
 import { ISystemParameters, IUsuario } from '../../interfaces/';
 import { Constants } from '../../utils';
 import axios from 'axios';
+import fs from 'fs';
+import moment from 'moment';
 
 
 interface IFiltroVisitas {
@@ -165,15 +167,25 @@ export default class Visita {
     }
 
 
-    async getPDF(id_visita:number, bd_params:ISystemParameters){
+    async getPDF(id_visita:number, bd_params:ISystemParameters):Promise<string>{
 
         try {
+            const namePDf = `uploads/pdf/pdf_${id_visita}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
+
+            const writer = fs.createWriteStream(namePDf);
 
             const {data} = await axios.get(`http://${bd_params.ip_host}/${bd_params.proyect_folder}/info_visita.php?visita=${id_visita}`, {
-                responseType:'blob'
+                responseType:'stream'
             });
+            
 
-            return data;
+            data.pipe(writer);
+
+            return new Promise( resolve => {
+                writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
+            })
+        
+
             
         } catch (error) {
 
@@ -181,7 +193,7 @@ export default class Visita {
                 console.log(error.request)
             }
 
-            return [];
+            return '';
         }
     }
-}
+}``

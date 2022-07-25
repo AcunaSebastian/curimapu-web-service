@@ -1,1 +1,1 @@
-export { default as ExcelClass } from './Excel';
+export { default as ExcelClass, tipoExcel } from './Excel';

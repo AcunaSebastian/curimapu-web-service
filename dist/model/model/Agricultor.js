@@ -5,10 +5,6 @@ class Agricultor {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
     }
-    // async getVariedades():Promise<IVariedad[]>{
-    //     const especie:IVariedad[] = await this.dbConnection.select(`SELECT * FROM materiales ORDER BY nom_hibrido ASC`);
-    //     return especie;
-    // }
     async getAgricultorCard(usuario, id_temporada) {
         let filtro = ``;
         let inner = ``;

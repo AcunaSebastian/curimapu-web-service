@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPDFVisita = exports.getVisitas = void 0;
-const model_1 = require("../model/model/");
+const fs_1 = __importDefault(require("fs"));
+const model_1 = require("../model/");
 const httpResponses_1 = require("../utils/httpResponses");
 const getVisitas = async (req, res) => {
     const { num_anexo, lote, agricultor, ready_batch, id_variedad, id_temporada, id_especie, fecha_visita, } = req.query;
@@ -45,13 +49,9 @@ const getPDFVisita = async (req, res) => {
     try {
         const visita = new model_1.Visita(db);
         const pdf = await visita.getPDF(Number(id_visita), bd_params);
-        return res.status(httpResponses_1.httpResponses.HTTP_OK).json({
-            ok: true,
-            message: `PDF`,
-            data: {
-                pdf
-            }
-        });
+        const pdfFile = fs_1.default.readFileSync(`./` + pdf);
+        fs_1.default.unlinkSync(`./` + pdf);
+        return res.status(httpResponses_1.httpResponses.HTTP_OK).contentType(`application/pdf`).send(pdfFile);
     }
     catch (error) {
         return res.status(httpResponses_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({

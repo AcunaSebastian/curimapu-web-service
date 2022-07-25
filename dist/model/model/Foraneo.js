@@ -5,18 +5,90 @@ class Foraneo {
         this.dbConnection = dbConnection;
     }
     getSqlForaneo(tabla, campo, id_ac) {
-        let from = ``;
-        let param = ``;
-        let where = ``;
-        let inner = ``;
-        switch (tabla) {
-            case 'visita':
-            default:
-                from = tabla;
-                param = campo;
-                where = ` AND id_ac = '${id_ac}' `;
+        let sql = `SELECT ${campo} AS data FROM ${tabla} `;
+        if (tabla === 'usuarios' && campo === 'nombre') {
+            sql = `SELECT CONCAT(nombre,' ',apellido_p,' ',apellido_m) AS data FROM ${tabla} `;
         }
-        let sql = ` SELECT ${param} AS data ${inner} FROM ${from} WHERE 1 ${where} ORDER BY ${param} DESC`;
+        if (tabla === 'fieldman_asis' && campo === 'nombre') {
+            sql = ` SELECT CONCAT(nombre,' ',apellido_p,' ',apellido_m) AS data FROM usuarios`;
+        }
+        if (tabla === 'historial_predio' && campo === 'nombre') {
+            sql = ` SELECT group_concat(CONCAT(anno,':',descripcion) SEPARATOR '||') AS Dato FROM ${tabla} `;
+        }
+        switch (tabla) {
+            case 'agricultor':
+                sql += ` INNER JOIN ficha USING(id_agric)
+                INNER JOIN anexo_contrato AC USING (id_ficha) 
+                WHERE AC.id_ac = '${id_ac}'`;
+                break;
+            case 'lote':
+                sql += ` INNER JOIN anexo_contrato USING (id_lote) WHERE AC.id_ac = '${id_ac}' `;
+                break;
+            case 'predio':
+                sql += ` INNER JOIN lote USING (id_pred)
+                INNER JOIN anexo_contrato USING (id_lote)
+                WHERE AC.id_ac = '${id_ac}'
+                `;
+                break;
+            case 'comuna':
+                sql += `INNER JOIN ficha USING (id_comuna) 
+                INNER JOIN anexo_contrato USING (id_ficha)
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'cliente':
+                sql += ` INNER JOIN quotation USING(id_cli) 
+                INNER JOIN detalle_quotation USING (id_quotation)
+                INNER JOIN anexo_contrato USING (id_det_quo)
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'especie':
+                sql += ` INNER JOIN quotation USING(id_esp) 
+                INNER JOIN detalle_quotation USING (id_quotation)
+                INNER JOIN anexo_contrato USING (id_det_quo)
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'materiales':
+                sql += `
+                INNER JOIN anexo_contrato USING (id_materiales)
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'tipo_riego':
+                sql += `
+                INNER JOIN ficha USING (id_tipo_riego) 
+                INNER JOIN anexo_contrato USING (id_ficha) 
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'tipo_suelo':
+                sql += `
+                INNER JOIN ficha USING (id_tipo_suelo) 
+                INNER JOIN anexo_contrato USING (id_ficha) 
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'ficha':
+                sql += `
+                INNER JOIN anexo_contrato USING (id_ficha) 
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'usuarios':
+                sql += `
+                INNER JOIN ficha USING (id_usuario) 
+                INNER JOIN anexo_contrato USING (id_ficha) 
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
+            case 'historial_predio':
+                sql += `
+                INNER JOIN ficha USING (id_usuario) 
+                INNER JOIN anexo_contrato USING (id_ficha) 
+                WHERE anexo_contrato.id_ac = '${id_ac}' AND historial_predio.tipo = 'F' GROUP BY id_ficha `;
+                break;
+            case 'visita':
+                sql += `
+                WHERE id_ac = '${id_ac}' AND ${tabla}.${campo} IS NOT NULL ORDER BY id_visita DESC LIMIT 1`;
+                break;
+            default:
+                sql += ` WHERE id_ac = '${id_ac}' `;
+                break;
+        }
         return sql;
     }
     async getForaneo(cabecera, id_ac) {

@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils");
 const axios_1 = __importDefault(require("axios"));
+const fs_1 = __importDefault(require("fs"));
+const moment_1 = __importDefault(require("moment"));
 class Visita {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -97,17 +99,23 @@ class Visita {
     }
     async getPDF(id_visita, bd_params) {
         try {
+            const namePDf = `uploads/pdf/pdf_${id_visita}_${(0, moment_1.default)().format('YYYYMMSSHHmmss')}.pdf`;
+            const writer = fs_1.default.createWriteStream(namePDf);
             const { data } = await axios_1.default.get(`http://${bd_params.ip_host}/${bd_params.proyect_folder}/info_visita.php?visita=${id_visita}`, {
-                responseType: 'blob'
+                responseType: 'stream'
             });
-            return data;
+            data.pipe(writer);
+            return new Promise(resolve => {
+                writer.on('finish', () => { console.log('escribiendo...'); resolve(namePDf); });
+            });
         }
         catch (error) {
             if (axios_1.default.isAxiosError(error)) {
                 console.log(error.request);
             }
-            return [];
+            return '';
         }
     }
 }
 exports.default = Visita;
+``;
