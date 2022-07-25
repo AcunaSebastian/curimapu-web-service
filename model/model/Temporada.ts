@@ -9,7 +9,7 @@ export default class Temporada {
 
     async getTemporadaById(id_temporada: number):Promise<ITemporada> {
         
-        const temporadas = await this.dbConnection.select(` SELECT * FROM temporada WHERE id_tempo = '${id_temporada}' `);
+        const temporadas = await this.dbConnection.select(` SELECT temporada.*, temporada.id_tempo AS value, temporada.nombre AS label FROM temporada WHERE id_tempo = '${id_temporada}' `);
         return temporadas[0];
     }
 

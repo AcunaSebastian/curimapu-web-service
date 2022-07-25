@@ -6,7 +6,7 @@ class Temporada {
         this.dbConnection = dbConnection;
     }
     async getTemporadaById(id_temporada) {
-        const temporadas = await this.dbConnection.select(` SELECT * FROM temporada WHERE id_tempo = '${id_temporada}' `);
+        const temporadas = await this.dbConnection.select(` SELECT temporada.*, temporada.id_tempo AS value, temporada.nombre AS label FROM temporada WHERE id_tempo = '${id_temporada}' `);
         return temporadas[0];
     }
     async getTemporadas(usuario) {

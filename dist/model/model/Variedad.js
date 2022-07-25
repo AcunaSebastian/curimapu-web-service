@@ -6,7 +6,7 @@ class Variedad {
         this.dbConnection = dbConnection;
     }
     async getVariedades() {
-        const especie = await this.dbConnection.select(`SELECT * FROM materiales ORDER BY nom_hibrido ASC`);
+        const especie = await this.dbConnection.select(`SELECT materiales.*, materiales.id_materiales AS value, materiales.nom_hibrido AS label FROM materiales ORDER BY nom_hibrido ASC`);
         return especie;
     }
     async getVariedadesCard(usuario, id_temporada) {

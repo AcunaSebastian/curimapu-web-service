@@ -48,7 +48,7 @@ class Especie {
                 filtro += ` AND ( ${tmp} ) `;
                 break;
         }
-        const especie = await this.dbConnection.select(`SELECT * FROM especie WHERE 1 ${filtro} ORDER BY nombre ASC`);
+        const especie = await this.dbConnection.select(`SELECT especie.*, especie.id_esp AS value, especie.nombre AS label FROM especie WHERE 1 ${filtro} ORDER BY nombre ASC`);
         return especie;
     }
 }
