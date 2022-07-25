@@ -21,7 +21,7 @@ class Server {
         this.app.use((0, express_fileupload_1.default)({ useTempFiles: true, tempFileDir: '/tmp/' }));
     }
     routes() {
-        this.app.use('/api/auth', router_1.authRouter);
+        this.app.use('/api/auth/v1', router_1.authRouter);
         this.app.use('/api/filters', router_1.filterRouter);
         this.app.use('/api/home', router_1.homeRouter);
         this.app.use('/api/resumen', router_1.resumenRouter);

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {getVisitas, getPDFVisita } from '../controllers/';
-import { validarCampos, JWTService } from '../middlewares/';
+import {getVisitas, getPDFVisita } from '../../controllers';
+import { validarCampos, JWTService } from '../../middlewares';
 import { check } from 'express-validator';
 
 export const visitasRouter:Router = Router();

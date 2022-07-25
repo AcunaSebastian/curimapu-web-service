@@ -32,7 +32,7 @@ export default class Server {
 
 
     routes():void{
-        this.app.use('/api/auth', authRouter);
+        this.app.use('/api/auth/v1', authRouter);
         this.app.use('/api/filters', filterRouter);
         this.app.use('/api/home', homeRouter);
         this.app.use('/api/resumen', resumenRouter);

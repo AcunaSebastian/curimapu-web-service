@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getHome } from '../controllers/';
-import { validarCampos, JWTService } from '../middlewares/';
+import { getHome } from '../../controllers';
+import { validarCampos, JWTService } from '../../middlewares';
 import { check } from 'express-validator';
 
 export const homeRouter:Router = Router();

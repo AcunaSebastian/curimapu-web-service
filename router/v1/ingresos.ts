@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getIngresos } from '../controllers/';
-import { validarCampos, JWTService } from '../middlewares/';
+import { getIngresos } from '../../controllers';
+import { validarCampos, JWTService } from '../../middlewares';
 
 export const ingresosRouter:Router = Router();
 const jwtService = new JWTService();

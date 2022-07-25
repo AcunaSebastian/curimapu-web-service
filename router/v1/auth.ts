@@ -1,8 +1,8 @@
 
 import { Request, Response, Router } from "express";
 import { check } from "express-validator";
-import { login, setSystem } from '../controllers/';
-import { validarCampos, JWTService } from '../middlewares/';
+import { login, setSystem } from '../../controllers';
+import { validarCampos, JWTService } from '../../middlewares';
 
 
 export const authRouter:Router = Router();
