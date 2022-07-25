@@ -36,7 +36,7 @@ export default class Resumen {
     }
 
 
-    async getData( id_temporada:number, id_especie:number, usuario:IUsuario){
+    async getData( id_temporada:number, id_especie:number,  usuario:IUsuario,  page:number, limit?:number){
 
 
 
@@ -62,6 +62,10 @@ export default class Resumen {
             filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
         }
 
+        let limite  = ``;
+        if(limit){
+            limite = ` LIMIT ${page}, ${limit} `;
+        }
         const sql = `SELECT 
         AC.num_anexo,
         AC.id_ac,
@@ -73,7 +77,7 @@ export default class Resumen {
         detalle_quotation DQ
         INNER JOIN quotation Q ON (DQ.id_quotation = Q.id_quotation)
         INNER JOIN anexo_contrato AC ON (DQ.id_de_quo = AC.id_de_quo) 
-        WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro}  `;
+        WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro}  ${limite} `;
 
         const anexos = await this.dbConnection.select( sql );
 

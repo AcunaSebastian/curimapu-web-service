@@ -141,11 +141,35 @@ export const getImagenesAnexo = async (req:Request, res:Response) => {
 
     const usuario = req.usuario;
     const db = req.bd_conection;
+    const params = req.bd_params;
 
 
-    const { id_anexo } = req.query;
+    const { id_anexo } = req.query  as unknown as { id_anexo:number };
 
 
-    // const libroCampo  = new LibroCampo(); 
+    try {
+
+        const libroCampo  = new LibroCampo( db ); 
+
+        const listaImagenes = await libroCampo.getImagenes( id_anexo, params );
+
+        return res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR ).json({
+            ok:false,
+            message:`IMAGENES`,
+            data:listaImagenes
+        })
+        
+    } catch (error) {
+        res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR ).json({
+            ok:false,
+            message:`PROBLEMAS EN FUNCION getImagenesAnexo ERROR : ${error}`,
+            data:null
+        })
+    }
+
+    
+
+
+
 
 }

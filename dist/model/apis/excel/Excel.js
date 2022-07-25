@@ -139,7 +139,7 @@ class ExcelClass {
     async generarResumen(id_temporada, id_especie, usuario) {
         const resumen = new model_1.Resumen(this.dbConnection);
         const cabeceras = await resumen.getCabecera(id_temporada, id_especie);
-        const datas = await resumen.getData(id_temporada, id_especie, usuario);
+        const datas = await resumen.getData(id_temporada, id_especie, usuario, 0, undefined);
         var worksheet = this.Excel.addWorksheet('SUMMARY');
         const especieClass = new model_1.Especie(this.dbConnection);
         const especie = await especieClass.getEspecieById(id_especie);

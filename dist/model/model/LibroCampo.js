@@ -160,5 +160,19 @@ class LibroCampo {
         }
         return respuestaAnexos;
     }
+    async getImagenes(id_anexo, systemParams) {
+        const sql = `SELECT * FROM fotos 
+        INNER JOIN visita USING (id_visita)
+        WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
+        const fotosVisitas = await this.dbConnection.select(sql);
+        const nuevasFotosVisitas = fotosVisitas.map(foto => {
+            const nuevaUrl = `http://${systemParams.ip_host}/` + foto.ruta_foto.replaceAll('../', '').replaceAll(`${systemParams.document_folder}`, `${systemParams.compressed_image_folder}`);
+            return {
+                ...foto,
+                ruta_foto: nuevaUrl
+            };
+        });
+        return nuevasFotosVisitas;
+    }
 }
 exports.default = LibroCampo;

@@ -194,7 +194,7 @@ export default class ExcelClass {
 
         const resumen = new Resumen( this.dbConnection );
         const cabeceras = await resumen.getCabecera(id_temporada, id_especie);
-        const datas = await resumen.getData(id_temporada, id_especie, usuario);
+        const datas = await resumen.getData(id_temporada, id_especie, usuario, 0, undefined);
         var worksheet = this.Excel.addWorksheet('SUMMARY');
 
 

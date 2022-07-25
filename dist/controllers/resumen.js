@@ -10,11 +10,11 @@ const utils_1 = require("../utils");
 const getResumen = async (req, res) => {
     const usuario = req.usuario;
     const db = req.bd_conection;
-    const { id_especie, id_temporada } = req.query;
+    const { id_especie, id_temporada, limit, page = 0 } = req.query;
     try {
         const resumen = new model_1.Resumen(db);
         const cabeceras = await resumen.getCabecera(id_temporada, id_especie);
-        const preData = await resumen.getData(id_temporada, id_especie, usuario);
+        const preData = await resumen.getData(id_temporada, id_especie, usuario, page, limit);
         return res.status(utils_1.httpResponses.HTTP_OK).json({
             ok: true,
             response: `resumen`,

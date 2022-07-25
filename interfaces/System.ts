@@ -12,4 +12,5 @@ export interface ISystemParameters {
     proyect_folder:string;
     document_folder:string;
     system_image_path:string;
+    compressed_image_folder:string;
 }

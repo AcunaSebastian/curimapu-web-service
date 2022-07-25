@@ -95,7 +95,23 @@ exports.getExcelLC = getExcelLC;
 const getImagenesAnexo = async (req, res) => {
     const usuario = req.usuario;
     const db = req.bd_conection;
+    const params = req.bd_params;
     const { id_anexo } = req.query;
-    // const libroCampo  = new LibroCampo(); 
+    try {
+        const libroCampo = new model_1.LibroCampo(db);
+        const listaImagenes = await libroCampo.getImagenes(id_anexo, params);
+        return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `IMAGENES`,
+            data: listaImagenes
+        });
+    }
+    catch (error) {
+        res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `PROBLEMAS EN FUNCION getImagenesAnexo ERROR : ${error}`,
+            data: null
+        });
+    }
 };
 exports.getImagenesAnexo = getImagenesAnexo;

@@ -1,5 +1,5 @@
 import { DatabaseService } from '../database/';
-import { IResumen, IUsuario } from '../../interfaces/';
+import { IResumen, ISystemParameters, IUsuario } from '../../interfaces/';
 import { Constants } from '../../utils';
 import { Foraneo } from './';
 
@@ -20,6 +20,7 @@ interface IParamsLC {
 }
 
 export default class LibroCampo {
+  
 
 
     constructor(private dbConnection: DatabaseService){}
@@ -240,6 +241,31 @@ export default class LibroCampo {
 
     }
 
+
+    async getImagenes(id_anexo: number, systemParams:ISystemParameters ) {
+
+
+        const sql = `SELECT * FROM fotos 
+        INNER JOIN visita USING (id_visita)
+        WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
+
+
+        const fotosVisitas = await  this.dbConnection.select( sql );
+        
+        const nuevasFotosVisitas = fotosVisitas.map( foto => {
+
+            const nuevaUrl = `http://${systemParams.ip_host}/`+foto.ruta_foto.replaceAll('../', '').replaceAll(`${systemParams.document_folder}`, `${systemParams.compressed_image_folder}`);
+
+            return {
+                ...foto,
+                ruta_foto:nuevaUrl
+            }
+
+        })
+
+        return nuevasFotosVisitas;
+
+    }
 
 
 }
