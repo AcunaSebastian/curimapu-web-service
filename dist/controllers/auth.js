@@ -71,6 +71,7 @@ const login = async (req, res) => {
             });
         }
         if (userExport !== null) {
+            usuarioExport.setIngreso(userExport, 'c.curimapu');
             const token = await new JWTService_1.JWTService().generarJWT(userExport.id_usuario, `${userExport.nombre} ${userExport.apellido_p} ${userExport.apellido_m}`, "EXPORT");
             if (!token.ok) {
                 return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
@@ -97,6 +98,7 @@ const login = async (req, res) => {
             });
         }
         if (userVegetables !== null) {
+            usuarioVegetables.setIngreso(userVegetables, 'c.vegetables');
             const token = await new JWTService_1.JWTService().generarJWT(userVegetables.id_usuario, `${userVegetables.nombre} ${userVegetables.apellido_p} ${userVegetables.apellido_m}`, "EXPORT");
             if (!token.ok) {
                 return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
@@ -154,6 +156,7 @@ const setSystem = async (req, res) => {
                 data: null
             });
         }
+        usuario.setIngreso(user, (system === 'EXPORT') ? 'c.curimapu' : 'c.vegetables');
         const token = await new JWTService_1.JWTService().generarJWT(user.id_usuario, `${user.nombre} ${user.apellido_p} ${user.apellido_m}`, system);
         if (!token.ok) {
             return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({

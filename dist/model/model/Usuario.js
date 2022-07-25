@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment_1 = __importDefault(require("moment"));
 class Usuario {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -130,6 +134,22 @@ class Usuario {
         const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${user.id_usuario}'`);
         const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
         return { ...user, usuarios_enlazados: userEnlazado.map(el => Number(el.id_enlazado)), isUsuarioDetQuo };
+    }
+    async setIngreso(usuario, system) {
+        const date = (0, moment_1.default)().format('YYYY-MM-DD hh:mm:ss');
+        const insertParams = {
+            rut_ingresa: usuario.rut,
+            nombre_ingresa: `${usuario.nombre} ${usuario.apellido_p} ${usuario.apellido_m}`,
+            fecha_hora_ingresa: date,
+            dia: (0, moment_1.default)().format('DD'),
+            mes: (0, moment_1.default)().format('MM'),
+            anno: (0, moment_1.default)().format('YYYY'),
+            hora: (0, moment_1.default)().format('hh:mm:ss'),
+            tipo_usuario: usuario.id_tipo_usuario,
+            usuario_asociado: usuario.enlazado,
+            sistema_login: system
+        };
+        this.dbConnection.insert({ table: 'registro_login', params: insertParams });
     }
     async getIngresos(filtros) {
         const { usuario, id, rut, nombre, fecha, hora, system, limit, page } = filtros;

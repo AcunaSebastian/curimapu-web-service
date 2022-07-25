@@ -1,5 +1,6 @@
 import { IUsuario } from '../../interfaces/';
 import { DatabaseService } from '../database/';
+import moment from 'moment';
 
 interface IFiltersIngresos {
     usuario:IUsuario;
@@ -14,9 +15,11 @@ interface IFiltersIngresos {
 }
 
 export default class Usuario {
+   
 
 
     constructor( private dbConnection:DatabaseService ){}
+
 
 
     async getUserById(id_usuario:number):Promise<IUsuario|null> {
@@ -172,6 +175,27 @@ export default class Usuario {
     }
 
     
+    async setIngreso( usuario: IUsuario, system:string ) {
+
+        const date = moment().format('YYYY-MM-DD hh:mm:ss');
+       
+        const insertParams = {
+            rut_ingresa:usuario.rut,
+            nombre_ingresa:`${usuario.nombre} ${usuario.apellido_p} ${usuario.apellido_m}`,
+            fecha_hora_ingresa:date,
+            dia:moment().format('DD'),
+            mes:moment().format('MM'),
+            anno:moment().format('YYYY'),
+            hora:moment().format('hh:mm:ss'),
+            tipo_usuario:usuario.id_tipo_usuario,
+            usuario_asociado:usuario.enlazado,
+            sistema_login:system
+        }
+
+        this.dbConnection.insert({table:'registro_login', params:insertParams})
+
+    }
+
 
     async getIngresos( filtros:IFiltersIngresos ) {
 

@@ -56,7 +56,10 @@ export const login = async (req:Request,  res:Response)  => {
         }
 
 
-        
+
+
+
+
 
         if(userExport !== null && userVegetables !== null){
 
@@ -87,6 +90,9 @@ export const login = async (req:Request,  res:Response)  => {
 
 
         if(userExport !== null){
+
+            usuarioExport.setIngreso(userExport, 'c.curimapu');
+
             const token = await new JWTService().generarJWT( 
                 userExport.id_usuario, 
                 `${userExport.nombre} ${userExport.apellido_p} ${userExport.apellido_m}`, 
@@ -120,6 +126,8 @@ export const login = async (req:Request,  res:Response)  => {
         }
 
         if(userVegetables !== null){
+
+            usuarioVegetables.setIngreso(userVegetables, 'c.vegetables');
             const token = await new JWTService().generarJWT( 
                 userVegetables.id_usuario, 
                 `${userVegetables.nombre} ${userVegetables.apellido_p} ${userVegetables.apellido_m}`, 
@@ -190,6 +198,9 @@ export const setSystem = async (req:Request, res:Response) => {
                 data:null
             }); 
         }
+
+
+        usuario.setIngreso(user, (system === 'EXPORT') ? 'c.curimapu' : 'c.vegetables');
 
         const token = await new JWTService().generarJWT( 
             user.id_usuario, 

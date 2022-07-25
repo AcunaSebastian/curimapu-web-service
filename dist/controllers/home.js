@@ -4,7 +4,7 @@ exports.getHome = void 0;
 const model_1 = require("../model");
 const utils_1 = require("../utils");
 const getHome = async (req, res) => {
-    const { id_temporada } = req.body;
+    const { id_temporada } = req.query;
     const db = req.bd_conection;
     const usuario = req.usuario;
     try {

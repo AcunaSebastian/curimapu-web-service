@@ -5,7 +5,7 @@ import { httpResponses } from "../utils";
 
 export const getHome = async(req:Request, res:Response) => {
 
-    const { id_temporada } = req.body;
+    const { id_temporada } = req.query as unknown as { id_temporada:number};
     const db = req.bd_conection;
     const usuario = req.usuario;
 

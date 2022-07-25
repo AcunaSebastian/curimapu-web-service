@@ -8,6 +8,5 @@ const jwtService = new JWTService();
 
 homeRouter.get('/', [
     jwtService.validarJWT,
-    check("id_temporada", "Debes incluir el id de temporada").notEmpty(),
     validarCampos
 ], getHome);
