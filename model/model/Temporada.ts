@@ -23,7 +23,7 @@ export default class Temporada {
             filtro += ` AND id_tempo IN ( SELECT DISTINCT id_tempo FROM quotation WHERE id_cli = '${usuario.id_usuario}' )`;
         }
 
-        const temporadas:ITemporada[] = await this.dbConnection.select(`SELECT temporada.* , temporada.id_tempo AS value, temporada.nombre AS labelFROM temporada WHERE 1 ${filtro}   ORDER BY nombre ASC`);
+        const temporadas:ITemporada[] = await this.dbConnection.select(`SELECT temporada.* , temporada.id_tempo AS value, temporada.nombre AS label FROM temporada WHERE 1 ${filtro}   ORDER BY nombre ASC`);
         return temporadas;
 
     }
