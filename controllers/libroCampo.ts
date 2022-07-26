@@ -68,7 +68,8 @@ export const getLibroCampo = async (req:Request, res:Response) => {
         message:'LIBRO CAMPO',
         data:{
             cabecera:finalCabs,
-            data
+            data,
+            total:data.length
         }
     })
         

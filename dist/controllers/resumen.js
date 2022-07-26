@@ -20,7 +20,8 @@ const getResumen = async (req, res) => {
             response: `resumen`,
             data: {
                 cabeceras,
-                data: preData
+                data: preData,
+                total: preData.length
             }
         });
     }

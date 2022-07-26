@@ -31,7 +31,8 @@ const getVisitas = async (req, res) => {
             ok: true,
             message: 'Visitas',
             data: {
-                visitas
+                visitas,
+                total: visitas.length
             }
         });
     }

@@ -29,7 +29,8 @@ export const getResumen = async (req: Request, res:Response) => {
             response:`resumen`,
             data:{
                 cabeceras,
-                data:preData
+                data:preData,
+                total:preData.length
             }
         })
 

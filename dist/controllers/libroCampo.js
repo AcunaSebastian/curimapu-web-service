@@ -44,7 +44,8 @@ const getLibroCampo = async (req, res) => {
             message: 'LIBRO CAMPO',
             data: {
                 cabecera: finalCabs,
-                data
+                data,
+                total: data.length
             }
         });
     }

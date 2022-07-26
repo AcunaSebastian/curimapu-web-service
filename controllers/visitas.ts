@@ -49,7 +49,8 @@ export const getVisitas = async (req:Request, res:Response) => {
             ok:true,
             message:'Visitas',
             data:{
-               visitas
+               visitas,
+               total:visitas.length
             }
          })
       

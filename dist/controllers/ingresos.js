@@ -26,7 +26,8 @@ const getIngresos = async (req, res) => {
             ok: true,
             message: `Ingresos`,
             data: {
-                ingresos
+                ingresos,
+                total: ingresos.length
             }
         });
     }

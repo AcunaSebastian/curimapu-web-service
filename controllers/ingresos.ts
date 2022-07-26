@@ -36,7 +36,8 @@ export const getIngresos = async (req:Request, res:Response) => {
             ok:true,
             message:`Ingresos`,
             data:{
-                ingresos
+                ingresos,
+                total:ingresos.length
             }
         })
         
