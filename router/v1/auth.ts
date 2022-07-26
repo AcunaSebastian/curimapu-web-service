@@ -1,7 +1,7 @@
 
 import { Request, Response, Router } from "express";
 import { check } from "express-validator";
-import { login, setSystem } from '../../controllers';
+import { changePassword, login, setSystem } from '../../controllers';
 import { validarCampos, JWTService } from '../../middlewares';
 
 
@@ -20,6 +20,14 @@ authRouter.post('/set-system', [
     check('system', 'Debe incluir el sistema').notEmpty(),
     validarCampos
 ], setSystem)
+
+authRouter.post('/change-password', [
+    jwtService.validarJWT,
+    check('passwordVieja', 'Debe incluir la contaseña actual').notEmpty(),
+    check('passwordNueva', 'Debe incluir la contaseña nueva').notEmpty(),
+    check('passwordRepetida', 'Debe incluir la contaseña repetida').notEmpty(),
+    validarCampos
+], changePassword)
 
 authRouter.post('/renew', [
     jwtService.validarJWT,

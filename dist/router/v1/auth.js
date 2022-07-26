@@ -17,6 +17,13 @@ exports.authRouter.post('/set-system', [
     (0, express_validator_1.check)('system', 'Debe incluir el sistema').notEmpty(),
     middlewares_1.validarCampos
 ], controllers_1.setSystem);
+exports.authRouter.post('/change-password', [
+    jwtService.validarJWT,
+    (0, express_validator_1.check)('passwordVieja', 'Debe incluir la contaseña actual').notEmpty(),
+    (0, express_validator_1.check)('passwordNueva', 'Debe incluir la contaseña nueva').notEmpty(),
+    (0, express_validator_1.check)('passwordRepetida', 'Debe incluir la contaseña repetida').notEmpty(),
+    middlewares_1.validarCampos
+], controllers_1.changePassword);
 exports.authRouter.post('/renew', [
     jwtService.validarJWT,
     middlewares_1.validarCampos

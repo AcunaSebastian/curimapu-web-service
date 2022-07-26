@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setSystem = exports.login = void 0;
+exports.changePassword = exports.setSystem = exports.login = void 0;
 const utils_1 = require("../utils/");
 const SequelizeConnectionProvider_1 = require("../model/database/SequelizeConnectionProvider");
 const DatabaseConnection_1 = require("../utils/DatabaseConnection");
@@ -192,3 +192,47 @@ const setSystem = async (req, res) => {
     }
 };
 exports.setSystem = setSystem;
+const changePassword = async (req, res) => {
+    const { passwordVieja, passwordNueva, passwordRepetida } = req.body;
+    const usuario = req.usuario;
+    const bd = req.bd_conection;
+    try {
+        const usuarioClass = new Usuario_1.default(bd);
+        const existePass = await usuarioClass.getUserForLogin(usuario.user, passwordVieja);
+        if (!existePass) {
+            return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
+                ok: false,
+                message: `Contraseña antigua no coincide.`,
+                data: null
+            });
+        }
+        if (passwordNueva !== passwordRepetida) {
+            return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
+                ok: false,
+                message: `Contraseñas nuevas no coinciden.`,
+                data: null
+            });
+        }
+        const nuevaPass = await usuarioClass.changePassword(usuario, passwordNueva);
+        if (!nuevaPass) {
+            return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
+                ok: false,
+                message: `No se pudo actualizar la contraseña`,
+                data: null
+            });
+        }
+        return res.status(utils_1.httpResponses.HTTP_OK).json({
+            ok: false,
+            message: `Contraseña actualizada con exito`,
+            data: null
+        });
+    }
+    catch (error) {
+        return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `Problemas en funcion changePassword : ${error}`,
+            data: null
+        });
+    }
+};
+exports.changePassword = changePassword;

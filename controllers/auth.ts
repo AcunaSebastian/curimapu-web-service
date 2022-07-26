@@ -246,3 +246,62 @@ export const setSystem = async (req:Request, res:Response) => {
     }
 
 }
+
+
+export const changePassword = async (req:Request, res:Response) => {
+
+
+    const { passwordVieja, passwordNueva, passwordRepetida } = req.body;
+
+    const usuario = req.usuario;
+    const bd = req.bd_conection;
+
+    try {
+
+        const usuarioClass = new Usuario( bd );
+
+        const existePass = await usuarioClass.getUserForLogin(usuario.user, passwordVieja);
+    
+        if(!existePass){
+            return res.status(httpResponses.HTTP_BAD_REQUEST).json({
+                ok:false,
+                message:`Contraseña antigua no coincide.`,
+                data:null
+            });
+        }
+    
+        if(passwordNueva !== passwordRepetida){
+            return res.status(httpResponses.HTTP_BAD_REQUEST).json({
+                ok:false,
+                message:`Contraseñas nuevas no coinciden.`,
+                data:null
+            });
+        }
+    
+        const nuevaPass = await usuarioClass.changePassword(usuario, passwordNueva);
+    
+        if(!nuevaPass){
+            return res.status(httpResponses.HTTP_BAD_REQUEST).json({
+                ok:false,
+                message:`No se pudo actualizar la contraseña`,
+                data:null
+            });
+        }
+    
+        return res.status(httpResponses.HTTP_OK).json({
+            ok:false,
+            message:`Contraseña actualizada con exito`,
+            data:null
+        });
+        
+    } catch (error) {
+
+        return res.status(httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok:false,
+            message:`Problemas en funcion changePassword : ${error}`,
+            data:null
+        });
+        
+    }
+
+}

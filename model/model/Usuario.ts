@@ -15,11 +15,11 @@ interface IFiltersIngresos {
 }
 
 export default class Usuario {
+  
    
 
 
     constructor( private dbConnection:DatabaseService ){}
-
 
 
     async getUserById(id_usuario:number):Promise<IUsuario|null> {
@@ -250,4 +250,18 @@ export default class Usuario {
         return ingresos;
     }
 
+
+    async changePassword(usuario:IUsuario, password:string) {
+
+        const update = await this.dbConnection.update({
+            table:'usuarios',
+            params:{
+                pass:password
+            },
+            where:` id_usuario = '${usuario.id_usuario}' `
+        })
+
+        return update[0] >= 0;
+
+    }
 }

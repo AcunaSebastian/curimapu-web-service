@@ -184,5 +184,15 @@ class Usuario {
         WHERE 1 ${filtro} ORDER BY fecha_hora_ingresa DESC ${limite}`);
         return ingresos;
     }
+    async changePassword(usuario, password) {
+        const update = await this.dbConnection.update({
+            table: 'usuarios',
+            params: {
+                pass: password
+            },
+            where: ` id_usuario = '${usuario.id_usuario}' `
+        });
+        return update[0] >= 0;
+    }
 }
 exports.default = Usuario;

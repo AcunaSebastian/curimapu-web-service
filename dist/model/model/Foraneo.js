@@ -12,8 +12,8 @@ class Foraneo {
         if (tabla === 'fieldman_asis' && campo === 'nombre') {
             sql = ` SELECT CONCAT(nombre,' ',apellido_p,' ',apellido_m) AS data FROM usuarios`;
         }
-        if (tabla === 'historial_predio' && campo === 'nombre') {
-            sql = ` SELECT group_concat(CONCAT(anno,':',descripcion) SEPARATOR '||') AS Dato FROM ${tabla} `;
+        if (tabla === 'historial_predio' && campo === 'id_ficha') {
+            sql = ` SELECT group_concat(CONCAT(anno,':',descripcion) SEPARATOR '||') AS data FROM ${tabla} `;
         }
         switch (tabla) {
             case 'agricultor':
@@ -22,11 +22,11 @@ class Foraneo {
                 WHERE AC.id_ac = '${id_ac}'`;
                 break;
             case 'lote':
-                sql += ` INNER JOIN anexo_contrato USING (id_lote) WHERE AC.id_ac = '${id_ac}' `;
+                sql += ` INNER JOIN anexo_contrato AC USING (id_lote) WHERE AC.id_ac = '${id_ac}' `;
                 break;
             case 'predio':
                 sql += ` INNER JOIN lote USING (id_pred)
-                INNER JOIN anexo_contrato USING (id_lote)
+                INNER JOIN anexo_contrato AC USING (id_lote)
                 WHERE AC.id_ac = '${id_ac}'
                 `;
                 break;
@@ -40,7 +40,6 @@ class Foraneo {
                 INNER JOIN detalle_quotation USING (id_quotation)
                 INNER JOIN anexo_contrato USING (id_de_quo)
                 WHERE anexo_contrato.id_ac = '${id_ac}' `;
-                console.log(sql);
                 break;
             case 'especie':
                 sql += ` INNER JOIN quotation USING(id_esp) 
@@ -76,9 +75,15 @@ class Foraneo {
                 INNER JOIN anexo_contrato USING (id_ficha) 
                 WHERE anexo_contrato.id_ac = '${id_ac}' `;
                 break;
+            case 'fieldman_asis':
+                sql += `
+                INNER JOIN ficha ON (ficha.rut_fieldman_ass = usuarios.rut) 
+                INNER JOIN anexo_contrato USING (id_ficha) 
+                WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                break;
             case 'historial_predio':
                 sql += `
-                INNER JOIN ficha USING (id_usuario) 
+                INNER JOIN ficha USING (id_ficha) 
                 INNER JOIN anexo_contrato USING (id_ficha) 
                 WHERE anexo_contrato.id_ac = '${id_ac}' AND historial_predio.tipo = 'F' GROUP BY id_ficha `;
                 break;
