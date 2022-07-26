@@ -1,9 +1,5 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const form_data_1 = __importDefault(require("form-data"));
 const _1 = require("./");
 const utils_1 = require("../../utils");
 class Quotation {
@@ -104,13 +100,15 @@ class Quotation {
         const nombreCliente = cliente.razon_social;
         const anexosClass = new _1.Anexo(this.dbConnection);
         const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
-        const fmd = new form_data_1.default();
-        fmd.append('Temporada', id_temporada);
-        fmd.append('Quotation', undefined);
-        fmd.append('id_especie', id_especie);
-        fmd.append('Especie', nombreEspecie);
-        fmd.append('Cliente', nombreCliente);
-        fmd.append('Formato', formato);
+        const observaciones = await anexosClass.getObservacionesByAnexo(anexos);
+        // console.log("obs",observaciones);
+        // const fmd = new FormData();
+        // fmd.append('Temporada', id_temporada);
+        // fmd.append('Quotation', undefined);
+        // fmd.append('id_especie', id_especie);
+        // fmd.append('Especie', nombreEspecie);
+        // fmd.append('Cliente', nombreCliente);
+        // fmd.append('Formato', formato);
         // fmd.append('Formato', formato);
     }
 }

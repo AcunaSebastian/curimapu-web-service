@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getImagenesAnexo = exports.getExcelLC = exports.getLibroCampo = void 0;
+exports.getReporteQuotation = exports.getImagenesAnexo = exports.getExcelLC = exports.getLibroCampo = void 0;
 const fs_1 = __importDefault(require("fs"));
 const model_1 = require("../model");
 const utils_1 = require("../utils");
 const getLibroCampo = async (req, res) => {
-    const { id_especie, id_temporada, etapa, limit, page = 0, num_anexo, ready_batch, recomendaciones, agricultor, predio, lote } = req.query;
+    const { id_especie, id_temporada, etapa, limit, page = 0, num_anexo, ready_batch, recomendaciones, agricultor, variedad, predio, lote } = req.query;
     const usuario = req.usuario;
     const db = req.bd_conection;
     try {
@@ -25,6 +25,7 @@ const getLibroCampo = async (req, res) => {
             ready_batch: ready_batch,
             recomendaciones: recomendaciones,
             agricultor: agricultor,
+            variedad: variedad
         };
         const libroCampo = new model_1.LibroCampo(db);
         const cabeceras = await libroCampo.getCabecera(params);
@@ -117,6 +118,17 @@ const getImagenesAnexo = async (req, res) => {
     }
 };
 exports.getImagenesAnexo = getImagenesAnexo;
+const getReporteQuotation = async (req, res) => {
+    const db = req.bd_conection;
+    const usuario = req.usuario;
+    const { id_cliente, id_temporada, id_especie } = req.query;
+    const quotationClass = new model_1.Quotation(db);
+    const informe = await quotationClass.getReporteQuotation(id_cliente, id_temporada, id_especie);
+    return res.status(utils_1.httpResponses.HTTP_OK).json({
+        ok: true
+    });
+};
+exports.getReporteQuotation = getReporteQuotation;
 // export const getImage = async (req:Request, res:Response) => {
 //     const usuario = req.usuario;
 //     const db = req.bd_conection;

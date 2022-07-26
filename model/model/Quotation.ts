@@ -153,18 +153,21 @@ export default class Quotation {
 
         const anexosClass = new Anexo( this.dbConnection );
         const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
-        
 
 
+        const observaciones  = await anexosClass.getObservacionesByAnexo( anexos );
 
-        const fmd = new FormData();
 
-        fmd.append('Temporada', id_temporada);
-        fmd.append('Quotation', undefined);
-        fmd.append('id_especie', id_especie);
-        fmd.append('Especie', nombreEspecie);
-        fmd.append('Cliente', nombreCliente);
-        fmd.append('Formato', formato);
+        // console.log("obs",observaciones);
+
+        // const fmd = new FormData();
+
+        // fmd.append('Temporada', id_temporada);
+        // fmd.append('Quotation', undefined);
+        // fmd.append('id_especie', id_especie);
+        // fmd.append('Especie', nombreEspecie);
+        // fmd.append('Cliente', nombreCliente);
+        // fmd.append('Formato', formato);
         // fmd.append('Formato', formato);
 
 

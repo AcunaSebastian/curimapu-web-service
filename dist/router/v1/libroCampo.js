@@ -24,6 +24,12 @@ exports.libroCampoRouter.get('/get-images', [
     (0, express_validator_1.check)("id_anexo", "Debes incluir el id del anexo").notEmpty(),
     middlewares_1.validarCampos
 ], controllers_1.getImagenesAnexo);
+exports.libroCampoRouter.get('/get-reporte-cliente', [
+    jwtService.validarJWT,
+    (0, express_validator_1.check)("id_cliente", "Debes incluir el id del cliente").notEmpty(),
+    (0, express_validator_1.check)("id_temporada", "Debes incluir el id de temporada").notEmpty(),
+    middlewares_1.validarCampos
+], controllers_1.getReporteQuotation);
 // libroCampoRouter.get('/get-one-image', [
 //     jwtService.validarJWT,
 //     check("path", "Debes incluir el path de la imagenes").notEmpty(),

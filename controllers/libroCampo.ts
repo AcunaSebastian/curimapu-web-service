@@ -1,6 +1,6 @@
 import fs from "fs";
 import { Request, Response } from "express";
-import { ExcelClass, tipoExcel, LibroCampo } from "../model";
+import { ExcelClass, tipoExcel, LibroCampo, Quotation } from "../model";
 import { httpResponses } from "../utils";
 
 
@@ -14,6 +14,7 @@ export const getLibroCampo = async (req:Request, res:Response) => {
         ready_batch,
         recomendaciones,
         agricultor,
+        variedad,
         predio,
         lote } = req.query;
 
@@ -37,6 +38,7 @@ export const getLibroCampo = async (req:Request, res:Response) => {
             ready_batch:ready_batch as unknown as string,
             recomendaciones:recomendaciones as unknown as string,
             agricultor:agricultor as unknown as string,
+            variedad:variedad as unknown as string
 
         }
 
@@ -171,6 +173,28 @@ export const getImagenesAnexo = async (req:Request, res:Response) => {
 
 }
 
+
+export const getReporteQuotation = async (req:Request, res:Response) => {
+
+    const db = req.bd_conection;
+    const usuario = req.usuario;
+
+    const { 
+        id_cliente, 
+        id_temporada, 
+        id_especie 
+    } = req.query as unknown as { id_cliente:number, id_temporada:number, id_especie?:number };
+
+    const quotationClass = new Quotation( db );
+
+    const informe = await quotationClass.getReporteQuotation( id_cliente, id_temporada , id_especie );
+
+
+    return res.status(httpResponses.HTTP_OK).json({
+        ok:true
+    })
+
+}
 // export const getImage = async (req:Request, res:Response) => {
 
 //     const usuario = req.usuario;

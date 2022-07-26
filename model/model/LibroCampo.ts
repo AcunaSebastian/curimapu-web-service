@@ -18,6 +18,7 @@ interface IParamsLC {
     agricultor?:string;
     predio?:string;
     lote?:string;
+    variedad?:string;
 }
 
 export default class LibroCampo {
@@ -89,6 +90,7 @@ export default class LibroCampo {
             num_anexo,
             ready_batch,
             recomendaciones,
+            variedad,
             agricultor,
             predio,
             lote } = params;
@@ -131,12 +133,15 @@ export default class LibroCampo {
             filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
         }
 
+        if(variedad){
+            filtro += ` AND materiales.nom_hibrido LIKE '%${variedad}%' `;
+        }
 
         if( num_anexo ){
-            filtro += ` AND AC.num_anexo LIKE %${num_anexo}%`;
+            filtro += ` AND AC.num_anexo LIKE '%${num_anexo}%' `;
         }
         if(ready_batch){
-            filtro += ` AND AC.ready_batch LIKE %${ready_batch}%`;
+            filtro += ` AND AC.ready_batch LIKE '%${ready_batch}%' `;
         }
         if(recomendaciones){
             filtro += ` AND AC.id_ac IN (SELECT id_ac FROM visita WHERE recome LIKE '%${recomendaciones}%' ) `;

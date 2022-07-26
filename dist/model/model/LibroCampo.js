@@ -44,7 +44,7 @@ class LibroCampo {
         return cabecera;
     }
     async getData(params) {
-        const { id_temporada, id_especie, usuario, limit, page = 0, num_anexo, ready_batch, recomendaciones, agricultor, predio, lote } = params;
+        const { id_temporada, id_especie, usuario, limit, page = 0, num_anexo, ready_batch, recomendaciones, variedad, agricultor, predio, lote } = params;
         const cabeceras = await this.getCabecera(params);
         let filtroPCM = ``;
         let innerPCM = ``;
@@ -71,11 +71,14 @@ class LibroCampo {
         if (usuario.isUsuarioDetQuo) {
             filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
         }
+        if (variedad) {
+            filtro += ` AND materiales.nom_hibrido LIKE '%${variedad}%' `;
+        }
         if (num_anexo) {
-            filtro += ` AND AC.num_anexo LIKE %${num_anexo}%`;
+            filtro += ` AND AC.num_anexo LIKE '%${num_anexo}%' `;
         }
         if (ready_batch) {
-            filtro += ` AND AC.ready_batch LIKE %${ready_batch}%`;
+            filtro += ` AND AC.ready_batch LIKE '%${ready_batch}%' `;
         }
         if (recomendaciones) {
             filtro += ` AND AC.id_ac IN (SELECT id_ac FROM visita WHERE recome LIKE '%${recomendaciones}%' ) `;

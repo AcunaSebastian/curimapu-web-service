@@ -91,53 +91,57 @@ export default class Anexo {
                         valor:visita.obs_cre
                     },
                     obs_fito:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"Phitosanitary Status:",
+                        valor:visita.obs_fito
                     },
                     obs_fito_t:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"Phitosanitary Status:",
+                        valor:visita.obs_fito
                     },
                     obs_generals:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"General Status:",
+                        valor:visita.obs_gen
                     },
                     obs_generals_t:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"General Status:",
+                        valor:visita.obs_gen
                     },
                     obs_globales:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"GENERALS:",
+                        valor:visita.obs
                     },
                     obs_globales_T:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"GENERALS:",
+                        valor:visita.obs
                     },
                     obs_hum:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"Soil Moisture Status:",
+                        valor:visita.obs_hum
                     },
                     obs_hum_t:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo:"Soil Moisture Status:",
+                        valor:visita.obs_hum_t
                     },
                     obs_male:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo: "Weed Pressure Status:",
+                        valor:visita.obs_male
                     },
                     obs_male_t:{
-                        titulo:"Grow Status:",
-                        valor:visita.obs_cre
+                        titulo: "Weed Pressure Status:",
+                        valor:visita.obs_male_t
                     },
                 }
+            });
 
 
-            })
-
-
+            respuestaAnexos.push({ anexo:anexo.num_anexo, obs:observaciones[0]})
 
         }
+
+        console.log(respuestaAnexos)
+
+
+        return respuestaAnexos;
 
     }
 
