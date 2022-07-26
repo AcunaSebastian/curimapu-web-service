@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils");
 const _1 = require("./");
+const axios_1 = __importDefault(require("axios"));
 class LibroCampo {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -161,18 +165,30 @@ class LibroCampo {
         return respuestaAnexos;
     }
     async getImagenes(id_anexo, systemParams) {
-        const sql = `SELECT * FROM fotos 
+        const sql = `SELECT fotos.* FROM fotos 
         INNER JOIN visita USING (id_visita)
         WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
         const fotosVisitas = await this.dbConnection.select(sql);
         const nuevasFotosVisitas = fotosVisitas.map(foto => {
-            const nuevaUrl = `http://${systemParams.ip_host}/` + foto.ruta_foto.replaceAll('../', '').replaceAll(`${systemParams.document_folder}`, `${systemParams.compressed_image_folder}`);
+            const nuevaUrl = `http://${systemParams.ip_host}/` + foto.ruta_foto
+                .replaceAll('../', '')
+                .replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
             return {
                 ...foto,
-                ruta_foto: nuevaUrl
+                ruta_muestra_foto: nuevaUrl
             };
         });
         return nuevasFotosVisitas;
+    }
+    async getOneImage(path, systemParams) {
+        const newPath = path.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
+        const url = `http://${systemParams.ip_host}/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${newPath}`;
+        console.log(url);
+        console.log(newPath);
+        const { data } = await axios_1.default.get(url, {
+        // responseType:'stream'
+        });
+        return data;
     }
 }
 exports.default = LibroCampo;

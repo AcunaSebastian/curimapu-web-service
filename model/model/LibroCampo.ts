@@ -2,6 +2,7 @@ import { DatabaseService } from '../database/';
 import { IResumen, ISystemParameters, IUsuario } from '../../interfaces/';
 import { Constants } from '../../utils';
 import { Foraneo } from './';
+import axios from 'axios';
 
 
 interface IParamsLC {
@@ -245,26 +246,47 @@ export default class LibroCampo {
     async getImagenes(id_anexo: number, systemParams:ISystemParameters ) {
 
 
-        const sql = `SELECT * FROM fotos 
+        const sql = `SELECT fotos.* FROM fotos 
         INNER JOIN visita USING (id_visita)
-        WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
+        WHERE tipo = 'V' AND visita.id_ac = '${ id_anexo }' `;
 
 
         const fotosVisitas = await  this.dbConnection.select( sql );
         
         const nuevasFotosVisitas = fotosVisitas.map( foto => {
 
-            const nuevaUrl = `http://${systemParams.ip_host}/`+foto.ruta_foto.replaceAll('../', '').replaceAll(`${systemParams.document_folder}`, `${systemParams.compressed_image_folder}`);
+            const nuevaUrl = `http://${systemParams.ip_host}/`+foto.ruta_foto
+            .replaceAll('../', '')
+            .replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
 
             return {
                 ...foto,
-                ruta_foto:nuevaUrl
+                ruta_muestra_foto:nuevaUrl
             }
 
         })
 
         return nuevasFotosVisitas;
 
+    }
+
+
+    async getOneImage( path:string, systemParams:ISystemParameters ){
+
+
+        const newPath = path.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`)
+
+
+        const url = `http://${systemParams.ip_host}/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${newPath}`;
+
+        console.log(url)
+        console.log(newPath);
+        const {data} = await axios.get(url, {
+            // responseType:'stream'
+        });
+
+
+        return data;
     }
 
 

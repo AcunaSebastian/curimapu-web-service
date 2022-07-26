@@ -11,6 +11,7 @@ export interface ISystemParameters {
     database_type:string;
     proyect_folder:string;
     document_folder:string;
+    proyect_main_folder:string;
     system_image_path:string;
     compressed_image_folder:string;
 }

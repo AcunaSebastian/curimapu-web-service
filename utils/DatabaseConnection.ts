@@ -16,6 +16,7 @@ const systems:ISystemParameters[] = [
         database_type:process.env.DATABASE_TYPE!,
         document_folder:process.env.EXPORT_DOCUMENT_FOLDER!,
         proyect_folder:process.env.EXPORT_PROYECT_FOLDER!,
+        proyect_main_folder:process.env.EXPORT_PROYECT_MAIN_FOLDER!,
         system_image_path:process.env.EXPORT_IMAGE_PATH!,
         compressed_image_folder:process.env.EXPORT_COMPRESSED_IMAGE_FOLDER!
     },
@@ -32,6 +33,7 @@ const systems:ISystemParameters[] = [
         database_type:process.env.DATABASE_TYPE!,
         document_folder:process.env.VEGETABLES_DOCUMENT_FOLDER!,
         proyect_folder:process.env.VEGETABLES_PROYECT_FOLDER!,
+        proyect_main_folder:process.env.VEGETABLES_PROYECT_MAIN_FOLDER!,
         system_image_path:process.env.VEGETABLES_IMAGE_PATH!,
         compressed_image_folder:process.env.VEGETABLES_COMPRESSED_IMAGE_FOLDER!
     }

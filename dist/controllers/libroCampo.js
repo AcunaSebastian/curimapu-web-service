@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getImagenesAnexo = exports.getExcelLC = exports.getLibroCampo = void 0;
+exports.getImage = exports.getImagenesAnexo = exports.getExcelLC = exports.getLibroCampo = void 0;
 const fs_1 = __importDefault(require("fs"));
 const model_1 = require("../model");
 const utils_1 = require("../utils");
@@ -115,3 +115,22 @@ const getImagenesAnexo = async (req, res) => {
     }
 };
 exports.getImagenesAnexo = getImagenesAnexo;
+const getImage = async (req, res) => {
+    const usuario = req.usuario;
+    const db = req.bd_conection;
+    const params = req.bd_params;
+    const { path } = req.query;
+    try {
+        const libroCampo = new model_1.LibroCampo(db);
+        const image = await libroCampo.getOneImage(path, params);
+        return res.status(utils_1.httpResponses.HTTP_OK).send(image);
+    }
+    catch (error) {
+        res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `PROBLEMAS EN FUNCION getImage ERROR : ${error}`,
+            data: null
+        });
+    }
+};
+exports.getImage = getImage;

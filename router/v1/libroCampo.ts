@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  getExcelLC, getImagenesAnexo, getLibroCampo } from '../../controllers';
+import {  getExcelLC, getImage, getImagenesAnexo, getLibroCampo } from '../../controllers';
 import { validarCampos, JWTService } from '../../middlewares';
 import { check } from 'express-validator';
 
@@ -26,3 +26,9 @@ libroCampoRouter.get('/get-images', [
     check("id_anexo", "Debes incluir el id del anexo").notEmpty(),
     validarCampos
 ], getImagenesAnexo)
+
+libroCampoRouter.get('/get-one-image', [
+    jwtService.validarJWT,
+    check("path", "Debes incluir el path de la imagenes").notEmpty(),
+    validarCampos
+], getImage)
