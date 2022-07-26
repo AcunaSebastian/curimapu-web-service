@@ -100,8 +100,8 @@ const getImagenesAnexo = async (req, res) => {
     try {
         const libroCampo = new model_1.LibroCampo(db);
         const listaImagenes = await libroCampo.getImagenes(id_anexo, params);
-        return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
-            ok: false,
+        return res.status(utils_1.httpResponses.HTTP_OK).json({
+            ok: true,
             message: `IMAGENES`,
             data: listaImagenes
         });

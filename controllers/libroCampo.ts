@@ -153,8 +153,8 @@ export const getImagenesAnexo = async (req:Request, res:Response) => {
 
         const listaImagenes = await libroCampo.getImagenes( id_anexo, params );
 
-        return res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR ).json({
-            ok:false,
+        return res.status( httpResponses.HTTP_OK ).json({
+            ok:true,
             message:`IMAGENES`,
             data:listaImagenes
         })
