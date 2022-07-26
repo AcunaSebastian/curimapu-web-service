@@ -31,13 +31,14 @@ export const getIngresos = async (req:Request, res:Response) => {
         const user = new Usuario( db );
 
         const ingresos = await user.getIngresos( filterParams );
+        const ingresosTotal = await user.getIngresos( {...filterParams, limit:undefined} );
 
         return res.status(httpResponses.HTTP_OK).json({
             ok:true,
             message:`Ingresos`,
             data:{
                 ingresos,
-                total:ingresos.length
+                total:ingresosTotal.length
             }
         })
         

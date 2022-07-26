@@ -1,5 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const form_data_1 = __importDefault(require("form-data"));
+const _1 = require("./");
 const utils_1 = require("../../utils");
 class Quotation {
     constructor(dbConnection) {
@@ -85,6 +90,28 @@ class Quotation {
             titulo: `Kg Contracted`,
             total: kgContracted[0].total
         };
+    }
+    async getReporteQuotation(id_cliente, id_temporada, id_especie) {
+        const formato = 2;
+        let nombreEspecie = ``;
+        if (id_especie) {
+            const especieClass = new _1.Especie(this.dbConnection);
+            const especie = await especieClass.getEspecieById(id_especie);
+            nombreEspecie = especie.nombre;
+        }
+        const clienteClass = new _1.Cliente(this.dbConnection);
+        const cliente = await clienteClass.getClienteById(id_cliente);
+        const nombreCliente = cliente.razon_social;
+        const anexosClass = new _1.Anexo(this.dbConnection);
+        const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
+        const fmd = new form_data_1.default();
+        fmd.append('Temporada', id_temporada);
+        fmd.append('Quotation', undefined);
+        fmd.append('id_especie', id_especie);
+        fmd.append('Especie', nombreEspecie);
+        fmd.append('Cliente', nombreCliente);
+        fmd.append('Formato', formato);
+        // fmd.append('Formato', formato);
     }
 }
 exports.default = Quotation;

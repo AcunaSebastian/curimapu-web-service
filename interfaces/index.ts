@@ -4,3 +4,4 @@ export * from "./Especie";
 export * from "./Variedad";
 export * from "./Temporada";
 export * from "./Resumen";
+export * from "./Cliente";

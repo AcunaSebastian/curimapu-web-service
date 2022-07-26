@@ -20,3 +20,4 @@ __exportStar(require("./Especie"), exports);
 __exportStar(require("./Variedad"), exports);
 __exportStar(require("./Temporada"), exports);
 __exportStar(require("./Resumen"), exports);
+__exportStar(require("./Cliente"), exports);

@@ -39,13 +39,14 @@ const getLibroCampo = async (req, res) => {
             }
         }
         const data = await libroCampo.getData(params);
+        const dataTotal = await libroCampo.getData({ ...params, limit: undefined });
         res.status(utils_1.httpResponses.HTTP_OK).json({
             ok: true,
             message: 'LIBRO CAMPO',
             data: {
                 cabecera: finalCabs,
                 data,
-                total: data.length
+                total: dataTotal.length
             }
         });
     }

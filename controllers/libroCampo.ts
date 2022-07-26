@@ -62,6 +62,7 @@ export const getLibroCampo = async (req:Request, res:Response) => {
     }
 
     const data = await libroCampo.getData( params );
+    const dataTotal = await libroCampo.getData( {...params, limit:undefined } );
 
     res.status( httpResponses.HTTP_OK ).json({
         ok:true,
@@ -69,7 +70,7 @@ export const getLibroCampo = async (req:Request, res:Response) => {
         data:{
             cabecera:finalCabs,
             data,
-            total:data.length
+            total:dataTotal.length
         }
     })
         

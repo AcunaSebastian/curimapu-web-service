@@ -22,12 +22,13 @@ const getIngresos = async (req, res) => {
         };
         const user = new model_1.Usuario(db);
         const ingresos = await user.getIngresos(filterParams);
+        const ingresosTotal = await user.getIngresos({ ...filterParams, limit: undefined });
         return res.status(utils_1.httpResponses.HTTP_OK).json({
             ok: true,
             message: `Ingresos`,
             data: {
                 ingresos,
-                total: ingresos.length
+                total: ingresosTotal.length
             }
         });
     }

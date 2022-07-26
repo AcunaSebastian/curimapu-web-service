@@ -1,6 +1,8 @@
+import FormData from "form-data";
+import { DatabaseService } from "../database";
+import { Especie, Cliente, Anexo } from "./";
 import { IUsuario } from "../../interfaces";
 import { Constants } from "../../utils";
-import { DatabaseService } from "../database";
 
 export default class Quotation {
 
@@ -129,4 +131,46 @@ export default class Quotation {
 
     }
 
+
+    async getReporteQuotation( id_cliente:number, id_temporada:number, id_especie?:number ){
+
+
+        const formato = 2;
+        let nombreEspecie = ``;
+
+        if(id_especie){
+            const especieClass = new Especie( this.dbConnection );
+            const especie = await especieClass.getEspecieById( id_especie );
+            nombreEspecie = especie.nombre;
+        }
+
+
+        const clienteClass = new Cliente( this.dbConnection );
+        const cliente = await clienteClass.getClienteById( id_cliente );
+
+        const nombreCliente = cliente.razon_social;
+
+
+        const anexosClass = new Anexo( this.dbConnection );
+        const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
+        
+
+
+
+        const fmd = new FormData();
+
+        fmd.append('Temporada', id_temporada);
+        fmd.append('Quotation', undefined);
+        fmd.append('id_especie', id_especie);
+        fmd.append('Especie', nombreEspecie);
+        fmd.append('Cliente', nombreCliente);
+        fmd.append('Formato', formato);
+        // fmd.append('Formato', formato);
+
+
+
+
+
+
+    }
 }
