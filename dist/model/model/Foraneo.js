@@ -38,13 +38,14 @@ class Foraneo {
             case 'cliente':
                 sql += ` INNER JOIN quotation USING(id_cli) 
                 INNER JOIN detalle_quotation USING (id_quotation)
-                INNER JOIN anexo_contrato USING (id_det_quo)
+                INNER JOIN anexo_contrato USING (id_de_quo)
                 WHERE anexo_contrato.id_ac = '${id_ac}' `;
+                console.log(sql);
                 break;
             case 'especie':
                 sql += ` INNER JOIN quotation USING(id_esp) 
                 INNER JOIN detalle_quotation USING (id_quotation)
-                INNER JOIN anexo_contrato USING (id_det_quo)
+                INNER JOIN anexo_contrato USING (id_de_quo)
                 WHERE anexo_contrato.id_ac = '${id_ac}' `;
                 break;
             case 'materiales':
