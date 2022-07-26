@@ -9,7 +9,9 @@ export interface IResumen {
     identificador: number;
     nombre_propiedad: string;
     nombre_sub_propiedad: string;
+    etapa:string;
     foraneo:string;
     tabla:string;
+    especie:string;
     campo:string;
 }

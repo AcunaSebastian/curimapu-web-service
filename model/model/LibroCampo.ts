@@ -2,7 +2,6 @@ import { DatabaseService } from '../database/';
 import { IResumen, ISystemParameters, IUsuario } from '../../interfaces/';
 import { Constants } from '../../utils';
 import { Foraneo } from './';
-import axios from 'axios';
 
 
 interface IParamsLC {
@@ -37,13 +36,17 @@ export default class LibroCampo {
         let filtro = '';
         let inner = '';
 
+
+     
+
         if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
 
             if(usuario.usuarios_enlazados.length > 0){
 
                 inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
 
-                let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
+                // let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
+                let tmp = ``;
                 for (const enlaces of usuario.usuarios_enlazados) {
                     tmp += ` OR CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `;
                 }
@@ -52,6 +55,8 @@ export default class LibroCampo {
             }
 
         }
+
+      
 
 
         const sql = `SELECT 
@@ -82,6 +87,59 @@ export default class LibroCampo {
 
 
     }
+
+
+    async getCabeceraCustom(  params:{id_temporada:number;id_especie:number;id_cliente:number; etapa?:number[]} ){
+
+        const { id_temporada, id_especie, id_cliente, etapa = [2, 3, 4] } = params;
+
+
+        let filtro = '';
+        let inner = '';
+
+
+        inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
+        filtro += ` AND CPCM.id_cli = '${ id_cliente }' AND CPCM.ver = '1' `;
+
+      
+        if(etapa.length > 0){
+            filtro += ` AND ( ${etapa.map(el => ` PCM.id_etapa = '${el}' `).join(` OR `)} )`;
+        }
+
+
+        const sql = `SELECT 
+        PCM.id_prop_mat_cli,
+        PCM.id_esp,
+        PCM.id_prop,
+        PCM.id_etapa,
+        PCM.id_tempo,
+        PCM.id_sub_propiedad,
+        PCM.orden,
+        PCM.identificador,
+        PCM.foraneo,
+        PCM.tabla,
+        PCM.campo,
+        etapa.nombre AS etapa,
+        especie.nombre AS especie,
+        P.nombre_en AS nombre_propiedad, SP.nombre_en AS nombre_sub_propiedad 
+        FROM prop_cli_mat PCM
+        ${inner}
+        LEFT JOIN propiedades P USING (id_prop) 
+        INNER JOIN etapa USING (id_etapa)
+        INNER JOIN especie USING (id_esp)
+        INNER JOIN sub_propiedades SP USING (id_sub_propiedad)
+        WHERE aplica = 'SI' AND id_tempo = '${id_temporada}' AND id_esp = '${id_especie}'
+        ${filtro}
+        ORDER BY PCM.orden ASC;`;
+
+
+        const cabecera:IResumen[] = await this.dbConnection.select( sql );
+
+        return cabecera;
+
+
+    }
+
 
     async getData( params:IParamsLC ){
 
@@ -280,25 +338,6 @@ export default class LibroCampo {
 
         return nuevasFotosVisitas;
 
-    }
-
-
-    async getOneImage( path:string, systemParams:ISystemParameters ){
-
-
-        const newPath = path.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`)
-
-
-        const url = `http://${systemParams.ip_host}/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${newPath}`;
-
-        // console.log(url)
-        // console.log(newPath);
-        // const {data} = await axios.get(url, {
-        //     // responseType:'stream'
-        // });
-
-
-        return url;
     }
 
 

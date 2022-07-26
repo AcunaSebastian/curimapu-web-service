@@ -121,12 +121,13 @@ exports.getImagenesAnexo = getImagenesAnexo;
 const getReporteQuotation = async (req, res) => {
     const db = req.bd_conection;
     const usuario = req.usuario;
+    const bdParams = req.bd_params;
     const { id_cliente, id_temporada, id_especie } = req.query;
     const quotationClass = new model_1.Quotation(db);
-    const informe = await quotationClass.getReporteQuotation(id_cliente, id_temporada, id_especie);
-    return res.status(utils_1.httpResponses.HTTP_OK).json({
-        ok: true
-    });
+    const informe = await quotationClass.getReporteQuotation(usuario, id_cliente, id_temporada, bdParams, id_especie);
+    const pdfFile = fs_1.default.readFileSync(`./` + informe);
+    fs_1.default.unlinkSync(`./` + informe);
+    return res.status(utils_1.httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 };
 exports.getReporteQuotation = getReporteQuotation;
 // export const getImage = async (req:Request, res:Response) => {

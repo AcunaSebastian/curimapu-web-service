@@ -1,8 +1,11 @@
 import FormData from "form-data";
 import { DatabaseService } from "../database";
-import { Especie, Cliente, Anexo } from "./";
-import { IUsuario } from "../../interfaces";
+import { Especie, Cliente, Anexo, LibroCampo } from "./";
+import { ISystemParameters, IUsuario } from "../../interfaces";
 import { Constants } from "../../utils";
+import axios from "axios";
+import moment from "moment";
+import fs from 'fs';
 
 export default class Quotation {
 
@@ -132,7 +135,12 @@ export default class Quotation {
     }
 
 
-    async getReporteQuotation( id_cliente:number, id_temporada:number, id_especie?:number ){
+    async getReporteQuotation( 
+        usuario:IUsuario, 
+        id_cliente:number, 
+        id_temporada:number, 
+        bd_params:ISystemParameters, 
+        id_especie?:number ){
 
 
         const formato = 2;
@@ -153,27 +161,70 @@ export default class Quotation {
 
         const anexosClass = new Anexo( this.dbConnection );
         const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
-
-
         const observaciones  = await anexosClass.getObservacionesByAnexo( anexos );
 
 
-        // console.log("obs",observaciones);
+        let filtro = ``;
+        if(id_especie){
+            filtro = ` AND id_esp = '${id_especie}' `;
+        }
 
-        // const fmd = new FormData();
+        const sql = `SELECT * FROM quotation 
+        WHERE id_cli = '${id_cliente}' AND id_tempo = '${id_temporada}' ${filtro} `;
 
-        // fmd.append('Temporada', id_temporada);
-        // fmd.append('Quotation', undefined);
-        // fmd.append('id_especie', id_especie);
-        // fmd.append('Especie', nombreEspecie);
-        // fmd.append('Cliente', nombreCliente);
-        // fmd.append('Formato', formato);
-        // fmd.append('Formato', formato);
+        const quotations  = await this.dbConnection.select( sql )
 
-
+        const checks = []
 
 
+        const lc = new LibroCampo( this.dbConnection );
 
+        if(quotations.length > 0){
+            for (const quotation of quotations) {
+
+                const cabecera = await lc.getCabeceraCustom({
+                    id_temporada:quotation.id_tempo,
+                    id_especie:quotation.id_esp,
+                    id_cliente:id_cliente
+                })
+
+                checks.push(...cabecera.map( cab => {
+                    return {
+                        0:cab.id_prop_mat_cli, 
+                        1:`${cab.nombre_propiedad} - ${cab.nombre_sub_propiedad}`, 
+                        2:`${cab.etapa}`,
+                        3:`${cab.especie}`
+                    }
+                }))
+                
+            }
+        }
+        const formData = new FormData();
+        formData.append('Temporada', Number(id_temporada));
+        if(id_especie){
+            formData.append('id_especie', Number(id_especie));
+        }
+        formData.append('Especie', nombreEspecie);
+        formData.append('Cliente', nombreCliente);
+        formData.append('Info', Number(id_cliente));
+        formData.append('Formato', Number(formato));
+        formData.append('Observacion', JSON.stringify(observaciones));
+        formData.append('Checks', JSON.stringify(checks));
+
+        const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
+        const writer = fs.createWriteStream(namePDf);
+
+
+        const { config, data} = await axios.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`,
+        formData ,{ 
+            headers:formData.getHeaders(),
+            responseType:'stream'
+            })
+        data.pipe(writer);
+
+        return new Promise( resolve => {
+            writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
+        })
 
     }
 }

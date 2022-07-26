@@ -108,7 +108,6 @@ class Anexo {
             });
             respuestaAnexos.push({ anexo: anexo.num_anexo, obs: observaciones[0] });
         }
-        console.log(respuestaAnexos);
         return respuestaAnexos;
     }
 }

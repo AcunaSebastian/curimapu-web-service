@@ -178,6 +178,7 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
 
     const db = req.bd_conection;
     const usuario = req.usuario;
+    const bdParams = req.bd_params;
 
     const { 
         id_cliente, 
@@ -187,12 +188,12 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
 
     const quotationClass = new Quotation( db );
 
-    const informe = await quotationClass.getReporteQuotation( id_cliente, id_temporada , id_especie );
+    const informe = await quotationClass.getReporteQuotation( usuario, id_cliente, id_temporada , bdParams, id_especie );
 
+    const pdfFile = fs.readFileSync(`./`+informe);
+    fs.unlinkSync(`./`+informe);
 
-    return res.status(httpResponses.HTTP_OK).json({
-        ok:true
-    })
+    return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 
 }
 // export const getImage = async (req:Request, res:Response) => {
