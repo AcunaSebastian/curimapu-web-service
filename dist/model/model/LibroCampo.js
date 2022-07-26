@@ -170,7 +170,7 @@ class LibroCampo {
         WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
         const fotosVisitas = await this.dbConnection.select(sql);
         const nuevasFotosVisitas = fotosVisitas.map(foto => {
-            const nuevaUrl = `http://${systemParams.ip_host}/` + foto.ruta_foto
+            const nuevaUrl = `http://www.zcloud.cl/` + foto.ruta_foto
                 .replaceAll('../', '')
                 .replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
             return {
