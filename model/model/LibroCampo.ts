@@ -171,11 +171,15 @@ export default class LibroCampo {
         P.nombre AS predio,
         AC.ready_batch,
         AC.has_gps,
+        materiales.nom_hibrido AS variedad,
+        E.nombre AS especie,
         (SELECT recome FROM visita WHERE id_ac = AC.id_ac ORDER BY id_visita DESC LIMIT 1 ) AS recomendaciones
       FROM
         detalle_quotation DQ
         INNER JOIN quotation Q ON (DQ.id_quotation = Q.id_quotation)
+        INNER JOIN especie E ON (Q.id_esp = E.id_esp)
         INNER JOIN anexo_contrato AC ON (DQ.id_de_quo = AC.id_de_quo) 
+        INNER JOIN materiales ON (AC.id_materiales = materiales.id_materiales)
         INNER JOIN ficha F USING (id_ficha)
         INNER JOIN agricultor A USING (id_agric)
         INNER JOIN lote L ON (F.id_lote = L.id_lote)
