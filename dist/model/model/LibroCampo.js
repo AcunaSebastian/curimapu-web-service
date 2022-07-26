@@ -136,7 +136,7 @@ class LibroCampo {
             for (const cabecera of cabeceras) {
                 if (cabecera.foraneo === 'NO') {
                     const elementos = datosVisita.filter(dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);
-                    elementos.sort(el => el.id_det_vis_prop - el.id_det_vis_prop);
+                    elementos.sort((el, al) => al.id_det_vis_prop - el.id_det_vis_prop);
                     if (elementos.length > 0)
                         tpmData.push({ ...elementos[0], sp: cabecera.nombre_sub_propiedad });
                     else
