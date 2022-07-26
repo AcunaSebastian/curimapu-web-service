@@ -46,6 +46,7 @@ export const getLibroCampo = async (req:Request, res:Response) => {
     
     const cabeceras = await libroCampo.getCabecera( params );
 
+
     const finalCabs:any[] = [];
 
     if(cabeceras.length > 0){
@@ -61,7 +62,6 @@ export const getLibroCampo = async (req:Request, res:Response) => {
     }
 
     const data = await libroCampo.getData( params );
-
 
     res.status( httpResponses.HTTP_OK ).json({
         ok:true,

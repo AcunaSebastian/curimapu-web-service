@@ -152,7 +152,7 @@ class LibroCampo {
                     tpmData.push({
                         id_prop_mat_cli: cabecera.id_prop_mat_cli,
                         id_det_vis_prop: null,
-                        valor: datoForaneo.data,
+                        valor: datoForaneo?.data || '',
                         sp: cabecera.nombre_sub_propiedad
                     });
                 }
