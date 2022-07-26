@@ -24,8 +24,8 @@ exports.libroCampoRouter.get('/get-images', [
     (0, express_validator_1.check)("id_anexo", "Debes incluir el id del anexo").notEmpty(),
     middlewares_1.validarCampos
 ], controllers_1.getImagenesAnexo);
-exports.libroCampoRouter.get('/get-one-image', [
-    jwtService.validarJWT,
-    (0, express_validator_1.check)("path", "Debes incluir el path de la imagenes").notEmpty(),
-    middlewares_1.validarCampos
-], controllers_1.getImage);
+// libroCampoRouter.get('/get-one-image', [
+//     jwtService.validarJWT,
+//     check("path", "Debes incluir el path de la imagenes").notEmpty(),
+//     validarCampos
+// ], getImage)

@@ -1,11 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils");
 const _1 = require("./");
-const axios_1 = __importDefault(require("axios"));
 class LibroCampo {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -170,12 +166,13 @@ class LibroCampo {
         WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
         const fotosVisitas = await this.dbConnection.select(sql);
         const nuevasFotosVisitas = fotosVisitas.map(foto => {
-            const nuevaUrl = `http://www.zcloud.cl/` + foto.ruta_foto
-                .replaceAll('../', '')
-                .replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
+            const rutaFoto = foto.ruta_foto.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
+            const nuevaUrl = `http://www.zcloud.cl/` + rutaFoto.replaceAll('../', '');
+            const urlImgOriginal = `http://www.zcloud.cl/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${rutaFoto}`;
             return {
                 ...foto,
-                ruta_muestra_foto: nuevaUrl
+                ruta_muestra_foto: nuevaUrl,
+                ruta_foto_original: urlImgOriginal
             };
         });
         return nuevasFotosVisitas;
@@ -183,12 +180,12 @@ class LibroCampo {
     async getOneImage(path, systemParams) {
         const newPath = path.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
         const url = `http://${systemParams.ip_host}/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${newPath}`;
-        console.log(url);
-        console.log(newPath);
-        const { data } = await axios_1.default.get(url, {
-        // responseType:'stream'
-        });
-        return data;
+        // console.log(url)
+        // console.log(newPath);
+        // const {data} = await axios.get(url, {
+        //     // responseType:'stream'
+        // });
+        return url;
     }
 }
 exports.default = LibroCampo;

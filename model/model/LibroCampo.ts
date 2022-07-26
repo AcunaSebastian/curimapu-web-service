@@ -255,13 +255,16 @@ export default class LibroCampo {
         
         const nuevasFotosVisitas = fotosVisitas.map( foto => {
 
-            const nuevaUrl = `http://www.zcloud.cl/`+foto.ruta_foto
-            .replaceAll('../', '')
-            .replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
+            const rutaFoto = foto.ruta_foto.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
+
+            const nuevaUrl = `http://www.zcloud.cl/`+rutaFoto.replaceAll('../', '')
+            
+            const urlImgOriginal = `http://www.zcloud.cl/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${rutaFoto}`;
 
             return {
                 ...foto,
-                ruta_muestra_foto:nuevaUrl
+                ruta_muestra_foto:nuevaUrl,
+                ruta_foto_original:urlImgOriginal
             }
 
         })
@@ -279,14 +282,14 @@ export default class LibroCampo {
 
         const url = `http://${systemParams.ip_host}/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${newPath}`;
 
-        console.log(url)
-        console.log(newPath);
-        const {data} = await axios.get(url, {
-            // responseType:'stream'
-        });
+        // console.log(url)
+        // console.log(newPath);
+        // const {data} = await axios.get(url, {
+        //     // responseType:'stream'
+        // });
 
 
-        return data;
+        return url;
     }
 
 
