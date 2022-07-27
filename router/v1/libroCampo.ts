@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  getExcelLC, getImagenesAnexo, getLibroCampo, getReporteQuotation } from '../../controllers';
+import {  getCabeceraReporteQuot, getExcelLC, getImagenesAnexo, getLibroCampo, getReporteQuotation } from '../../controllers';
 import { validarCampos, JWTService } from '../../middlewares';
 import { check } from 'express-validator';
 
@@ -34,6 +34,16 @@ libroCampoRouter.get('/get-reporte-cliente', [
     check("id_temporada", "Debes incluir el id de temporada").notEmpty(),
     validarCampos
 ], getReporteQuotation)
+
+
+libroCampoRouter.get('/get-cabecera-reporte-cliente', [
+    jwtService.validarJWT,
+    check("id_cliente", "Debes incluir el id del cliente").notEmpty(),
+    check("id_temporada", "Debes incluir el id de temporada").notEmpty(),
+    validarCampos
+], getCabeceraReporteQuot)
+
+
 // libroCampoRouter.get('/get-one-image', [
 //     jwtService.validarJWT,
 //     check("path", "Debes incluir el path de la imagenes").notEmpty(),

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReporteQuotation = exports.getImagenesAnexo = exports.getExcelLC = exports.getLibroCampo = void 0;
+exports.getCabeceraReporteQuot = exports.getReporteQuotation = exports.getImagenesAnexo = exports.getExcelLC = exports.getLibroCampo = void 0;
 const fs_1 = __importDefault(require("fs"));
 const model_1 = require("../model");
 const utils_1 = require("../utils");
@@ -130,6 +130,31 @@ const getReporteQuotation = async (req, res) => {
     return res.status(utils_1.httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 };
 exports.getReporteQuotation = getReporteQuotation;
+const getCabeceraReporteQuot = async (req, res) => {
+    const db = req.bd_conection;
+    const usuario = req.usuario;
+    const bdParams = req.bd_params;
+    const { id_cliente, id_temporada, id_especie } = req.query;
+    try {
+        const quotationClass = new model_1.Quotation(db);
+        const cabeceras = await quotationClass.getCabeceraReporte(usuario, id_cliente, id_temporada, bdParams, id_especie);
+        res.status(utils_1.httpResponses.HTTP_OK).json({
+            ok: true,
+            message: 'LIBRO CAMPO',
+            data: {
+                cabeceras
+            }
+        });
+    }
+    catch (error) {
+        res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
+            ok: false,
+            message: `PROBLEMAS EN FUNCION getCabeceraReporteQuot ERROR : ${error}`,
+            data: null
+        });
+    }
+};
+exports.getCabeceraReporteQuot = getCabeceraReporteQuot;
 // export const getImage = async (req:Request, res:Response) => {
 //     const usuario = req.usuario;
 //     const db = req.bd_conection;

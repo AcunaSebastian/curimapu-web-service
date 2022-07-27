@@ -196,6 +196,41 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
     return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 
 }
+
+export const getCabeceraReporteQuot = async ( req:Request, res:Response) => {
+
+    const db = req.bd_conection;
+    const usuario = req.usuario;
+    const bdParams = req.bd_params;
+
+    const { 
+        id_cliente, 
+        id_temporada, 
+        id_especie 
+    } = req.query as unknown as { id_cliente:number, id_temporada:number, id_especie?:number };
+
+    try {
+
+        const quotationClass = new Quotation( db );
+
+        const cabeceras = await quotationClass.getCabeceraReporte(usuario, id_cliente, id_temporada, bdParams, id_especie);
+    
+        res.status( httpResponses.HTTP_OK ).json({
+            ok:true,
+            message:'LIBRO CAMPO',
+            data:{
+                cabeceras
+            }
+        })
+        
+    } catch (error) {
+        res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR ).json({
+            ok:false,
+            message:`PROBLEMAS EN FUNCION getCabeceraReporteQuot ERROR : ${error}`,
+            data:null
+        })
+    }
+}
 // export const getImage = async (req:Request, res:Response) => {
 
 //     const usuario = req.usuario;

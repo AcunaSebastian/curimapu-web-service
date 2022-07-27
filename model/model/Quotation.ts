@@ -135,6 +135,57 @@ export default class Quotation {
     }
 
 
+    async getCabeceraReporte( usuario:IUsuario, 
+        id_cliente:number, 
+        id_temporada:number, 
+        bd_params:ISystemParameters, 
+        id_especie?:number ) {
+
+        let filtro = ``;
+
+
+        if(id_especie){
+            filtro = ` AND Q.id_esp = '${id_especie}' `;
+        }
+
+        const sql = `SELECT Q.*, especie.nombre  FROM quotation  Q
+        INNER JOIN especie  USING (id_esp)
+        WHERE Q.id_cli = '${id_cliente}' AND Q.id_tempo = '${id_temporada}' ${filtro} 
+        GROUP BY Q.id_esp 
+        ORDER BY Q.id_esp `;
+
+        const quotations  = await this.dbConnection.select( sql )
+
+        const checks = [];
+        const lc = new LibroCampo( this.dbConnection );
+
+        if(quotations.length > 0){
+            for (const quotation of quotations) {
+
+                const cabecera = await lc.getCabeceraCustom({
+                    id_temporada:quotation.id_tempo,
+                    id_especie:quotation.id_esp,
+                    id_cliente:id_cliente
+                })
+
+                const especies = [2,3,4].map( etapa => {
+
+                    const etapas = cabecera.filter(cab => cab.id_etapa === etapa);
+
+                    return {
+                        estapa:etapas[0].etapa,
+                        propiedades:etapas
+                    }
+
+                })
+
+                checks.push({especie:quotation.nombre, etapas:especies})
+            }
+        }
+
+        return checks;
+    }
+
     async getReporteQuotation( 
         usuario:IUsuario, 
         id_cliente:number, 
