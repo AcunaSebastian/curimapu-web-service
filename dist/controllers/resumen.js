@@ -15,7 +15,7 @@ const getResumen = async (req, res) => {
         const resumen = new model_1.Resumen(db);
         const cabeceras = await resumen.getCabecera(id_temporada, id_especie);
         const preData = await resumen.getData(id_temporada, id_especie, usuario, page, limit);
-        const preDataTotal = await resumen.getData(id_temporada, id_especie, usuario, page, undefined);
+        const preDataTotal = await resumen.getData(id_temporada, id_especie, usuario, page);
         return res.status(utils_1.httpResponses.HTTP_OK).json({
             ok: true,
             response: `resumen`,

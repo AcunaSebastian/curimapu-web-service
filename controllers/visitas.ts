@@ -44,13 +44,14 @@ export const getVisitas = async (req:Request, res:Response) => {
          const visita = new Visita( db );
 
          const visitas = await visita.getVisitas( filter );
+         const visitasTotal = await visita.getVisitas( {...filter, limit:undefined } );
    
          return res.status(httpResponses.HTTP_OK).json({
             ok:true,
             message:'Visitas',
             data:{
                visitas,
-               total:visitas.length
+               total:visitasTotal.length
             }
          })
       

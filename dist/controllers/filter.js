@@ -14,13 +14,16 @@ const getFilters = async (req, res) => {
         const especie = new model_1.Especie(db);
         const variedad = new model_1.Variedad(db);
         const temporada = new Temporada_1.default(db);
+        const clientesClass = new model_1.Cliente(db);
         const especies = await especie.getEspeciesCliente(usuario);
         const variedades = await variedad.getVariedades();
         const temporadas = await temporada.getTemporadas(usuario);
+        const clientes = await clientesClass.getClienteByEnlace(usuario);
         const data = {
             especies,
             variedades,
-            temporadas
+            temporadas,
+            clientes
         };
         return res.status(utils_1.httpResponses.HTTP_OK).json({
             ok: true,

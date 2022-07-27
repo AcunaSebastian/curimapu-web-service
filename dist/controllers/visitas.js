@@ -27,12 +27,13 @@ const getVisitas = async (req, res) => {
         };
         const visita = new model_1.Visita(db);
         const visitas = await visita.getVisitas(filter);
+        const visitasTotal = await visita.getVisitas({ ...filter, limit: undefined });
         return res.status(httpResponses_1.httpResponses.HTTP_OK).json({
             ok: true,
             message: 'Visitas',
             data: {
                 visitas,
-                total: visitas.length
+                total: visitasTotal.length
             }
         });
     }
