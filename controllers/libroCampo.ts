@@ -183,21 +183,22 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
     const { 
         id_cliente, 
         id_temporada, 
-        id_especie 
-    } = req.query as unknown as { id_cliente:number, id_temporada:number, id_especie?:number };
+        id_especie,
+        checks
+    } = req.body as unknown as { id_cliente:number, id_temporada:number, id_especie?:number, checks:any[] };
 
     const quotationClass = new Quotation( db );
 
-    const informe = await quotationClass.getReporteQuotation( usuario, id_cliente, id_temporada , bdParams, id_especie );
+    const informe = await quotationClass.getReporteQuotation( usuario, id_cliente, id_temporada , bdParams, checks, id_especie );
 
-    // const pdfFile = fs.readFileSync(`./`+informe);
-    // fs.unlinkSync(`./`+informe);
+    const pdfFile = fs.readFileSync(`./`+informe);
+    fs.unlinkSync(`./`+informe);
 
-    return res.json({
-        informe
-    })
+    // return res.json({
+    //     informe
+    // })
 
-    // return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
+    return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 
 }
 

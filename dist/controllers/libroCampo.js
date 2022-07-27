@@ -122,15 +122,15 @@ const getReporteQuotation = async (req, res) => {
     const db = req.bd_conection;
     const usuario = req.usuario;
     const bdParams = req.bd_params;
-    const { id_cliente, id_temporada, id_especie } = req.query;
+    const { id_cliente, id_temporada, id_especie, checks } = req.body;
     const quotationClass = new model_1.Quotation(db);
-    const informe = await quotationClass.getReporteQuotation(usuario, id_cliente, id_temporada, bdParams, id_especie);
-    // const pdfFile = fs.readFileSync(`./`+informe);
-    // fs.unlinkSync(`./`+informe);
-    return res.json({
-        informe
-    });
-    // return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
+    const informe = await quotationClass.getReporteQuotation(usuario, id_cliente, id_temporada, bdParams, checks, id_especie);
+    const pdfFile = fs_1.default.readFileSync(`./` + informe);
+    fs_1.default.unlinkSync(`./` + informe);
+    // return res.json({
+    //     informe
+    // })
+    return res.status(utils_1.httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 };
 exports.getReporteQuotation = getReporteQuotation;
 const getCabeceraReporteQuot = async (req, res) => {

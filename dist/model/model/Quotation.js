@@ -1,7 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const form_data_1 = __importDefault(require("form-data"));
 const _1 = require("./");
 const utils_1 = require("../../utils");
+const axios_1 = __importDefault(require("axios"));
+const moment_1 = __importDefault(require("moment"));
+const fs_1 = __importDefault(require("fs"));
 class Quotation {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -119,7 +126,7 @@ class Quotation {
         }
         return checks;
     }
-    async getReporteQuotation(usuario, id_cliente, id_temporada, bd_params, id_especie) {
+    async getReporteQuotation(usuario, id_cliente, id_temporada, bd_params, checks, id_especie) {
         const formato = 2;
         let nombreEspecie = ``;
         if (id_especie) {
@@ -140,48 +147,47 @@ class Quotation {
         const sql = `SELECT * FROM quotation 
         WHERE id_cli = '${id_cliente}' AND id_tempo = '${id_temporada}' ${filtro} `;
         const quotations = await this.dbConnection.select(sql);
-        const checks = [];
+        // const checks = []
         const lc = new _1.LibroCampo(this.dbConnection);
-        if (quotations.length > 0) {
-            for (const quotation of quotations) {
-                const cabecera = await lc.getCabeceraCustom({
-                    id_temporada: quotation.id_tempo,
-                    id_especie: quotation.id_esp,
-                    id_cliente: id_cliente
-                });
-                checks.push(...cabecera.map(cab => {
-                    return {
-                        0: cab.id_prop_mat_cli,
-                        1: `${cab.nombre_propiedad} - ${cab.nombre_sub_propiedad}`,
-                        2: `${cab.etapa}`,
-                        3: `${cab.especie}`
-                    };
-                }));
-            }
-        }
-        return checks;
-        // const formData = new FormData();
-        // formData.append('Temporada', Number(id_temporada));
-        // if(id_especie){
-        //     formData.append('id_especie', Number(id_especie));
+        // if(quotations.length > 0){
+        //     for (const quotation of quotations) {
+        //         const cabecera = await lc.getCabeceraCustom({
+        //             id_temporada:quotation.id_tempo,
+        //             id_especie:quotation.id_esp,
+        //             id_cliente:id_cliente
+        //         })
+        //         checks.push(...cabecera.map( cab => {
+        //             return {
+        //                 0:cab.id_prop_mat_cli, 
+        //                 1:`${cab.nombre_propiedad} - ${cab.nombre_sub_propiedad}`, 
+        //                 2:`${cab.etapa}`,
+        //                 3:`${cab.especie}`
+        //             }
+        //         }))
+        //     }
         // }
-        // formData.append('Especie', nombreEspecie);
-        // formData.append('Cliente', nombreCliente);
-        // formData.append('Info', Number(id_cliente));
-        // formData.append('Formato', Number(formato));
-        // formData.append('Observacion', JSON.stringify(observaciones));
-        // formData.append('Checks', JSON.stringify(checks));
-        // const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
-        // const writer = fs.createWriteStream(namePDf);
-        // const { config, data} = await axios.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`,
-        // formData ,{ 
-        //     headers:formData.getHeaders(),
-        //     responseType:'stream'
-        //     })
-        // data.pipe(writer);
-        // return new Promise( resolve => {
-        //     writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
-        // })
+        // return checks;
+        const formData = new form_data_1.default();
+        formData.append('Temporada', Number(id_temporada));
+        if (id_especie) {
+            formData.append('id_especie', Number(id_especie));
+        }
+        formData.append('Especie', nombreEspecie);
+        formData.append('Cliente', nombreCliente);
+        formData.append('Info', Number(id_cliente));
+        formData.append('Formato', Number(formato));
+        formData.append('Observacion', JSON.stringify(observaciones));
+        formData.append('Checks', JSON.stringify(checks));
+        const namePDf = `uploads/pdf/pdf_${id_cliente}_${(0, moment_1.default)().format('YYYYMMSSHHmmss')}.pdf`;
+        const writer = fs_1.default.createWriteStream(namePDf);
+        const { config, data } = await axios_1.default.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`, formData, {
+            headers: formData.getHeaders(),
+            responseType: 'stream'
+        });
+        data.pipe(writer);
+        return new Promise(resolve => {
+            writer.on('finish', () => { console.log('escribiendo...'); resolve(namePDf); });
+        });
     }
 }
 exports.default = Quotation;

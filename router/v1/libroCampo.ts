@@ -28,7 +28,7 @@ libroCampoRouter.get('/get-images', [
 ], getImagenesAnexo)
 
 
-libroCampoRouter.get('/get-reporte-cliente', [
+libroCampoRouter.post('/get-reporte-cliente', [
     jwtService.validarJWT,
     check("id_cliente", "Debes incluir el id del cliente").notEmpty(),
     check("id_temporada", "Debes incluir el id de temporada").notEmpty(),
