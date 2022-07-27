@@ -140,7 +140,7 @@ export default class LibroCampo {
     async getData( params:IParamsLC ){
 
 
-        const { id_temporada, id_especie, usuario, limit = 100, page = 0,
+        const { id_temporada, id_especie, usuario, limit, page = 0,
             num_anexo,
             ready_batch,
             recomendaciones,

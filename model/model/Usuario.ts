@@ -203,7 +203,7 @@ export default class Usuario {
         const { 
             usuario, id,
             rut, nombre,
-            fecha, hora, system, limit = 100, page = 0
+            fecha, hora, system, limit, page
          } = filtros;
 
 

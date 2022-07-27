@@ -152,7 +152,7 @@ class Usuario {
         this.dbConnection.insert({ table: 'registro_login', params: insertParams });
     }
     async getIngresos(filtros) {
-        const { usuario, id, rut, nombre, fecha, hora, system, limit = 100, page = 0 } = filtros;
+        const { usuario, id, rut, nombre, fecha, hora, system, limit, page } = filtros;
         if (usuario.ve_ingresos === 'NO') {
             return [];
         }
