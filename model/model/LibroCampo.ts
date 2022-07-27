@@ -45,13 +45,9 @@ export default class LibroCampo {
 
                 inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
 
-                // let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
-                let tmp = ``;
-                for (const enlaces of usuario.usuarios_enlazados) {
-                    tmp += ` OR CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `;
-                }
-
-                filtro += ` AND ( ${tmp} ) `;
+                filtro += ` AND ( ${usuario.usuarios_enlazados.map( enlaces => 
+                    ` CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `).join(` OR `)} ) `;
+                    
             }
 
         }
