@@ -110,7 +110,7 @@ class Quotation {
                 const especies = [2, 3, 4].map(etapa => {
                     const etapas = cabecera.filter(cab => cab.id_etapa === etapa);
                     return {
-                        estapa: etapas[0]?.etapa || '',
+                        etapa: etapas[0]?.etapa || '',
                         propiedades: etapas
                     };
                 });

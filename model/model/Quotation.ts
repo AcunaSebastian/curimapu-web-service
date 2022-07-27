@@ -174,7 +174,7 @@ export default class Quotation {
                     const etapas = cabecera.filter(cab => cab.id_etapa === etapa);
 
                     return {
-                        estapa:etapas[0]?.etapa || '',
+                        etapa:etapas[0]?.etapa || '',
                         propiedades:etapas
                     }
 
