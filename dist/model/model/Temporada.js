@@ -12,7 +12,7 @@ class Temporada {
     async getTemporadas(usuario) {
         let filtro = ``;
         if (usuario.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE) {
-            filtro += ` AND id_tempo IN ( SELECT DISTINCT id_tempo FROM quotation WHERE id_cli = '${usuario.id_usuario}' )`;
+            filtro += ` AND id_tempo IN ( SELECT DISTINCT id_tempo FROM quotation WHERE ${usuario.usuarios_enlazados.map(enlace => ` id_cli = '${enlace}' `).join(` OR `)}  )`;
         }
         const temporadas = await this.dbConnection.select(`SELECT temporada.* , temporada.id_tempo AS value, temporada.nombre AS label FROM temporada WHERE 1 ${filtro}   ORDER BY nombre ASC`);
         return temporadas;

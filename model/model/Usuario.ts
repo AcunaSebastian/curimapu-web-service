@@ -244,8 +244,13 @@ export default class Usuario {
             limite = ` LIMIT ${pagina}, ${limit} `;
          }
 
-        const ingresos = await this.dbConnection.select(` SELECT * FROM registro_login 
-        WHERE 1 ${ filtro } ORDER BY fecha_hora_ingresa DESC ${limite}`); 
+
+         const sql = ` SELECT * FROM registro_login 
+         WHERE 1 ${ filtro } ORDER BY fecha_hora_ingresa DESC ${limite}`;
+
+        // console.log(sql)
+
+        const ingresos = await this.dbConnection.select( sql ); 
 
 
         return ingresos;
