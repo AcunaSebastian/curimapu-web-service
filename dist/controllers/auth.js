@@ -17,7 +17,7 @@ const login = async (req, res) => {
         if (!exportParams) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
-                message: `No se pudo obtener los parametros de la BD`,
+                message: `can't get some parameters`,
                 data: null
             });
         }
@@ -31,7 +31,7 @@ const login = async (req, res) => {
         if (!vegetablesParams) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
-                message: `No se pudo obtener los parametros de la BD`,
+                message: `can't get some parameters`,
                 data: null
             });
         }
@@ -43,7 +43,7 @@ const login = async (req, res) => {
         if (userExport === null && userVegetables === null) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
-                message: `Usuario y/o Contraseña son incorrectos`,
+                message: `User or password are incorrect`,
                 data: null
             });
         }
@@ -76,7 +76,7 @@ const login = async (req, res) => {
             if (!token.ok) {
                 return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
                     ok: false,
-                    message: `Problemas en funcion login : ${token.message}`
+                    message: `problems at login funtion: ${token.message}`
                 });
             }
             const loginResponse = {
@@ -93,7 +93,7 @@ const login = async (req, res) => {
             };
             return res.status(utils_1.httpResponses.HTTP_OK).json({
                 ok: true,
-                message: `Bienvenido`,
+                message: `Welcome`,
                 data: loginResponse
             });
         }
@@ -103,7 +103,7 @@ const login = async (req, res) => {
             if (!token.ok) {
                 return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
                     ok: false,
-                    message: `Problemas en funcion login : ${token.message}`
+                    message: `problems at login funtion: ${token.message}`
                 });
             }
             const loginResponse = {
@@ -120,7 +120,7 @@ const login = async (req, res) => {
             };
             return res.status(utils_1.httpResponses.HTTP_OK).json({
                 ok: true,
-                message: `Bienvenido`,
+                message: `Welcome`,
                 data: loginResponse
             });
         }
@@ -128,7 +128,7 @@ const login = async (req, res) => {
     catch (error) {
         return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
             ok: false,
-            message: `Problemas en funcion login : ${error}`,
+            message: `problems at login funtion: ${error}`,
             data: null
         });
     }
@@ -141,7 +141,7 @@ const setSystem = async (req, res) => {
         if (!params) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
-                message: `No se pudo obtener parametros de BD`,
+                message: `can't get some parameters`,
                 data: null
             });
         }
@@ -152,7 +152,7 @@ const setSystem = async (req, res) => {
         if (!user) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
-                message: `No se encontro usuario enviado`,
+                message: `Can't find the user that you send`,
                 data: null
             });
         }
@@ -161,7 +161,7 @@ const setSystem = async (req, res) => {
         if (!token.ok) {
             return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
                 ok: false,
-                message: `Problemas en funcion login : ${token.message}`,
+                message: `Problems at  login funcion: ${token.message}`,
                 data: null
             });
         }
@@ -179,14 +179,14 @@ const setSystem = async (req, res) => {
         };
         return res.status(utils_1.httpResponses.HTTP_OK).json({
             ok: true,
-            message: 'Bienvenido',
+            message: 'Welcome',
             data: loginResponse
         });
     }
     catch (error) {
         return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
             ok: false,
-            message: `Problemas en funcion setSystem : ${error}`,
+            message: `Problems at setSystem funcion : ${error}`,
             data: null
         });
     }

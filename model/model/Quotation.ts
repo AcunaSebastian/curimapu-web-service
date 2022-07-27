@@ -135,7 +135,8 @@ export default class Quotation {
     }
 
 
-    async getCabeceraReporte( usuario:IUsuario, 
+    async getCabeceraReporte( 
+        usuario:IUsuario, 
         id_cliente:number, 
         id_temporada:number, 
         bd_params:ISystemParameters, 
@@ -173,7 +174,7 @@ export default class Quotation {
                     const etapas = cabecera.filter(cab => cab.id_etapa === etapa);
 
                     return {
-                        estapa:etapas[0].etapa,
+                        estapa:etapas[0]?.etapa || '',
                         propiedades:etapas
                     }
 
@@ -250,32 +251,34 @@ export default class Quotation {
                 
             }
         }
-        const formData = new FormData();
-        formData.append('Temporada', Number(id_temporada));
-        if(id_especie){
-            formData.append('id_especie', Number(id_especie));
-        }
-        formData.append('Especie', nombreEspecie);
-        formData.append('Cliente', nombreCliente);
-        formData.append('Info', Number(id_cliente));
-        formData.append('Formato', Number(formato));
-        formData.append('Observacion', JSON.stringify(observaciones));
-        formData.append('Checks', JSON.stringify(checks));
 
-        const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
-        const writer = fs.createWriteStream(namePDf);
+        return checks;
+        // const formData = new FormData();
+        // formData.append('Temporada', Number(id_temporada));
+        // if(id_especie){
+        //     formData.append('id_especie', Number(id_especie));
+        // }
+        // formData.append('Especie', nombreEspecie);
+        // formData.append('Cliente', nombreCliente);
+        // formData.append('Info', Number(id_cliente));
+        // formData.append('Formato', Number(formato));
+        // formData.append('Observacion', JSON.stringify(observaciones));
+        // formData.append('Checks', JSON.stringify(checks));
+
+        // const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
+        // const writer = fs.createWriteStream(namePDf);
 
 
-        const { config, data} = await axios.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`,
-        formData ,{ 
-            headers:formData.getHeaders(),
-            responseType:'stream'
-            })
-        data.pipe(writer);
+        // const { config, data} = await axios.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`,
+        // formData ,{ 
+        //     headers:formData.getHeaders(),
+        //     responseType:'stream'
+        //     })
+        // data.pipe(writer);
 
-        return new Promise( resolve => {
-            writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
-        })
+        // return new Promise( resolve => {
+        //     writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
+        // })
 
     }
 }

@@ -190,10 +190,14 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
 
     const informe = await quotationClass.getReporteQuotation( usuario, id_cliente, id_temporada , bdParams, id_especie );
 
-    const pdfFile = fs.readFileSync(`./`+informe);
-    fs.unlinkSync(`./`+informe);
+    // const pdfFile = fs.readFileSync(`./`+informe);
+    // fs.unlinkSync(`./`+informe);
 
-    return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
+    return res.json({
+        informe
+    })
+
+    // return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
 
 }
 
