@@ -23,7 +23,7 @@ export const getResumen = async (req: Request, res:Response) => {
         const cabeceras = await resumen.getCabecera( id_temporada, id_especie );
         
         const preData = await resumen.getData(id_temporada, id_especie, usuario, page, limit);
-        const preDataTotal = await resumen.getData(id_temporada, id_especie, usuario, page, undefined);
+        const preDataTotal = await resumen.getData(id_temporada, id_especie, usuario, page);
 
         return res.status(httpResponses.HTTP_OK).json({
             ok:true,
