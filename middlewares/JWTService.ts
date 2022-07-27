@@ -92,7 +92,7 @@ export class JWTService {
     async revalidarJWT(req:Request, res:Response){
 
         const getUser = req.usuario;
-        const { _id } = req.bd_params;
+        const { _id, system_image_path } = req.bd_params;
 
         const token  = await this.generarJWT(
             getUser.id_usuario, 
@@ -112,7 +112,15 @@ export class JWTService {
             message:`Renovado`,
             data:{
                 usuario:getUser,
-                token:token.message
+                token:token.message,
+                variosSistemas:false,
+                sistemas:[
+                    {
+                        id:_id,
+                        imagen:system_image_path,
+                        id_usuario:getUser.id_usuario
+                    }
+                ]
             }
             
         })

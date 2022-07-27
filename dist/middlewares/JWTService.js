@@ -64,7 +64,7 @@ class JWTService {
     }
     async revalidarJWT(req, res) {
         const getUser = req.usuario;
-        const { _id } = req.bd_params;
+        const { _id, system_image_path } = req.bd_params;
         const token = await this.generarJWT(getUser.id_usuario, `${getUser.nombre} ${getUser.apellido_p} ${getUser.apellido_m}`, _id);
         if (!token.ok) {
             return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
@@ -78,7 +78,15 @@ class JWTService {
             message: `Renovado`,
             data: {
                 usuario: getUser,
-                token: token.message
+                token: token.message,
+                variosSistemas: false,
+                sistemas: [
+                    {
+                        id: _id,
+                        imagen: system_image_path,
+                        id_usuario: getUser.id_usuario
+                    }
+                ]
             }
         });
     }
