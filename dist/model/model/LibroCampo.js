@@ -76,7 +76,7 @@ class LibroCampo {
         return cabecera;
     }
     async getData(params) {
-        const { id_temporada, id_especie, usuario, limit, page = 0, num_anexo, ready_batch, recomendaciones, variedad, agricultor, predio, lote } = params;
+        const { id_temporada, id_especie, usuario, limit = 100, page = 0, num_anexo, ready_batch, recomendaciones, variedad, agricultor, predio, lote } = params;
         const cabeceras = await this.getCabecera(params);
         let filtroPCM = ``;
         let innerPCM = ``;
@@ -126,7 +126,8 @@ class LibroCampo {
         }
         let limite = ``;
         if (limit) {
-            limite = ` LIMIT ${page}, ${limit} `;
+            const pagina = (page > 0) ? (page - 1) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
         }
         const sql = `SELECT 
         AC.num_anexo,

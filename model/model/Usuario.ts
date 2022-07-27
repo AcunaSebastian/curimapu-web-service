@@ -203,7 +203,7 @@ export default class Usuario {
         const { 
             usuario, id,
             rut, nombre,
-            fecha, hora, system, limit, page
+            fecha, hora, system, limit = 100, page = 0
          } = filtros;
 
 
@@ -240,7 +240,8 @@ export default class Usuario {
 
          let limite = ``;
          if(limit){
-            limite = ` LIMIT ${page}, ${limit}`;
+            const pagina = (page > 0) ? ( page - 1 ) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
          }
 
         const ingresos = await this.dbConnection.select(` SELECT * FROM registro_login 

@@ -140,7 +140,7 @@ export default class LibroCampo {
     async getData( params:IParamsLC ){
 
 
-        const { id_temporada, id_especie, usuario, limit, page = 0,
+        const { id_temporada, id_especie, usuario, limit = 100, page = 0,
             num_anexo,
             ready_batch,
             recomendaciones,
@@ -216,7 +216,10 @@ export default class LibroCampo {
 
         
         let limite = ``;
-        if( limit ){ limite = ` LIMIT ${page}, ${limit} ` }
+        if( limit ){ 
+            const pagina = (page > 0) ? ( page - 1 ) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
+         }
 
         const sql = `SELECT 
         AC.num_anexo,

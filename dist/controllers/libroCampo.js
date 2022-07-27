@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const model_1 = require("../model");
 const utils_1 = require("../utils");
 const getLibroCampo = async (req, res) => {
-    const { id_especie, id_temporada, etapa, limit, page = 0, num_anexo, ready_batch, recomendaciones, agricultor, variedad, predio, lote } = req.query;
+    const { id_especie, id_temporada, etapa, limit = 100, page = 0, num_anexo, ready_batch, recomendaciones, agricultor, variedad, predio, lote } = req.query;
     const usuario = req.usuario;
     const db = req.bd_conection;
     try {

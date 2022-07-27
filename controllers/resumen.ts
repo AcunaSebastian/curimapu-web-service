@@ -9,7 +9,7 @@ export const getResumen = async (req: Request, res:Response) => {
     const usuario = req.usuario;
     const db = req.bd_conection;
 
-    const { id_especie, id_temporada, limit, page = 0 } = req.query as unknown as { 
+    const { id_especie, id_temporada, limit = 100, page = 0 } = req.query as unknown as { 
         id_especie:number; 
         id_temporada:number;
         limit?:number;

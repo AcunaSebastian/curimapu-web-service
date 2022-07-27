@@ -50,7 +50,8 @@ class Resumen {
         }
         let limite = ``;
         if (limit) {
-            limite = ` LIMIT ${page}, ${limit} `;
+            const pagina = (page > 0) ? (page - 1) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
         }
         const sql = `SELECT 
         AC.num_anexo,

@@ -12,7 +12,7 @@ class Visita {
         this.dbConnection = dbConnection;
     }
     async getVisitas(filters) {
-        const { usuario, id_temporada, id_especie, id_variedad, fecha_visita, agricultor, ready_batch, lote, num_anexo, limit, page } = filters;
+        const { usuario, id_temporada, id_especie, id_variedad, fecha_visita, agricultor, ready_batch, lote, num_anexo, limit, page = 0 } = filters;
         let filtro = ``;
         let inner = ``;
         if (id_temporada) {
@@ -41,7 +41,8 @@ class Visita {
         }
         let limite = ``;
         if (limit) {
-            limite = ` LIMIT ${page}, ${limit}`;
+            const pagina = (page > 0) ? (page - 1) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
         }
         if (usuario.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE) {
             let tmp = ` Q.id_cli = '${usuario.id_usuario}' `;

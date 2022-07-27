@@ -8,7 +8,7 @@ export const getIngresos = async (req:Request, res:Response) => {
 
     const { id,
         rut, nombre,
-        fecha, hora, limit, page = 0 } = req.query;
+        fecha, hora, limit = 100, page = 0 } = req.query;
     const usuario = req.usuario;
     const { _id } = req.bd_params;
     const db = req.bd_conection;

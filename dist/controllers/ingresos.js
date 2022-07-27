@@ -4,7 +4,7 @@ exports.getIngresos = void 0;
 const model_1 = require("../model/model/");
 const utils_1 = require("../utils");
 const getIngresos = async (req, res) => {
-    const { id, rut, nombre, fecha, hora, limit, page = 0 } = req.query;
+    const { id, rut, nombre, fecha, hora, limit = 100, page = 0 } = req.query;
     const usuario = req.usuario;
     const { _id } = req.bd_params;
     const db = req.bd_conection;

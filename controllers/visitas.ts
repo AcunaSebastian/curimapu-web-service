@@ -16,7 +16,7 @@ export const getVisitas = async (req:Request, res:Response) => {
         id_temporada,
         id_especie,
         fecha_visita,
-        limit,
+        limit = 100,
         page= 0
      } = req.query;
 

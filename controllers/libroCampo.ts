@@ -8,7 +8,7 @@ export const getLibroCampo = async (req:Request, res:Response) => {
 
 
 
-    const { id_especie, id_temporada, etapa, limit,
+    const { id_especie, id_temporada, etapa, limit = 100,
         page = 0,
         num_anexo,
         ready_batch,

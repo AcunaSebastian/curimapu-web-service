@@ -50,7 +50,7 @@ export default class Visita {
             lote,
             num_anexo,
             limit,
-            page
+            page = 0
           } = filters;
 
 
@@ -91,7 +91,8 @@ export default class Visita {
 
         let limite = ``;
         if(limit){
-            limite = ` LIMIT ${page}, ${limit}`;
+            const pagina = (page > 0) ? ( page - 1 ) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
         }
 
 

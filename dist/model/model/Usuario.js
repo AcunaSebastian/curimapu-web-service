@@ -152,7 +152,7 @@ class Usuario {
         this.dbConnection.insert({ table: 'registro_login', params: insertParams });
     }
     async getIngresos(filtros) {
-        const { usuario, id, rut, nombre, fecha, hora, system, limit, page } = filtros;
+        const { usuario, id, rut, nombre, fecha, hora, system, limit = 100, page = 0 } = filtros;
         if (usuario.ve_ingresos === 'NO') {
             return [];
         }
@@ -178,7 +178,8 @@ class Usuario {
         }
         let limite = ``;
         if (limit) {
-            limite = ` LIMIT ${page}, ${limit}`;
+            const pagina = (page > 0) ? (page - 1) * limit : 0;
+            limite = ` LIMIT ${pagina}, ${limit} `;
         }
         const ingresos = await this.dbConnection.select(` SELECT * FROM registro_login 
         WHERE 1 ${filtro} ORDER BY fecha_hora_ingresa DESC ${limite}`);
