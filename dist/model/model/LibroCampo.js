@@ -155,6 +155,7 @@ class LibroCampo {
         INNER JOIN lote L ON (F.id_lote = L.id_lote)
         INNER JOIN predio P ON (F.id_pred = P.id_pred)
         WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro} ${limite} `;
+        console.log(sql);
         const anexos = await this.dbConnection.select(sql);
         if (anexos.length <= 0)
             return anexos;

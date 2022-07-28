@@ -131,7 +131,7 @@ export const login = async (req:Request,  res:Response)  => {
             const token = await new JWTService().generarJWT( 
                 userVegetables.id_usuario, 
                 `${userVegetables.nombre} ${userVegetables.apellido_p} ${userVegetables.apellido_m}`, 
-                "EXPORT" );
+                "VEGETABLES" );
 
             if(!token.ok){
                 return res.status(httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({

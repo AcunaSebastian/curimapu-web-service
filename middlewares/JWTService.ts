@@ -34,7 +34,10 @@ export class JWTService {
 
             const { _id, system } = JWT.verify( token, process.env.PUBLIC_OR_PRIVATE_KEY!) as JwtPayload;
 
+            console.log({_id, system })
+
             const dbParam = new DatabaseConnections(system).getSystem();
+            
             if(!dbParam) {
                 return res.status( httpResponses.HTTP_BAD_REQUEST).json({
                     ok:false,
@@ -78,13 +81,10 @@ export class JWTService {
 
         return new Promise<{ok:boolean; message:string | undefined;}> ( ( resolve, reject ) => {
             const payload = { _id, name, system };
-
-
             JWT.sign( payload, process.env.PUBLIC_OR_PRIVATE_KEY!, {}, (err, token) => {
                 if(err) reject({ok:false, message:'No se pudo generar el Token'});
                 resolve({ ok:true, message:token })
             })
-
         })
     }
 

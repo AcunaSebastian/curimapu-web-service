@@ -20,6 +20,7 @@ class JWTService {
         }
         try {
             const { _id, system } = jsonwebtoken_1.default.verify(token, process.env.PUBLIC_OR_PRIVATE_KEY);
+            console.log({ _id, system });
             const dbParam = new utils_1.DatabaseConnections(system).getSystem();
             if (!dbParam) {
                 return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({

@@ -99,7 +99,7 @@ const login = async (req, res) => {
         }
         if (userVegetables !== null) {
             usuarioVegetables.setIngreso(userVegetables, 'c.vegetables');
-            const token = await new JWTService_1.JWTService().generarJWT(userVegetables.id_usuario, `${userVegetables.nombre} ${userVegetables.apellido_p} ${userVegetables.apellido_m}`, "EXPORT");
+            const token = await new JWTService_1.JWTService().generarJWT(userVegetables.id_usuario, `${userVegetables.nombre} ${userVegetables.apellido_p} ${userVegetables.apellido_m}`, "VEGETABLES");
             if (!token.ok) {
                 return res.status(utils_1.httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
                     ok: false,

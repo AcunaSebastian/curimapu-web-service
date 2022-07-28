@@ -76,7 +76,10 @@ export default class Especie {
             break;
         }
 
-        const especie:IEspecie[] = await this.dbConnection.select(`SELECT especie.*, especie.id_esp AS value, especie.nombre AS label FROM especie WHERE 1 ${filtro} ORDER BY nombre ASC`);
+        const sql = `SELECT especie.*, especie.id_esp AS value, especie.nombre AS label FROM especie WHERE 1 ${filtro} ORDER BY nombre ASC`;
+        const especie:IEspecie[] = await this.dbConnection.select(sql);
+        console.log(sql);
+        
         return especie;
     }
 
