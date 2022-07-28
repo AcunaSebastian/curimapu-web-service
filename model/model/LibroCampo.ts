@@ -160,12 +160,16 @@ export default class LibroCampo {
         if( usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
 
             innerPCM += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
-            let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
-            for (const enlaces of usuario.usuarios_enlazados) {
-                tmp += ` OR CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `;
-            }
+            // let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
 
-            filtroPCM += ` AND ( ${tmp} ) `;
+            filtroPCM += ` AND ( ${usuario.usuarios_enlazados.map( enlaces => 
+                ` CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `).join(` OR `)} ) `;
+
+            // for (const enlaces of usuario.usuarios_enlazados) {
+            //     tmp += ` OR CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `;
+            // }
+
+            // filtroPCM += ` AND ( ${tmp} ) `;
         }
 
         if(usuario.usuarios_enlazados.length > 0){
@@ -181,7 +185,6 @@ export default class LibroCampo {
             }
 
         }
-
 
         if(usuario.isUsuarioDetQuo){
             filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
@@ -246,10 +249,9 @@ export default class LibroCampo {
         INNER JOIN agricultor A USING (id_agric)
         INNER JOIN lote L ON (F.id_lote = L.id_lote)
         INNER JOIN predio P ON (F.id_pred = P.id_pred)
-        WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro} ${limite} `;
+        WHERE  Q.id_esp='${id_especie}' AND AC.destruido = 0 AND Q.id_tempo='${id_temporada}' ${filtro} ${limite} `;
 
 
-        console.log(sql)
 
         const anexos = await this.dbConnection.select( sql );
 

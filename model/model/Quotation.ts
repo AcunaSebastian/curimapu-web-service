@@ -265,21 +265,37 @@ export default class Quotation {
         formData.append('Formato', Number(formato));
         formData.append('Observacion', JSON.stringify(observaciones));
         formData.append('Checks', JSON.stringify(checks));
+        formData.append('tipo_usuario', usuario.id_tipo_usuario);
+        formData.append('id_usuario', usuario.id_usuario);
+
+        console.log(usuario.id_usuario)
 
         const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
         const writer = fs.createWriteStream(namePDf);
 
+        try {
 
-        const { config, data} = await axios.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`,
-        formData ,{ 
-            headers:formData.getHeaders(),
-            responseType:'stream'
+            const { config, data} = await axios.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`,
+            formData ,{ 
+                headers:formData.getHeaders(),
+                responseType:'stream'
+                })
+            data.pipe(writer);
+
+            return new Promise( resolve => {
+                writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
             })
-        data.pipe(writer);
+            
+        } catch (error) {
 
-        return new Promise( resolve => {
-            writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
-        })
+            if(axios.isAxiosError(error)){
+                console.log(error.message)
+            }
+
+            
+        }
+
+        
 
     }
 }

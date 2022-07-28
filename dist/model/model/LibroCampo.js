@@ -83,11 +83,12 @@ class LibroCampo {
         let filtro = ``;
         if (usuario.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE) {
             innerPCM += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
-            let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
-            for (const enlaces of usuario.usuarios_enlazados) {
-                tmp += ` OR CPCM.id_cli = '${enlaces}' AND CPCM.ver = '1' `;
-            }
-            filtroPCM += ` AND ( ${tmp} ) `;
+            // let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
+            filtroPCM += ` AND ( ${usuario.usuarios_enlazados.map(enlaces => ` CPCM.id_cli = '${enlaces}' AND CPCM.ver = '1' `).join(` OR `)} ) `;
+            // for (const enlaces of usuario.usuarios_enlazados) {
+            //     tmp += ` OR CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `;
+            // }
+            // filtroPCM += ` AND ( ${tmp} ) `;
         }
         if (usuario.usuarios_enlazados.length > 0) {
             let tmp = ``;
@@ -154,8 +155,7 @@ class LibroCampo {
         INNER JOIN agricultor A USING (id_agric)
         INNER JOIN lote L ON (F.id_lote = L.id_lote)
         INNER JOIN predio P ON (F.id_pred = P.id_pred)
-        WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro} ${limite} `;
-        console.log(sql);
+        WHERE  Q.id_esp='${id_especie}' AND AC.destruido = 0 AND Q.id_tempo='${id_temporada}' ${filtro} ${limite} `;
         const anexos = await this.dbConnection.select(sql);
         if (anexos.length <= 0)
             return anexos;

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { ExcelClass, tipoExcel, LibroCampo, Quotation } from "../model";
 import { httpResponses } from "../utils";
 
@@ -196,14 +196,20 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
 
     const informe = await quotationClass.getReporteQuotation( usuario, id_cliente, id_temporada , bdParams, checks, id_especie );
 
+    if(!fs.existsSync(`./`+informe)){
+        return res.status(httpResponses.HTTP_OK).contentType('html').send(`<h1>No se pudo obtener el documento</h1>`)
+    }
+
     const pdfFile = fs.readFileSync(`./`+informe);
-    fs.unlinkSync(`./`+informe);
+        fs.unlinkSync(`./`+informe);
+        return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
+
 
     // return res.json({
     //     informe
     // })
 
-    return res.status(httpResponses.HTTP_OK).contentType('application/pdf').send(pdfFile);
+    
 
 }
 

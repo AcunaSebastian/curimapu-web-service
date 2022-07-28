@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment_1 = __importDefault(require("moment"));
+const utils_1 = require("../../utils");
 class Usuario {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -46,8 +47,9 @@ class Usuario {
         const user = bdUser[0];
         const userEnlazado = await this.dbConnection.select(`SELECT id_enlazado FROM usuario_enlazado WHERE id_usuario = '${user.id_usuario}' `);
         user.usuarios_enlazados = userEnlazado.map(el => Number(el.id_enlazado));
-        const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${user.id_usuario}'`);
-        const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+        // const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ user.id_usuario }'`);
+        // const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+        const isUsuarioDetQuo = (user.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE);
         user.isUsuarioDetQuo = isUsuarioDetQuo;
         return user;
     }
@@ -86,8 +88,9 @@ class Usuario {
         const user = [];
         for (const usuario of bdUser) {
             const userEnlazado = await this.dbConnection.select(`SELECT id_enlazado FROM usuario_enlazado WHERE id_usuario = '${usuario.id_usuario}' `);
-            const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}'`);
-            const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+            // const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ usuario.id_usuario }'`);
+            // const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+            const isUsuarioDetQuo = (usuario.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE);
             user.push({ ...usuario, usuarios_enlazados: userEnlazado.map(el => Number(el.id_enlazado)), isUsuarioDetQuo });
         }
         return user;
@@ -131,8 +134,8 @@ class Usuario {
         }
         const user = bdUser[0];
         const userEnlazado = await this.dbConnection.select(`SELECT id_enlazado FROM usuario_enlazado WHERE id_usuario = '${user.id_usuario}' `);
-        const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${user.id_usuario}'`);
-        const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+        // const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ user.id_usuario }'`);
+        const isUsuarioDetQuo = (user.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE);
         return { ...user, usuarios_enlazados: userEnlazado.map(el => Number(el.id_enlazado)), isUsuarioDetQuo };
     }
     async setIngreso(usuario, system) {

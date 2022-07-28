@@ -1,6 +1,7 @@
 import { IUsuario } from '../../interfaces/';
 import { DatabaseService } from '../database/';
 import moment from 'moment';
+import { Constants } from '../../utils';
 
 interface IFiltersIngresos {
     usuario:IUsuario;
@@ -65,8 +66,9 @@ export default class Usuario {
         const userEnlazado:any[] = await this.dbConnection.select(`SELECT id_enlazado FROM usuario_enlazado WHERE id_usuario = '${ user.id_usuario}' `);
         user.usuarios_enlazados = userEnlazado.map( el => Number(el.id_enlazado));
         
-        const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ user.id_usuario }'`);
-        const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+        // const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ user.id_usuario }'`);
+        // const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+        const isUsuarioDetQuo = (user.id_tipo_usuario === Constants.USUARIO_CLIENTE);
         user.isUsuarioDetQuo = isUsuarioDetQuo;
 
         return user;
@@ -113,8 +115,9 @@ export default class Usuario {
         for (const usuario of bdUser) {
             const userEnlazado:any[] = await this.dbConnection.select(`SELECT id_enlazado FROM usuario_enlazado WHERE id_usuario = '${ usuario.id_usuario}' `);
             
-            const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ usuario.id_usuario }'`);
-            const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+            // const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ usuario.id_usuario }'`);
+            // const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+            const isUsuarioDetQuo = (usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE);
 
             user.push({...usuario, usuarios_enlazados:userEnlazado.map( el => Number(el.id_enlazado)), isUsuarioDetQuo});
 
@@ -167,8 +170,8 @@ export default class Usuario {
         const userEnlazado:any[] = await this.dbConnection.select(`SELECT id_enlazado FROM usuario_enlazado WHERE id_usuario = '${ user.id_usuario}' `);
      
 
-        const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ user.id_usuario }'`);
-        const isUsuarioDetQuo = (usuarioDeQuo.length > 0);
+        // const usuarioDeQuo = await this.dbConnection.select(`SELECT * FROM usuario_det_quo WHERE id_usuario = '${ user.id_usuario }'`);
+        const isUsuarioDetQuo = (user.id_tipo_usuario === Constants.USUARIO_CLIENTE);
 
 
         return {...user, usuarios_enlazados:userEnlazado.map( el => Number(el.id_enlazado)), isUsuarioDetQuo};
