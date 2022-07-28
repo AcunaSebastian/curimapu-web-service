@@ -176,6 +176,8 @@ export const getImagenesAnexo = async (req:Request, res:Response) => {
 
 export const getReporteQuotation = async (req:Request, res:Response) => {
 
+   
+
     const db = req.bd_conection;
     const usuario = req.usuario;
     const bdParams = req.bd_params;
@@ -183,9 +185,12 @@ export const getReporteQuotation = async (req:Request, res:Response) => {
     const { 
         id_cliente, 
         id_temporada, 
-        id_especie,
+        id_especie
+    } = req.query as unknown as { id_cliente:number, id_temporada:number, id_especie?:number, checks:any[] };
+
+    const {
         checks
-    } = req.body as unknown as { id_cliente:number, id_temporada:number, id_especie?:number, checks:any[] };
+    } = req.body
 
     const quotationClass = new Quotation( db );
 

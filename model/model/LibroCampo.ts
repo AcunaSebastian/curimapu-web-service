@@ -326,9 +326,11 @@ export default class LibroCampo {
 
             const rutaFoto = foto.ruta_foto.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
 
-            const nuevaUrl = `http://www.zcloud.cl/`+rutaFoto.replaceAll('../', '')
+            const rutaSegura = (systemParams.proyect_main_folder === 'curimapu')  ? `https://curiexport.zcloud.cl` : `https://curivegetables.zcloud.cl`;
+            const nuevaUrl = `${rutaSegura}/`+rutaFoto.replaceAll('../', '')
+
             
-            const urlImgOriginal = `http://www.zcloud.cl/${systemParams.proyect_main_folder}/core/models/mostrarImagen.php?ruta_imagen=${rutaFoto}`;
+            const urlImgOriginal =  `${rutaSegura}/core/models/mostrarImagen.php?ruta_imagen=${rutaFoto}`;
 
             return {
                 ...foto,

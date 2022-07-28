@@ -122,7 +122,8 @@ const getReporteQuotation = async (req, res) => {
     const db = req.bd_conection;
     const usuario = req.usuario;
     const bdParams = req.bd_params;
-    const { id_cliente, id_temporada, id_especie, checks } = req.body;
+    const { id_cliente, id_temporada, id_especie } = req.query;
+    const { checks } = req.body;
     const quotationClass = new model_1.Quotation(db);
     const informe = await quotationClass.getReporteQuotation(usuario, id_cliente, id_temporada, bdParams, checks, id_especie);
     const pdfFile = fs_1.default.readFileSync(`./` + informe);
