@@ -176,6 +176,8 @@ export const getImagenesAnexo = async (req:Request, res:Response) => {
 
 export const getReporteQuotation = async (req:Request, res:Response) => {
 
+   
+
     const db = req.bd_conection;
     const usuario = req.usuario;
     const bdParams = req.bd_params;
