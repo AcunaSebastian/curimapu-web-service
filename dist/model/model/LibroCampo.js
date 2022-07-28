@@ -138,7 +138,7 @@ class LibroCampo {
         Q.numero_contrato,
         A.razon_social AS nombre_agricultor,
         L.nombre AS lote,
-        P.nombre AS predio,
+        F.localidad AS predio,
         AC.ready_batch,
         AC.has_gps,
         materiales.nom_hibrido AS variedad,
