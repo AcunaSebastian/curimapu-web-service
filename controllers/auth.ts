@@ -56,11 +56,6 @@ export const login = async (req:Request,  res:Response)  => {
         }
 
 
-
-
-
-
-
         if(userExport !== null && userVegetables !== null){
 
             const loginResponse = {
@@ -87,7 +82,6 @@ export const login = async (req:Request,  res:Response)  => {
             })
 
         }
-
 
         if(userExport !== null){
 
