@@ -66,7 +66,7 @@ const login = async (req, res) => {
             };
             return res.status(utils_1.httpResponses.HTTP_OK).json({
                 ok: true,
-                message: `Falta Aun`,
+                message: `We need another step`,
                 data: loginResponse
             });
         }
@@ -202,7 +202,7 @@ const changePassword = async (req, res) => {
         if (!existePass) {
             return res.status(utils_1.httpResponses.HTTP_BAD_REQUEST).json({
                 ok: false,
-                message: `Contraseña antigua no coincide.`,
+                message: `old password does't match`,
                 data: null
             });
         }

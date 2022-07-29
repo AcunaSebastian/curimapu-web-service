@@ -23,7 +23,7 @@ export class JWTService {
         if( !token ){
             return res.status( httpResponses.HTTP_BAD_REQUEST).json({
                 ok:false,
-                message:'No hay token en la peticion',
+                message:'we need the token on the request',
                 data:null
             })
         }
@@ -41,7 +41,7 @@ export class JWTService {
             if(!dbParam) {
                 return res.status( httpResponses.HTTP_BAD_REQUEST).json({
                     ok:false,
-                    message:'No se pudo obtener parametros de BD',
+                    message:'cant get some parameters',
                     data:null
                 })
             }
@@ -55,7 +55,7 @@ export class JWTService {
             if(!usuario){
                 return res.status( httpResponses.HTTP_BAD_REQUEST).json({
                     ok:false,
-                    message:'Usuario no existe',
+                    message:`User isn't exist `,
                     data:null
                 })
             }
@@ -69,7 +69,7 @@ export class JWTService {
         } catch (error) {
             return res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
                 ok:false,
-                message:`Token no valido ${error}`,
+                message:`invalid token ${error}`,
                 data:null
             })
         }
@@ -82,7 +82,7 @@ export class JWTService {
         return new Promise<{ok:boolean; message:string | undefined;}> ( ( resolve, reject ) => {
             const payload = { _id, name, system };
             JWT.sign( payload, process.env.PUBLIC_OR_PRIVATE_KEY!, {}, (err, token) => {
-                if(err) reject({ok:false, message:'No se pudo generar el Token'});
+                if(err) reject({ok:false, message:`can't create the token`});
                 resolve({ ok:true, message:token })
             })
         })
@@ -102,14 +102,14 @@ export class JWTService {
         if(!token.ok){
             return res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR).json({
                 ok:false,
-                message:`Token no valido ${token.message}`,
+                message:`invalid Token  ${token.message}`,
                 data:null
             })
         }
 
         return res.status(httpResponses.HTTP_OK).json({
             ok:true,
-            message:`Renovado`,
+            message:`Renewed`,
             data:{
                 usuario:getUser,
                 token:token.message,

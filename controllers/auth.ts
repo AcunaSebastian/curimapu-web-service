@@ -77,7 +77,7 @@ export const login = async (req:Request,  res:Response)  => {
             
             return res.status(httpResponses.HTTP_OK).json({
                 ok:true,
-                message:`Falta Aun`,
+                message:`We need another step`,
                 data:loginResponse
             })
 
@@ -259,7 +259,7 @@ export const changePassword = async (req:Request, res:Response) => {
         if(!existePass){
             return res.status(httpResponses.HTTP_BAD_REQUEST).json({
                 ok:false,
-                message:`Contraseña antigua no coincide.`,
+                message:`old password does't match`,
                 data:null
             });
         }
