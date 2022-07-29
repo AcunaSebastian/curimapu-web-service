@@ -204,7 +204,8 @@ class LibroCampo {
     async getImagenes(id_anexo, systemParams) {
         const sql = `SELECT fotos.* FROM fotos 
         INNER JOIN visita USING (id_visita)
-        WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' `;
+        WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' AND fotos.vista = 'cliente' `;
+        // console.log(sql)
         const fotosVisitas = await this.dbConnection.select(sql);
         const nuevasFotosVisitas = fotosVisitas.map(foto => {
             const rutaFoto = foto.ruta_foto.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
@@ -217,6 +218,7 @@ class LibroCampo {
                 ruta_foto_original: urlImgOriginal
             };
         });
+        console.log(nuevasFotosVisitas);
         return nuevasFotosVisitas;
     }
 }

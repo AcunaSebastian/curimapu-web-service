@@ -321,6 +321,7 @@ export default class LibroCampo {
         INNER JOIN visita USING (id_visita)
         WHERE tipo = 'V' AND visita.id_ac = '${ id_anexo }' AND fotos.vista = 'cliente' `;
 
+        // console.log(sql)
 
         const fotosVisitas = await  this.dbConnection.select( sql );
         
@@ -341,6 +342,8 @@ export default class LibroCampo {
             }
 
         })
+
+        console.log(nuevasFotosVisitas)
 
         return nuevasFotosVisitas;
 
