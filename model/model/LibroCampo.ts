@@ -319,7 +319,7 @@ export default class LibroCampo {
 
         const sql = `SELECT fotos.* FROM fotos 
         INNER JOIN visita USING (id_visita)
-        WHERE tipo = 'V' AND visita.id_ac = '${ id_anexo }' `;
+        WHERE tipo = 'V' AND visita.id_ac = '${ id_anexo }' AND fotos.vista = 'cliente' `;
 
 
         const fotosVisitas = await  this.dbConnection.select( sql );
