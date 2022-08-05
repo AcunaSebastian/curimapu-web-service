@@ -29,7 +29,7 @@ export default class Variedad {
         INNER JOIN materiales USING(id_materiales) 
         ${inner}
         WHERE 1 ${filtro}
-        GROUP BY materiales.id_materiales
+        GROUP BY materiales.id_materiales, quotation.id_tempo
         ORDER BY nom_hibrido ASC`;
 
         console.log(sql);
@@ -40,14 +40,12 @@ export default class Variedad {
 
         const nuevoArrego = variedades.map(variedad => {
 
-            const existenMas = variedades.filter( vari => vari.nom_hibrido === variedad.nom_hibrido && vari.id_materiales !== variedad.id_materiales);
+            const existenMas = variedades.filter( vari => vari.nom_hibrido === variedad.nom_hibrido);
 
-            if(variedad.nom_hibrido == "LC 2006"){
-                console.log(existenMas);
-            }
+         
             const nuevoNombre = `${variedad.temporada}-${variedad.nom_hibrido}`;
 
-            if(existenMas.length <= 0) return {...variedad, nom_hibrido:nuevoNombre, label:nuevoNombre};
+            if(existenMas.length <= 1) return {...variedad, nom_hibrido:nuevoNombre, label:nuevoNombre};
 
 
             return {
