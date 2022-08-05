@@ -21,7 +21,8 @@ export default class Variedad {
             materiales.*, 
             materiales.id_materiales AS value, 
             materiales.nom_hibrido AS label,
-            temporada.nombre AS temporada
+            temporada.nombre AS temporada,
+            quotation.id_tempo
         FROM detalle_quotation DQ
         INNER JOIN quotation USING (id_quotation)
         INNER JOIN temporada USING (id_tempo)
