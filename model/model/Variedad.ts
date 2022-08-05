@@ -17,15 +17,44 @@ export default class Variedad {
             LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
         }
 
-        const sql = `SELECT materiales.*, materiales.id_materiales AS value, materiales.nom_hibrido AS label 
+        const sql = `SELECT 
+            materiales.*, 
+            materiales.id_materiales AS value, 
+            materiales.nom_hibrido AS label,
+            temporada.nombre AS temporada
         FROM detalle_quotation DQ
+        INNER JOIN quotation USING (id_quotation)
+        INNER JOIN temporada USING (id_tempo)
         INNER JOIN materiales USING(id_materiales) 
         ${inner}
         WHERE 1 ${filtro}
         ORDER BY nom_hibrido ASC`;
 
-        const especie:IVariedad[] = await this.dbConnection.select( sql );
-        return especie;
+
+        
+        const variedades:IVariedad[] = await this.dbConnection.select( sql );
+
+
+        const nuevoArrego = variedades.map(variedad => {
+
+            const existenMas = variedades.filter( vari => vari.nom_hibrido === variedad.nom_hibrido && vari.id_materiales_SAP != variedad.id_materiales_SAP);
+
+            const nuevoNombre = `${variedad.temporada}-${variedad.nom_hibrido}`;
+
+            if(existenMas.length <= 0) return {...variedad, nom_hibrido:nuevoNombre, label:nuevoNombre};
+
+
+            return {
+                ...variedad, 
+                label:`${nuevoNombre}-${variedad.id_materiales_SAP}`,
+                nom_hibrido:`${nuevoNombre}-${variedad.id_materiales_SAP}`
+            }
+            
+            
+        });
+
+
+        return nuevoArrego;
 
     }
 

@@ -8,4 +8,5 @@ export interface IVariedad{
     p_macho:string;
     condition_mat:string;
     certification:string;
+    temporada:string;
 }
