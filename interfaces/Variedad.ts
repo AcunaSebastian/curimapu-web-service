@@ -9,4 +9,5 @@ export interface IVariedad{
     condition_mat:string;
     certification:string;
     temporada:string;
+    id_tempo:number;
 }

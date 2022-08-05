@@ -8,10 +8,11 @@ const fs_1 = __importDefault(require("fs"));
 const model_1 = require("../model/");
 const httpResponses_1 = require("../utils/httpResponses");
 const getVisitas = async (req, res) => {
-    const { num_anexo, lote, agricultor, ready_batch, id_variedad, id_temporada, id_especie, fecha_visita, limit = 100, page = 0 } = req.query;
+    const { num_anexo, lote, agricultor, ready_batch, id_variedad: id_material, id_temporada, id_especie, fecha_visita, limit = 100, page = 0 } = req.query;
     const usuario = req.usuario;
     const db = req.bd_conection;
     try {
+        const id_variedad = id_material.split('___')[0];
         const filter = {
             usuario,
             num_anexo: num_anexo,

@@ -33,9 +33,10 @@ class Variedad {
             const existenMas = variedades.filter(vari => vari.nom_hibrido === variedad.nom_hibrido);
             const nuevoNombre = `${variedad.temporada}-${variedad.nom_hibrido}`;
             if (existenMas.length <= 1)
-                return { ...variedad, nom_hibrido: nuevoNombre, label: nuevoNombre };
+                return { ...variedad, value: `${variedad.id_materiales}___${variedad.id_tempo}`, nom_hibrido: nuevoNombre, label: nuevoNombre };
             return {
                 ...variedad,
+                value: `${variedad.id_materiales}___${variedad.id_tempo}`,
                 label: `${nuevoNombre}-${variedad.id_materiales_SAP}`,
                 nom_hibrido: `${nuevoNombre}-${variedad.id_materiales_SAP}`
             };

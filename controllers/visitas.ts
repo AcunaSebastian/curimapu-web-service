@@ -12,19 +12,32 @@ export const getVisitas = async (req:Request, res:Response) => {
         lote,
         agricultor,
         ready_batch,
-        id_variedad, 
+        id_variedad:id_material, 
         id_temporada,
         id_especie,
         fecha_visita,
         limit = 100,
         page= 0
-     } = req.query;
+     } = req.query as unknown as {
+      num_anexo: string;
+      lote: string;
+      agricultor: string;
+      ready_batch: string;
+      id_variedad: string;
+      id_temporada: string;
+      id_especie: string;
+      fecha_visita: string;
+      limit: number;
+      page: number;
+     };
 
 
      const usuario = req.usuario;
      const db = req.bd_conection;
 
      try {
+
+      const id_variedad = id_material.split('___')[0] as unknown as string;
 
          const filter = {
             usuario,

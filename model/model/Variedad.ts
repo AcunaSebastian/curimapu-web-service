@@ -45,11 +45,12 @@ export default class Variedad {
          
             const nuevoNombre = `${variedad.temporada}-${variedad.nom_hibrido}`;
 
-            if(existenMas.length <= 1) return {...variedad, nom_hibrido:nuevoNombre, label:nuevoNombre};
+            if(existenMas.length <= 1) return {...variedad,value:`${variedad.id_materiales}___${variedad.id_tempo}`, nom_hibrido:nuevoNombre, label:nuevoNombre};
 
 
             return {
                 ...variedad, 
+                value:`${variedad.id_materiales}___${variedad.id_tempo}`,
                 label:`${nuevoNombre}-${variedad.id_materiales_SAP}`,
                 nom_hibrido:`${nuevoNombre}-${variedad.id_materiales_SAP}`
             }
