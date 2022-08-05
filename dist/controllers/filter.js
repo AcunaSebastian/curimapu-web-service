@@ -16,7 +16,7 @@ const getFilters = async (req, res) => {
         const temporada = new Temporada_1.default(db);
         const clientesClass = new model_1.Cliente(db);
         const especies = await especie.getEspeciesCliente(usuario);
-        const variedades = await variedad.getVariedades();
+        const variedades = await variedad.getVariedades(usuario);
         const temporadas = await temporada.getTemporadas(usuario);
         const clientes = await clientesClass.getClienteByEnlace(usuario);
         const data = {

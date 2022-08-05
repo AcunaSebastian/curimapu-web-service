@@ -5,8 +5,21 @@ class Variedad {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
     }
-    async getVariedades() {
-        const especie = await this.dbConnection.select(`SELECT materiales.*, materiales.id_materiales AS value, materiales.nom_hibrido AS label FROM materiales ORDER BY nom_hibrido ASC`);
+    async getVariedades(usuario) {
+        let filtro = ``;
+        let inner = ``;
+        if (usuario.id_tipo_usuario === utils_1.Constants.USUARIO_CLIENTE) {
+            filtro += ` AND U.id_usuario = '${usuario.id_usuario}' `;
+            inner += ` LEFT JOIN usuario_det_quo UDQ ON (UDQ.id_de_quo = DQ.id_de_quo)
+            LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
+        }
+        const sql = `SELECT materiales.*, materiales.id_materiales AS value, materiales.nom_hibrido AS label 
+        FROM detalle_quotation DQ
+        INNER JOIN materiales USING(id_materiales) 
+        ${inner}
+        WHERE 1 ${filtro}
+        ORDER BY nom_hibrido ASC`;
+        const especie = await this.dbConnection.select(sql);
         return especie;
     }
     async getVariedadesCard(usuario, id_temporada) {

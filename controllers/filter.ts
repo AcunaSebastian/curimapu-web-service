@@ -20,7 +20,7 @@ export const getFilters = async (req:Request, res:Response) => {
         const clientesClass  = new Cliente( db );
 
         const especies:IEspecie[] = await especie.getEspeciesCliente(usuario);
-        const variedades:IVariedad[] = await variedad.getVariedades();
+        const variedades:IVariedad[] = await variedad.getVariedades(usuario);
         const temporadas:ITemporada[] = await temporada.getTemporadas(usuario);
         const clientes:ICliente[] = await clientesClass.getClienteByEnlace( usuario );
 
