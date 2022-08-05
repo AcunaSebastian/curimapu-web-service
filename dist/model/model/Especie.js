@@ -48,23 +48,19 @@ class Especie {
                 filtro += ` AND ( ${tmp} ) `;
                 break;
         }
-        const sql = `SELECT especie.*, especie.id_esp AS value, especie.nombre AS label ,
-        quotation.id_tempo, temporada.nombre AS temporada
+        const sql = `SELECT especie.*, especie.id_esp AS value, especie.nombre AS label 
         FROM especie 
-        INNER JOIN quotation USING (id_esp)
-        INNER JOIN temporada USING (id_tempo)
         WHERE 1 ${filtro} 
-        GROUP BY especie.id_esp, quotation.id_tempo
         ORDER BY especie.nombre ASC`;
         const especie = await this.dbConnection.select(sql);
-        const nuevoArreglo = especie.map(esp => {
-            return {
-                ...esp,
-                label: `${esp.temporada}-${esp.nombre}`,
-                nombre: `${esp.temporada}-${esp.nombre}`
-            };
-        });
-        return nuevoArreglo;
+        // const nuevoArreglo = especie.map( esp => {
+        //     return {
+        //         ...esp,
+        //         label:`${esp.temporada}-${esp.nombre}`,
+        //         nombre:`${esp.temporada}-${esp.nombre}`
+        //     }
+        // });
+        return especie;
     }
 }
 exports.default = Especie;
