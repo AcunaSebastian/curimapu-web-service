@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const router_1 = require("../router/");
+const clima_1 = require("../router/v1/clima");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -28,6 +29,7 @@ class Server {
         this.app.use('/api/v1/visitas', router_1.visitasRouter);
         this.app.use('/api/v1/ingresos', router_1.ingresosRouter);
         this.app.use('/api/v1/libro-campo', router_1.libroCampoRouter);
+        this.app.use('/api/v1/clima', clima_1.climaRouter);
         // this.app.use('/api/dte', dteRouter);
     }
     listen() {

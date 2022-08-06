@@ -3,6 +3,7 @@ import cors from 'cors'
 import fileUpload from 'express-fileupload';
 
 import { authRouter, filterRouter, homeRouter, ingresosRouter, resumenRouter, visitasRouter, libroCampoRouter } from '../router/';
+import { climaRouter } from '../router/v1/clima';
 
 
 
@@ -39,6 +40,7 @@ export default class Server {
         this.app.use('/api/v1/visitas', visitasRouter);
         this.app.use('/api/v1/ingresos', ingresosRouter);
         this.app.use('/api/v1/libro-campo', libroCampoRouter);
+        this.app.use('/api/v1/clima', climaRouter);
         // this.app.use('/api/dte', dteRouter);
     }
 
