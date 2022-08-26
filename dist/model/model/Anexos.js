@@ -50,10 +50,11 @@ class Anexo {
         for (const anexo of anexos) {
             const sql = `SELECT * FROM visita 
             WHERE id_ac = '${anexo.id_ac}' AND cron_envia_corr != 'CREADA DESDE WEB' 
-            ORDER BY fecha_r DESC LIMIT 1`;
+            ORDER BY id_visita DESC LIMIT 1`;
             const ultimaVisita = await this.dbConnection.select(sql);
             if (ultimaVisita.length <= 0)
                 continue;
+            console.log(ultimaVisita);
             const observaciones = ultimaVisita.map(visita => {
                 return {
                     obs_creci: {

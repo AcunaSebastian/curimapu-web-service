@@ -77,7 +77,8 @@ export default class Anexo {
             const ultimaVisita = await this.dbConnection.select( sql );
 
             if(ultimaVisita.length <= 0) continue;
-
+            
+            console.log(ultimaVisita)
 
             const observaciones = ultimaVisita.map( visita => {
 
