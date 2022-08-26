@@ -12,8 +12,6 @@ export default class Region {
         const regiones = await this.DbConnection.select( sql );
 
         
-
-        console.log(regiones)
         return regiones;
     }
 
