@@ -37,7 +37,8 @@ export const getVisitas = async (req:Request, res:Response) => {
 
      try {
 
-      const id_variedad = id_material?.split('___')[0]  || '' as unknown as string;
+
+      const id_variedad = (id_material) ?  id_material?.split('___')[0]  :  '' as unknown as string;
 
          const filter = {
             usuario,
