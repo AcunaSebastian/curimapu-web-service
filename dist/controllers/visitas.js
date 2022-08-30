@@ -12,7 +12,7 @@ const getVisitas = async (req, res) => {
     const usuario = req.usuario;
     const db = req.bd_conection;
     try {
-        const id_variedad = id_material.split('___')[0];
+        const id_variedad = (id_material) ? id_material?.split('___')[0] : '';
         const filter = {
             usuario,
             num_anexo: num_anexo,
