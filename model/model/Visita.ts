@@ -141,7 +141,7 @@ export default class Visita {
         INNER JOIN especie E ON (Q.id_esp = E.id_esp)
         INNER JOIN temporada ON (Q.id_tempo = temporada.id_tempo)
 
-        ${inner} WHERE 1 ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
+        ${inner} WHERE  cron_envia_corr != 'CREADA DESDE WEB' ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
 
         const visitas:IVisitaCompuesta[] = await this.dbConnection.select( sql );
 
