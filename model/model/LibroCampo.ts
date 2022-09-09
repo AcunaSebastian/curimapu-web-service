@@ -160,16 +160,10 @@ export default class LibroCampo {
         if( usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
 
             innerPCM += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
-            // let tmp = ` CPCM.id_cli = '${usuario.id_usuario}' AND CPCM.ver = '1' `;
 
             filtroPCM += ` AND ( ${usuario.usuarios_enlazados.map( enlaces => 
                 ` CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `).join(` OR `)} ) `;
 
-            // for (const enlaces of usuario.usuarios_enlazados) {
-            //     tmp += ` OR CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `;
-            // }
-
-            // filtroPCM += ` AND ( ${tmp} ) `;
         }
 
         if(usuario.usuarios_enlazados.length > 0){

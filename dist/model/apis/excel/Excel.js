@@ -151,10 +151,13 @@ class ExcelClass {
                 bold: true
             }
         });
-        worksheet.cell(1, 1).string(`SUMMARY FOR ${especie.nombre} ON SEASON (${temporada.nombre}) `).style(titleStyle);
+        worksheet.cell(1, 1).string(`PEA SUMMARY ${temporada.nombre} SEASON `).style(titleStyle);
         let cont = 1;
         for (const cabecera of cabeceras) {
-            worksheet.cell(2, cont++).string(`${cabecera?.nombre_propiedad || ''}\n${cabecera.nombre_sub_propiedad}`).style(this.Excel.createStyle({
+            worksheet.cell(2, cont++).string(`${cabecera.nombre_sub_propiedad}`).style(this.Excel.createStyle({
+                font: {
+                    bold: true
+                },
                 border: {
                     top: {
                         color: 'black',
