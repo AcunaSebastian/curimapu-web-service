@@ -228,6 +228,14 @@ export default class ExcelClass {
                         color:'black',
                         style:'thin'
                     },
+                    right:{
+                        color:'black',
+                        style:'thin'
+                    },
+                    left:{
+                        color:'black',
+                        style:'thin'
+                    },
                     outline:true
                 },
                 fill:{
