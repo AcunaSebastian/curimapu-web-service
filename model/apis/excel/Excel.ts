@@ -211,7 +211,7 @@ export default class ExcelClass {
            }
         }) 
 
-        worksheet.cell(1,2, 5, 1).string(`PEA SUMMARY ${temporada.nombre} SEASON `).style(titleStyle);
+        worksheet.cell(1,1, 1, 5).string(`PEA SUMMARY ${temporada.nombre} SEASON `).style(titleStyle);
         
         let cont = 1;
         for (const cabecera of cabeceras) {
