@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils");
 const axios_1 = __importDefault(require("axios"));
+const buffer_1 = require("buffer");
 class Anexo {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -48,12 +49,13 @@ class Anexo {
         return anexos;
     }
     async getTranslatedObs(obs) {
+        console.log("size", new buffer_1.Blob([obs]).size);
         console.log({ obs });
         let translation;
         try {
             let { data } = await axios_1.default.get(`https://api.mymemory.translated.net/get?q=${obs}&langpair=es|en&de=zcloudticket@gmail.com`);
             let { responseData } = data;
-            console.log({ responseData });
+            console.log({ data });
             translation = responseData.translatedText;
         }
         catch (error) {
@@ -74,7 +76,8 @@ class Anexo {
             .replaceAll('ó', 'o')
             .replaceAll('ú', 'u')
             .replaceAll('\n', ' ')
-            .replaceAll('.', ' . ');
+            .replaceAll('.', '')
+            .replaceAll('Ñ', 'N');
     }
     async getObservacionesByAnexo(anexos) {
         if (anexos.length <= 0)
@@ -88,13 +91,12 @@ class Anexo {
             if (ultimaVisita.length <= 0)
                 continue;
             const observaciones = ultimaVisita.map(async (visita) => {
-                visita.obs_cre_t = (visita.obs_cre.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_cre.trim())) : "";
-                visita.obs_fito_t = (visita.obs_fito.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_fito.trim())) : "";
-                visita.obs_gen_t = (visita.obs_gen.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_gen.trim())) : "";
-                visita.obs_t = (visita.obs.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs.trim())) : "";
-                visita.obs_hum_t = (visita.obs_hum.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_hum.trim())) : "";
-                visita.obs_male_t = (visita.obs_male.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_male.trim())) : "";
-                // console.log(visita);
+                visita.obs_cre_t = (visita.obs_cre.trim().length > 0) ? visita.obs_cre.trim() : "";
+                visita.obs_fito_t = (visita.obs_fito.trim().length > 0) ? visita.obs_fito.trim() : "";
+                visita.obs_gen_t = (visita.obs_gen.trim().length > 0) ? visita.obs_gen.trim() : "";
+                visita.obs_t = (visita.obs.trim().length > 0) ? visita.obs.trim() : "";
+                visita.obs_hum_t = (visita.obs_hum.trim().length > 0) ? visita.obs_hum.trim() : "";
+                visita.obs_male_t = (visita.obs_male.trim().length > 0) ? visita.obs_male.trim() : "";
                 return {
                     obs_creci: {
                         titulo: "Grow Status:",

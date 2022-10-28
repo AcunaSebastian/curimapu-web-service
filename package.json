@@ -22,6 +22,7 @@
     "moment": "2.29.4",
     "mysql2": "2.3.3",
     "nodemon": "2.0.19",
+    "parse-url": "^8.1.0",
     "sequelize": "6.21.3",
     "xml2js": "^0.4.23"
   },
