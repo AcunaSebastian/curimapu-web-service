@@ -268,7 +268,6 @@ export default class Quotation {
         formData.append('tipo_usuario', usuario.id_tipo_usuario);
         formData.append('id_usuario', usuario.id_usuario);
 
-        console.log(usuario.id_usuario)
 
         const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
         const writer = fs.createWriteStream(namePDf);

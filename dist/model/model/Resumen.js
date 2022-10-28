@@ -28,7 +28,6 @@ class Resumen {
         WHERE muestra_en_resumen > 0 AND aplica = 'SI'
         AND id_tempo = '${id_temporada}' AND id_esp = '${id_especie}'
         ORDER BY muestra_en_resumen ASC;`;
-        console.log(sql);
         const cabecera = await this.dbConnection.select(sql);
         return cabecera;
     }

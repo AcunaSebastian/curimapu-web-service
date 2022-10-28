@@ -28,8 +28,6 @@ export default class Resumen {
         AND id_tempo = '${id_temporada}' AND id_esp = '${id_especie}'
         ORDER BY muestra_en_resumen ASC;`;
 
-        console.log(sql)
-
         const cabecera:IResumen[] = await this.dbConnection.select( sql );
 
         return cabecera;

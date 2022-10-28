@@ -66,20 +66,37 @@ export default class Anexo {
 
     async getTranslatedObs( obs:string ) { 
 
+        console.log({obs});
         let translation;
         try {
             let { data } = await axios.get(`https://api.mymemory.translated.net/get?q=${obs}&langpair=es|en&de=zcloudticket@gmail.com`);
 
             let { responseData } = data;
 
-            // console.log( responseData )
+            console.log( {responseData} )
             translation = responseData.translatedText;
         } catch (error) {
-            
+        console.log({error});
         }
 
         return translation;
 
+    }
+
+    sanitizarTexto(observacion:string) : string{
+        return  observacion
+            .replaceAll('Á','A')
+            .replaceAll('É','E')
+            .replaceAll('Í','I')
+            .replaceAll('Ó','O')
+            .replaceAll('Ú','U')
+            .replaceAll('á','a')
+            .replaceAll('é','e')
+            .replaceAll('í','i')
+            .replaceAll('ó','o')
+            .replaceAll('ú','u')
+            .replaceAll('\n', ' ')
+            .replaceAll('.', ' . ')
     }
     
     async getObservacionesByAnexo( anexos:any[]){
@@ -103,14 +120,12 @@ export default class Anexo {
 
             const observaciones = ultimaVisita.map( async (visita) => {
 
-
-
-                visita.obs_cre_t  = (visita.obs_cre.trim().length > 0)  ? await this.getTranslatedObs(visita.obs_cre.trim()) : "";
-                visita.obs_fito_t = (visita.obs_fito.trim().length > 0) ? await this.getTranslatedObs(visita.obs_fito.trim()): "";
-                visita.obs_gen_t  = (visita.obs_gen.trim().length > 0)  ? await this.getTranslatedObs(visita.obs_gen.trim()) : "";
-                visita.obs_t      =  (visita.obs.trim().length > 0)     ? await this.getTranslatedObs(visita.obs.trim())     : "";
-                visita.obs_hum_t  = (visita.obs_hum.trim().length > 0)  ? await this.getTranslatedObs(visita.obs_hum.trim()) : "";
-                visita.obs_male_t = (visita.obs_cre.trim().length > 0)  ? await this.getTranslatedObs(visita.obs_cre.trim()) : "";
+                visita.obs_cre_t  = (visita.obs_cre.trim().length > 0)  ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_cre.trim())) : "";
+                visita.obs_fito_t = (visita.obs_fito.trim().length > 0) ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_fito.trim())): "";
+                visita.obs_gen_t  = (visita.obs_gen.trim().length > 0)  ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_gen.trim())) : "";
+                visita.obs_t      =  (visita.obs.trim().length > 0)     ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs.trim()))     : "";
+                visita.obs_hum_t  = (visita.obs_hum.trim().length > 0)  ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_hum.trim())) : "";
+                visita.obs_male_t = (visita.obs_male.trim().length > 0)  ? await this.getTranslatedObs(this.sanitizarTexto(visita.obs_male.trim() )) : "";
                 
 
 
