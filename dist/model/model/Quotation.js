@@ -32,7 +32,7 @@ class Quotation {
         const quotations = await this.dbConnection.select(sql);
         return {
             titulo: `Quotations`,
-            total: quotations[0].total
+            total: quotations[0].total,
         };
     }
     async getSurfaceQuotation(usuario, id_temporada) {
@@ -62,14 +62,14 @@ class Quotation {
         const surfaceGPSs = await this.dbConnection.select(sql2);
         const surface = surfaces[0];
         const surfaceGPS = surfaceGPSs[0];
-        let superficieContratada = (surface?.id_um === 2) ? surface?.total / 10000 : surface?.total;
+        let superficieContratada = surface?.id_um === 2 ? surface?.total / 10000 : surface?.total;
         let superficieGPS = surfaceGPS?.total;
-        let porcentajeAsignado = ((superficieGPS / 100) / superficieContratada);
+        let porcentajeAsignado = superficieGPS / 100 / superficieContratada;
         return {
             titulo: `Surface, Data:`,
             superficieContratada: { titulo: `Ha Contracted`, total: superficieContratada },
             superficieGPS: { titulo: `Ha Asigned`, total: superficieGPS },
-            porcentajeAsignado: { titulo: ` % Asigned `, total: porcentajeAsignado }
+            porcentajeAsignado: { titulo: ` % Asigned `, total: porcentajeAsignado },
         };
     }
     async getKgContracted(usuario, id_temporada) {
@@ -91,7 +91,7 @@ class Quotation {
         const kgContracted = await this.dbConnection.select(sql);
         return {
             titulo: `Kg Contracted`,
-            total: kgContracted[0].total
+            total: kgContracted[0].total,
         };
     }
     async getCabeceraReporte(usuario, id_cliente, id_temporada, bd_params, id_especie) {
@@ -112,13 +112,13 @@ class Quotation {
                 const cabecera = await lc.getCabeceraCustom({
                     id_temporada: quotation.id_tempo,
                     id_especie: quotation.id_esp,
-                    id_cliente: id_cliente
+                    id_cliente: id_cliente,
                 });
-                const especies = [2, 3, 4].map(etapa => {
-                    const etapas = cabecera.filter(cab => cab.id_etapa === etapa);
+                const especies = [2, 3, 4].map((etapa) => {
+                    const etapas = cabecera.filter((cab) => cab.id_etapa === etapa);
                     return {
-                        etapa: etapas[0]?.etapa || '',
-                        propiedades: etapas
+                        etapa: etapas[0]?.etapa || "",
+                        propiedades: etapas,
                     };
                 });
                 checks.push({ especie: quotation.nombre, etapas: especies });
@@ -138,7 +138,9 @@ class Quotation {
         const cliente = await clienteClass.getClienteById(id_cliente);
         const nombreCliente = cliente.razon_social;
         const anexosClass = new _1.Anexo(this.dbConnection);
+        console.log("obtiene anexos ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
         const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
+        console.log("obtiene observaciones ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
         const observaciones = await anexosClass.getObservacionesByAnexo(anexos);
         let filtro = ``;
         if (id_especie) {
@@ -158,8 +160,8 @@ class Quotation {
         //         })
         //         checks.push(...cabecera.map( cab => {
         //             return {
-        //                 0:cab.id_prop_mat_cli, 
-        //                 1:`${cab.nombre_propiedad} - ${cab.nombre_sub_propiedad}`, 
+        //                 0:cab.id_prop_mat_cli,
+        //                 1:`${cab.nombre_propiedad} - ${cab.nombre_sub_propiedad}`,
         //                 2:`${cab.etapa}`,
         //                 3:`${cab.especie}`
         //             }
@@ -168,28 +170,33 @@ class Quotation {
         // }
         // return checks;
         const formData = new form_data_1.default();
-        formData.append('Temporada', Number(id_temporada));
+        formData.append("Temporada", Number(id_temporada));
         if (id_especie) {
-            formData.append('id_especie', Number(id_especie));
+            formData.append("id_especie", Number(id_especie));
         }
-        formData.append('Especie', nombreEspecie);
-        formData.append('Cliente', nombreCliente);
-        formData.append('Info', Number(id_cliente));
-        formData.append('Formato', Number(formato));
-        formData.append('Observacion', JSON.stringify(observaciones));
-        formData.append('Checks', JSON.stringify(checks));
-        formData.append('tipo_usuario', usuario.id_tipo_usuario);
-        formData.append('id_usuario', usuario.id_usuario);
-        const namePDf = `uploads/pdf/pdf_${id_cliente}_${(0, moment_1.default)().format('YYYYMMSSHHmmss')}.pdf`;
+        formData.append("Especie", nombreEspecie);
+        formData.append("Cliente", nombreCliente);
+        formData.append("Info", Number(id_cliente));
+        formData.append("Formato", Number(formato));
+        formData.append("Observacion", JSON.stringify(observaciones));
+        formData.append("Checks", JSON.stringify(checks));
+        formData.append("tipo_usuario", usuario.id_tipo_usuario);
+        formData.append("id_usuario", usuario.id_usuario);
+        console.log("escribe pdf vacio ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
+        const namePDf = `uploads/pdf/pdf_${id_cliente}_${(0, moment_1.default)().format("YYYYMMSSHHmmss")}.pdf`;
         const writer = fs_1.default.createWriteStream(namePDf);
         try {
+            console.log("hace peticion a servidor ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
             const { config, data } = await axios_1.default.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`, formData, {
                 headers: formData.getHeaders(),
-                responseType: 'stream'
+                responseType: "stream",
             });
             data.pipe(writer);
-            return new Promise(resolve => {
-                writer.on('finish', () => { console.log('escribiendo...'); resolve(namePDf); });
+            return new Promise((resolve) => {
+                writer.on("finish", () => {
+                    console.log("escribiendo...");
+                    resolve(namePDf);
+                });
             });
         }
         catch (error) {
