@@ -7,42 +7,42 @@ import moment from 'moment';
 
 
 interface IFiltroVisitas {
-    usuario:IUsuario;
-    num_anexo?:string;
-    lote?:string;
-    agricultor?:string;
-    ready_batch?:string;
-    id_variedad?:number;
-    id_temporada?:number;
-    id_especie?:number;
-    fecha_visita?:string;
-    limit?:number;
-    page:number
+    usuario: IUsuario;
+    num_anexo?: string;
+    lote?: string;
+    agricultor?: string;
+    ready_batch?: string;
+    id_variedad?: number;
+    id_temporada?: number;
+    id_especie?: number;
+    fecha_visita?: string;
+    limit?: number;
+    page: number
 }
 
-interface IVisitaCompuesta  { 
-    id_visita:number;
-    lote:string;
-    num_anexo:string;
-    nombre_agricultor:string;
-    ready_batch:string;
-    desc_especie:string;
-    id_especie:number;
-    desc_variedad:string;
-    id_variedad:number;
-    fecha_visita:string;
+interface IVisitaCompuesta {
+    id_visita: number;
+    lote: string;
+    num_anexo: string;
+    nombre_agricultor: string;
+    ready_batch: string;
+    desc_especie: string;
+    id_especie: number;
+    desc_variedad: string;
+    id_variedad: number;
+    fecha_visita: string;
 }
 
 export default class Visita {
 
-    constructor(private dbConnection:DatabaseService){}
+    constructor(private dbConnection: DatabaseService) { }
 
-    async getVisitas(filters:IFiltroVisitas){
+    async getVisitas(filters: IFiltroVisitas) {
 
-        const { 
-            usuario, 
-            id_temporada, 
-            id_especie, 
+        const {
+            usuario,
+            id_temporada,
+            id_especie,
             id_variedad,
             fecha_visita,
             agricultor,
@@ -51,52 +51,52 @@ export default class Visita {
             num_anexo,
             limit,
             page = 0
-          } = filters;
+        } = filters;
 
 
         let filtro = ``;
         let inner = ``;
 
-        if(id_temporada){
+        if (id_temporada) {
             filtro += ` AND Q.id_tempo = '${id_temporada}' `;
         }
 
-        if(num_anexo){
+        if (num_anexo) {
             filtro += ` AND num_anexo LIKE '%${num_anexo}%' `;
         }
 
-        if(id_especie){
+        if (id_especie) {
             filtro += ` AND Q.id_esp = '${id_especie}' `;
         }
 
-        if(id_variedad){
+        if (id_variedad) {
             filtro += ` AND DQ.id_materiales = '${id_variedad}' `;
         }
 
-        if(agricultor){
+        if (agricultor) {
             filtro += ` AND A.razon_social LIKE '%${agricultor}%' `;
         }
 
-        if(fecha_visita){
+        if (fecha_visita) {
             filtro += ` AND V.fecha_r = '${fecha_visita}' `;
         }
 
-        if(ready_batch){
+        if (ready_batch) {
             filtro += ` AND AC.ready_batch LIKE '%${ready_batch}%'`
         }
-        if(lote){
+        if (lote) {
             filtro += ` AND L.nombre LIKE '%${lote}%' `;
         }
 
 
         let limite = ``;
-        if(limit){
-            const pagina = (page > 0) ? ( page - 1 ) * limit : 0;
+        if (limit) {
+            const pagina = (page > 0) ? (page - 1) * limit : 0;
             limite = ` LIMIT ${pagina}, ${limit} `;
         }
 
 
-        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
+        if (usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
 
             let tmp = ` Q.id_cli = '${usuario.id_usuario}' `;
 
@@ -109,8 +109,8 @@ export default class Visita {
 
 
 
-        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
-            filtro += ` AND U.id_usuario = '${ usuario.id_usuario }' `;
+        if (usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
+            filtro += ` AND U.id_usuario = '${usuario.id_usuario}' `;
             inner += ` LEFT JOIN usuario_det_quo UDQ ON (UDQ.id_de_quo = DQ.id_de_quo)
             LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
         }
@@ -141,27 +141,27 @@ export default class Visita {
         INNER JOIN especie E ON (Q.id_esp = E.id_esp)
         INNER JOIN temporada ON (Q.id_tempo = temporada.id_tempo)
 
-        ${inner} WHERE  cron_envia_corr != 'CREADA DESDE WEB' ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
+        ${inner} WHERE  V.id_cabecera > 0 ${filtro} ORDER BY V.fecha_r DESC ${limite} `;
 
-        const visitas:IVisitaCompuesta[] = await this.dbConnection.select( sql );
+        const visitas: IVisitaCompuesta[] = await this.dbConnection.select(sql);
 
         return visitas;
 
     }
 
-    async getVisitasCard( usuario:IUsuario, id_temporada?:number ) {
+    async getVisitasCard(usuario: IUsuario, id_temporada?: number) {
 
 
         let filtro = ``;
         let inner = ``;
 
-        if(id_temporada){
+        if (id_temporada) {
             filtro += ` AND F.id_tempo = '${id_temporada}' `;
         }
 
-        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
+        if (usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
 
-            filtro += ` AND U.id_usuario = '${ usuario.id_usuario }' `;
+            filtro += ` AND U.id_usuario = '${usuario.id_usuario}' `;
             inner += ` LEFT JOIN usuario_det_quo UDQ ON (UDQ.id_de_quo = DQ.id_de_quo)
             LEFT JOIN usuarios U ON (U.id_usuario = UDQ.id_usuario) `;
         }
@@ -172,42 +172,42 @@ export default class Visita {
         INNER JOIN ficha F USING(id_ficha)
         INNER JOIN detalle_quotation DQ ON (DQ.id_de_quo = AC.id_de_quo)
         ${inner} 
-        WHERE 1 ${filtro }`;
+        WHERE 1 ${filtro}`;
 
-        
-        const visitas = await this.dbConnection.select( sql );
-        return { titulo:`Visits`, total:visitas[0].total};
+
+        const visitas = await this.dbConnection.select(sql);
+        return { titulo: `Visits`, total: visitas[0].total };
 
     }
 
 
-    async getPDF(id_visita:number, bd_params:ISystemParameters):Promise<string>{
+    async getPDF(id_visita: number, bd_params: ISystemParameters): Promise<string> {
 
         try {
             const namePDf = `uploads/pdf/pdf_${id_visita}_${moment().format('YYYYMMSSHHmmss')}.pdf`;
 
             const writer = fs.createWriteStream(namePDf);
 
-            const {data} = await axios.get(`http://${bd_params.ip_host}/${bd_params.proyect_folder}/info_visita.php?visita=${id_visita}`, {
-                responseType:'stream'
+            const { data } = await axios.get(`http://${bd_params.ip_host}/${bd_params.proyect_folder}/info_visita.php?visita=${id_visita}`, {
+                responseType: 'stream'
             });
-            
+
 
             data.pipe(writer);
 
-            return new Promise( resolve => {
-                writer.on('finish', () => {  console.log('escribiendo...');  resolve(namePDf);});
+            return new Promise(resolve => {
+                writer.on('finish', () => { console.log('escribiendo...'); resolve(namePDf); });
             })
-        
 
-            
+
+
         } catch (error) {
 
-            if(axios.isAxiosError(error)){
+            if (axios.isAxiosError(error)) {
                 console.log(error.request)
             }
 
             return '';
         }
     }
-}``
+} ``
