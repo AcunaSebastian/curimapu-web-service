@@ -33,8 +33,8 @@ const getLibroCampo = async (req, res) => {
         const finalCabs = [];
         if (cabeceras.length > 0) {
             for (const cabecera of cabeceras) {
-                const tmpSubProps = cabeceras.filter((cab) => cab.id_prop === cabecera.id_prop);
-                const existe = finalCabs.filter((p) => p.id_prop === cabecera.id_prop);
+                const tmpSubProps = cabeceras.filter((cab) => cab.id_prop === cabecera.id_prop && cab.id_etapa === cabecera.id_etapa);
+                const existe = finalCabs.filter((p) => p.id_prop === cabecera.id_prop && p.id_etapa === cabecera.id_etapa);
                 if (existe.length <= 0) {
                     finalCabs.push({ ...cabecera, subProps: tmpSubProps });
                 }

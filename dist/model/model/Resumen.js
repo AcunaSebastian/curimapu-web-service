@@ -25,7 +25,7 @@ class Resumen {
         FROM prop_cli_mat PCM
         LEFT JOIN propiedades P USING (id_prop) 
         INNER JOIN sub_propiedades SP USING (id_sub_propiedad)
-        WHERE muestra_en_resumen > 0 AND aplica = 'SI'
+        WHERE muestra_en_resumen > 0 AND aplica = 'SI' 
         AND id_tempo = '${id_temporada}' AND id_esp = '${id_especie}'
         ORDER BY muestra_en_resumen ASC;`;
         const cabecera = await this.dbConnection.select(sql);
@@ -64,7 +64,7 @@ class Resumen {
         detalle_quotation DQ
         INNER JOIN quotation Q ON (DQ.id_quotation = Q.id_quotation)
         INNER JOIN anexo_contrato AC ON (DQ.id_de_quo = AC.id_de_quo) 
-        WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro}  ${limite} `;
+        WHERE  Q.id_esp='${id_especie}' AND AC.destruido = 0 AND Q.id_tempo='${id_temporada}' ${filtro}  ${limite} `;
         const anexos = await this.dbConnection.select(sql);
         if (anexos.length <= 0)
             return anexos;

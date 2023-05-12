@@ -2,11 +2,11 @@ import { IResumen, IUsuario } from "../../interfaces";
 import { DatabaseService } from "../database";
 import Foraneo from "./Foraneo";
 
-export default class Resumen { 
+export default class Resumen {
 
-    constructor(private dbConnection: DatabaseService){}
+    constructor(private dbConnection: DatabaseService) { }
 
-    async getCabecera( id_temporada:number, id_especie:number ):Promise<IResumen[]>{
+    async getCabecera(id_temporada: number, id_especie: number): Promise<IResumen[]> {
 
         const sql = `SELECT 
         PCM.id_prop_mat_cli,
@@ -24,46 +24,46 @@ export default class Resumen {
         FROM prop_cli_mat PCM
         LEFT JOIN propiedades P USING (id_prop) 
         INNER JOIN sub_propiedades SP USING (id_sub_propiedad)
-        WHERE muestra_en_resumen > 0 AND aplica = 'SI'
+        WHERE muestra_en_resumen > 0 AND aplica = 'SI' 
         AND id_tempo = '${id_temporada}' AND id_esp = '${id_especie}'
         ORDER BY muestra_en_resumen ASC;`;
 
-        const cabecera:IResumen[] = await this.dbConnection.select( sql );
+        const cabecera: IResumen[] = await this.dbConnection.select(sql);
 
         return cabecera;
 
     }
 
 
-    async getData( id_temporada:number, id_especie:number,  usuario:IUsuario,  page:number, limit?:number){
+    async getData(id_temporada: number, id_especie: number, usuario: IUsuario, page: number, limit?: number) {
 
 
 
-        const cabeceras:IResumen[] = await this.getCabecera(id_temporada, id_especie);
+        const cabeceras: IResumen[] = await this.getCabecera(id_temporada, id_especie);
 
         let filtro = ``;
-        if(usuario.usuarios_enlazados.length > 0){
+        if (usuario.usuarios_enlazados.length > 0) {
 
             let tmp = ``;
             for (const enlaces of usuario.usuarios_enlazados) {
-                if(tmp.length > 0) tmp += ` OR `;
-                tmp += ` Q.id_cli = '${enlaces}' ` ;
+                if (tmp.length > 0) tmp += ` OR `;
+                tmp += ` Q.id_cli = '${enlaces}' `;
             }
-            
-            if(tmp.length > 0){
+
+            if (tmp.length > 0) {
                 filtro += ` AND ( ${tmp} ) `;
             }
 
         }
 
 
-        if(usuario.isUsuarioDetQuo){
+        if (usuario.isUsuarioDetQuo) {
             filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
         }
 
-        let limite  = ``;
-        if(limit){
-            const pagina = (page > 0) ? ( page - 1 ) * limit : 0;
+        let limite = ``;
+        if (limit) {
+            const pagina = (page > 0) ? (page - 1) * limit : 0;
             limite = ` LIMIT ${pagina}, ${limit} `;
         }
         const sql = `SELECT 
@@ -77,14 +77,14 @@ export default class Resumen {
         detalle_quotation DQ
         INNER JOIN quotation Q ON (DQ.id_quotation = Q.id_quotation)
         INNER JOIN anexo_contrato AC ON (DQ.id_de_quo = AC.id_de_quo) 
-        WHERE  Q.id_esp='${id_especie}' AND Q.id_tempo='${id_temporada}' ${filtro}  ${limite} `;
+        WHERE  Q.id_esp='${id_especie}' AND AC.destruido = 0 AND Q.id_tempo='${id_temporada}' ${filtro}  ${limite} `;
 
-        const anexos = await this.dbConnection.select( sql );
+        const anexos = await this.dbConnection.select(sql);
 
-        if(anexos.length <=  0) return anexos;
+        if (anexos.length <= 0) return anexos;
 
 
-        const respuestaAnexos:any[] = []
+        const respuestaAnexos: any[] = []
 
         for (const anexo of anexos) {
             const sql = `SELECT 
@@ -99,30 +99,30 @@ export default class Resumen {
                     V.id_ac='${anexo.id_ac}' AND  muestra_en_resumen > '0' AND PCM.aplica = 'SI'   
                 ORDER BY muestra_en_resumen ASC
                     `;
-            const datosVisita = await this.dbConnection.select( sql );
+            const datosVisita = await this.dbConnection.select(sql);
 
             const tpmData = [];
 
-            for( const cabecera of cabeceras ){
-                if(cabecera.foraneo === 'NO'){
+            for (const cabecera of cabeceras) {
+                if (cabecera.foraneo === 'NO') {
 
-                    const elementos = datosVisita.filter( dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);
+                    const elementos = datosVisita.filter(dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);
                     elementos.sort((el, al) => al.id_det_vis_prop - el.id_det_vis_prop);
 
-                    if(elementos.length > 0) tpmData.push({...elementos[0], sp:cabecera.nombre_sub_propiedad});
-                    else tpmData.push({id_prop_mat_cli:cabecera.id_prop_mat_cli,id_det_vis_prop:null, valor:null, sp:cabecera.nombre_sub_propiedad})
+                    if (elementos.length > 0) tpmData.push({ ...elementos[0], sp: cabecera.nombre_sub_propiedad });
+                    else tpmData.push({ id_prop_mat_cli: cabecera.id_prop_mat_cli, id_det_vis_prop: null, valor: null, sp: cabecera.nombre_sub_propiedad })
 
                 }
 
-                if( cabecera.foraneo === 'SI'){
-                    const foraneo = new Foraneo( this.dbConnection );
+                if (cabecera.foraneo === 'SI') {
+                    const foraneo = new Foraneo(this.dbConnection);
 
                     const datoForaneo = await foraneo.getForaneo(cabecera, anexo.id_ac);
                     tpmData.push({
-                        id_prop_mat_cli:cabecera.id_prop_mat_cli, 
-                        id_det_vis_prop:null, 
+                        id_prop_mat_cli: cabecera.id_prop_mat_cli,
+                        id_det_vis_prop: null,
                         valor: datoForaneo?.data || '',
-                        sp:cabecera.nombre_sub_propiedad
+                        sp: cabecera.nombre_sub_propiedad
                     })
                 }
 
@@ -130,7 +130,7 @@ export default class Resumen {
 
             respuestaAnexos.push({
                 ...anexo,
-                data:tpmData
+                data: tpmData
             });
         }
 
