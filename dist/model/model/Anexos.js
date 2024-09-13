@@ -73,10 +73,7 @@ class Anexo {
             if (ultimaVisita.length <= 0)
                 continue;
             for (const visita of ultimaVisita) {
-                visita.obs_cre_t = "";
-                visita.obs_cre = "hola";
                 if (visita.obs_cre_t.length == 0 && visita.obs_cre.length > 0) {
-                    console.log("entra a traducir");
                     const trans = await traductor.traducir({
                         id_registro: visita.id_visita,
                         rut: usuarios.rut,
