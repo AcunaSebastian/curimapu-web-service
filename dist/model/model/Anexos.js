@@ -1,11 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils");
-const axios_1 = __importDefault(require("axios"));
-const buffer_1 = require("buffer");
+const Traductor_1 = require("./Traductor");
 class Anexo {
     constructor(dbConnection) {
         this.dbConnection = dbConnection;
@@ -48,41 +44,27 @@ class Anexo {
         const anexos = await this.dbConnection.select(sql);
         return anexos;
     }
-    async getTranslatedObs(obs) {
-        console.log("size", new buffer_1.Blob([obs]).size);
-        console.log({ obs });
-        let translation;
-        try {
-            let { data } = await axios_1.default.get(`https://api.mymemory.translated.net/get?q=${obs}&langpair=es|en&de=zcloudticket@gmail.com`);
-            let { responseData } = data;
-            console.log({ data });
-            translation = responseData.translatedText;
-        }
-        catch (error) {
-            console.log({ error });
-        }
-        return translation;
-    }
     sanitizarTexto(observacion) {
         return observacion
-            .replaceAll('Á', 'A')
-            .replaceAll('É', 'E')
-            .replaceAll('Í', 'I')
-            .replaceAll('Ó', 'O')
-            .replaceAll('Ú', 'U')
-            .replaceAll('á', 'a')
-            .replaceAll('é', 'e')
-            .replaceAll('í', 'i')
-            .replaceAll('ó', 'o')
-            .replaceAll('ú', 'u')
-            .replaceAll('\n', ' ')
-            .replaceAll('.', '')
-            .replaceAll('Ñ', 'N');
+            .replaceAll("Á", "A")
+            .replaceAll("É", "E")
+            .replaceAll("Í", "I")
+            .replaceAll("Ó", "O")
+            .replaceAll("Ú", "U")
+            .replaceAll("á", "a")
+            .replaceAll("é", "e")
+            .replaceAll("í", "i")
+            .replaceAll("ó", "o")
+            .replaceAll("ú", "u")
+            .replaceAll("\n", " ")
+            .replaceAll(".", "")
+            .replaceAll("Ñ", "N");
     }
-    async getObservacionesByAnexo(anexos) {
+    async getObservacionesByAnexo(anexos, usuarios, sistema) {
         if (anexos.length <= 0)
             return [];
-        const respuestaAnexos = [];
+        const traductor = new Traductor_1.Traductor();
+        const observaciones = [];
         for (const anexo of anexos) {
             const sql = `SELECT * FROM visita 
             WHERE id_ac = '${anexo.id_ac}' AND cron_envia_corr != 'CREADA DESDE WEB' 
@@ -90,67 +72,105 @@ class Anexo {
             const ultimaVisita = await this.dbConnection.select(sql);
             if (ultimaVisita.length <= 0)
                 continue;
-            const observaciones = ultimaVisita.map(async (visita) => {
-                visita.obs_cre_t = (visita.obs_cre.trim().length > 0) ? visita.obs_cre.trim() : "";
-                visita.obs_fito_t = (visita.obs_fito.trim().length > 0) ? visita.obs_fito.trim() : "";
-                visita.obs_gen_t = (visita.obs_gen.trim().length > 0) ? visita.obs_gen.trim() : "";
-                visita.obs_t = (visita.obs.trim().length > 0) ? visita.obs.trim() : "";
-                visita.obs_hum_t = (visita.obs_hum.trim().length > 0) ? visita.obs_hum.trim() : "";
-                visita.obs_male_t = (visita.obs_male.trim().length > 0) ? visita.obs_male.trim() : "";
-                return {
-                    obs_creci: {
-                        titulo: "Grow Status:",
-                        valor: visita.obs_cre
-                    },
-                    obs_creci_t: {
-                        titulo: "Grow Status:",
-                        valor: visita.obs_cre_t
-                    },
-                    obs_fito: {
-                        titulo: "Phitosanitary Status:",
-                        valor: visita.obs_fito
-                    },
-                    obs_fito_t: {
-                        titulo: "Phitosanitary Status:",
-                        valor: visita.obs_fito_t
-                    },
-                    obs_generals: {
-                        titulo: "General Status:",
-                        valor: visita.obs_gen
-                    },
-                    obs_generals_t: {
-                        titulo: "General Status:",
-                        valor: visita.obs_gen_t
-                    },
-                    obs_globales: {
-                        titulo: "GENERALS:",
-                        valor: visita.obs
-                    },
-                    obs_globales_T: {
-                        titulo: "GENERALS:",
-                        valor: visita.obs_t
-                    },
-                    obs_hum: {
-                        titulo: "Soil Moisture Status:",
-                        valor: visita.obs_hum
-                    },
-                    obs_hum_t: {
-                        titulo: "Soil Moisture Status:",
-                        valor: visita.obs_hum_t
-                    },
-                    obs_male: {
-                        titulo: "Weed Pressure Status:",
-                        valor: visita.obs_male
-                    },
-                    obs_male_t: {
-                        titulo: "Weed Pressure Status:",
-                        valor: visita.obs_male_t
-                    },
-                };
-            });
-            respuestaAnexos.push({ anexo: anexo.num_anexo, obs: await observaciones[0] });
+            for (const visita of ultimaVisita) {
+                visita.obs_cre_t = "";
+                visita.obs_cre = "hola";
+                if (visita.obs_cre_t.length == 0 && visita.obs_cre.length > 0) {
+                    console.log("entra a traducir");
+                    const trans = await traductor.traducir({
+                        id_registro: visita.id_visita,
+                        rut: usuarios.rut,
+                        sistema: sistema,
+                        texto: visita.obs_cre,
+                    });
+                    visita.obs_cre_t = trans;
+                }
+                if (visita.obs_fito_t.length == 0 && visita.obs_fito.length > 0) {
+                    const trans = await traductor.traducir({
+                        id_registro: visita.id_visita,
+                        rut: usuarios.rut,
+                        sistema: sistema,
+                        texto: visita.obs_fito,
+                    });
+                    visita.obs_fito_t = trans;
+                }
+                if (visita.obs_gen_t.length == 0 && visita.obs_gen.length > 0) {
+                    const trans = await traductor.traducir({
+                        id_registro: visita.id_visita,
+                        rut: usuarios.rut,
+                        sistema: sistema,
+                        texto: visita.obs_gen,
+                    });
+                    visita.obs_gen_t = trans;
+                }
+                if (visita.obs_t.length == 0 && visita.obs.length > 0) {
+                    const trans = await traductor.traducir({
+                        id_registro: visita.id_visita,
+                        rut: usuarios.rut,
+                        sistema: sistema,
+                        texto: visita.obs,
+                    });
+                    visita.obs_t = trans;
+                }
+                if (visita.obs_hum_t.length == 0 && visita.obs_hum.length > 0) {
+                    const trans = await traductor.traducir({
+                        id_registro: visita.id_visita,
+                        rut: usuarios.rut,
+                        sistema: sistema,
+                        texto: visita.obs_hum,
+                    });
+                    visita.obs_hum_t = trans;
+                }
+                if (visita.obs_male_t.length == 0 && visita.obs_male.length > 0) {
+                    const trans = await traductor.traducir({
+                        id_registro: visita.id_visita,
+                        rut: usuarios.rut,
+                        sistema: sistema,
+                        texto: visita.obs_male,
+                    });
+                    visita.obs_male_t = trans;
+                }
+                if (visita.obs_t.length > 0) {
+                    observaciones.push({ id_visita: visita.id_visita, name: `obs_t`, value: visita.obs_t });
+                }
+                if (visita.obs_cre_t.length > 0) {
+                    observaciones.push({
+                        id_visita: visita.id_visita,
+                        name: `obs_cre_t`,
+                        value: visita.obs_cre_t,
+                    });
+                }
+                if (visita.obs_fito_t.length > 0) {
+                    observaciones.push({
+                        id_visita: visita.id_visita,
+                        name: `obs_fito_t`,
+                        value: visita.obs_fito_t,
+                    });
+                }
+                if (visita.obs_gen_t.length > 0) {
+                    observaciones.push({
+                        id_visita: visita.id_visita,
+                        name: `obs_gen_t`,
+                        value: visita.obs_gen_t,
+                    });
+                }
+                if (visita.obs_hum_t.length > 0) {
+                    observaciones.push({
+                        id_visita: visita.id_visita,
+                        name: `obs_hum_t`,
+                        value: visita.obs_hum_t,
+                    });
+                }
+                if (visita.obs_male_t.length > 0) {
+                    observaciones.push({
+                        id_visita: visita.id_visita,
+                        name: `obs_male_t`,
+                        value: visita.obs_male_t,
+                    });
+                }
+            }
         }
-        return respuestaAnexos;
+        return observaciones;
     }
 }
 exports.default = Anexo;

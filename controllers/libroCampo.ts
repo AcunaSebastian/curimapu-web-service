@@ -48,8 +48,12 @@ export const getLibroCampo = async (req: Request, res: Response) => {
 
     if (cabeceras.length > 0) {
       for (const cabecera of cabeceras) {
-        const tmpSubProps = cabeceras.filter((cab) => cab.id_prop === cabecera.id_prop && cab.id_etapa === cabecera.id_etapa);
-        const existe = finalCabs.filter((p) => p.id_prop === cabecera.id_prop && p.id_etapa === cabecera.id_etapa);
+        const tmpSubProps = cabeceras.filter(
+          (cab) => cab.id_prop === cabecera.id_prop && cab.id_etapa === cabecera.id_etapa
+        );
+        const existe = finalCabs.filter(
+          (p) => p.id_prop === cabecera.id_prop && p.id_etapa === cabecera.id_etapa
+        );
         if (existe.length <= 0) {
           finalCabs.push({ ...cabecera, subProps: tmpSubProps });
         }
@@ -170,6 +174,8 @@ export const getReporteQuotation = async (req: Request, res: Response) => {
     checks: any[];
   };
 
+  console.log(bdParams);
+
   const { checks } = req.body;
 
   const quotationClass = new Quotation(db);
@@ -238,28 +244,3 @@ export const getCabeceraReporteQuot = async (req: Request, res: Response) => {
     });
   }
 };
-// export const getImage = async (req:Request, res:Response) => {
-
-//     const usuario = req.usuario;
-//     const db = req.bd_conection;
-//     const params = req.bd_params;
-
-//     const { path } = req.query  as unknown as { path:string };
-
-//     try {
-
-//         const libroCampo  = new LibroCampo( db );
-
-//         const image = await libroCampo.getOneImage( path, params );
-
-//         return res.status( httpResponses.HTTP_OK ).send(image);
-
-//     } catch (error) {
-//         res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR ).json({
-//             ok:false,
-//             message:`PROBLEMAS EN FUNCION getImage ERROR : ${error}`,
-//             data:null
-//         })
-//     }
-
-// }

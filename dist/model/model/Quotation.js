@@ -127,67 +127,54 @@ class Quotation {
         return checks;
     }
     async getReporteQuotation(usuario, id_cliente, id_temporada, bd_params, checks, id_especie) {
-        const formato = 2;
         let nombreEspecie = ``;
         if (id_especie) {
             const especieClass = new _1.Especie(this.dbConnection);
             const especie = await especieClass.getEspecieById(id_especie);
             nombreEspecie = especie.nombre;
         }
-        const clienteClass = new _1.Cliente(this.dbConnection);
-        const cliente = await clienteClass.getClienteById(id_cliente);
-        const nombreCliente = cliente.razon_social;
+        const sistema = bd_params._id === "EXPORT" ? "CURIMAPU_EXPORT" : "CURIMAPU_VEGETALES";
         const anexosClass = new _1.Anexo(this.dbConnection);
         console.log("obtiene anexos ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
         const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
         console.log("obtiene observaciones ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
-        const observaciones = await anexosClass.getObservacionesByAnexo(anexos);
-        let filtro = ``;
-        if (id_especie) {
-            filtro = ` AND id_esp = '${id_especie}' `;
-        }
-        const sql = `SELECT * FROM quotation 
-        WHERE id_cli = '${id_cliente}' AND id_tempo = '${id_temporada}' ${filtro} `;
-        const quotations = await this.dbConnection.select(sql);
-        // const checks = []
-        const lc = new _1.LibroCampo(this.dbConnection);
-        // if(quotations.length > 0){
-        //     for (const quotation of quotations) {
-        //         const cabecera = await lc.getCabeceraCustom({
-        //             id_temporada:quotation.id_tempo,
-        //             id_especie:quotation.id_esp,
-        //             id_cliente:id_cliente
-        //         })
-        //         checks.push(...cabecera.map( cab => {
-        //             return {
-        //                 0:cab.id_prop_mat_cli,
-        //                 1:`${cab.nombre_propiedad} - ${cab.nombre_sub_propiedad}`,
-        //                 2:`${cab.etapa}`,
-        //                 3:`${cab.especie}`
-        //             }
-        //         }))
-        //     }
-        // }
-        // return checks;
+        const observaciones = await anexosClass.getObservacionesByAnexo(anexos, usuario, sistema);
         const formData = new form_data_1.default();
-        formData.append("Temporada", Number(id_temporada));
+        // ✅ id_cliente;
+        // ✅ id_quotation;
+        // ✅ id_esp
+        // ✅ agrega_drive;
+        // ✅ envia_correo;
+        // ✅ nombre_correo;
+        // ✅ mail_correo;
+        // ✅ id_tempo
+        // ✅ tipo_informe;
+        // ✅ checks;
+        // ✅ plantillas;
+        // ✅ anexos;
+        // 🚩 observaciones;
+        formData.append("id_tempo", Number(id_temporada));
         if (id_especie) {
-            formData.append("id_especie", Number(id_especie));
+            formData.append("id_esp", Number(id_especie));
         }
-        formData.append("Especie", nombreEspecie);
-        formData.append("Cliente", nombreCliente);
-        formData.append("Info", Number(id_cliente));
-        formData.append("Formato", Number(formato));
-        formData.append("Observacion", JSON.stringify(observaciones));
-        formData.append("Checks", JSON.stringify(checks));
-        formData.append("tipo_usuario", usuario.id_tipo_usuario);
+        formData.append("id_cliente", Number(id_cliente));
+        formData.append("observaciones", JSON.stringify(observaciones));
         formData.append("id_usuario", usuario.id_usuario);
+        formData.append("checks", JSON.stringify(checks));
+        formData.append("anexos", JSON.stringify(anexos?.map((el) => el.id_ac) ?? []));
+        formData.append("tipo_informe", 1);
+        formData.append("mail_correo", "");
+        formData.append("nombre_correo", "");
+        formData.append("envia_correo", "NO");
+        formData.append("agrega_drive", "NO");
+        formData.append("id_quotation", "");
+        formData.append("plantillas", JSON.stringify([]));
         console.log("escribe pdf vacio ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
         const namePDf = `uploads/pdf/pdf_${id_cliente}_${(0, moment_1.default)().format("YYYYMMSSHHmmss")}.pdf`;
         const writer = fs_1.default.createWriteStream(namePDf);
         try {
             console.log("hace peticion a servidor ", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
-            const { config, data } = await axios_1.default.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/quotation.php`, formData, {
+            const { config, data } = await axios_1.default.post(`http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/ep_quotation_detalle.php`, formData, {
                 headers: formData.getHeaders(),
                 responseType: "stream",
             });

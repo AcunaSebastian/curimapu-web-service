@@ -127,6 +127,7 @@ const getReporteQuotation = async (req, res) => {
     const usuario = req.usuario;
     const bdParams = req.bd_params;
     const { id_cliente, id_temporada, id_especie } = req.query;
+    console.log(bdParams);
     const { checks } = req.body;
     const quotationClass = new model_1.Quotation(db);
     console.log("inicio peticion", (0, moment_1.default)().format("YYYY-MM-DD H:m:s"));
@@ -170,20 +171,3 @@ const getCabeceraReporteQuot = async (req, res) => {
     }
 };
 exports.getCabeceraReporteQuot = getCabeceraReporteQuot;
-// export const getImage = async (req:Request, res:Response) => {
-//     const usuario = req.usuario;
-//     const db = req.bd_conection;
-//     const params = req.bd_params;
-//     const { path } = req.query  as unknown as { path:string };
-//     try {
-//         const libroCampo  = new LibroCampo( db );
-//         const image = await libroCampo.getOneImage( path, params );
-//         return res.status( httpResponses.HTTP_OK ).send(image);
-//     } catch (error) {
-//         res.status( httpResponses.HTTP_INTERNAL_SERVER_ERROR ).json({
-//             ok:false,
-//             message:`PROBLEMAS EN FUNCION getImage ERROR : ${error}`,
-//             data:null
-//         })
-//     }
-// }
