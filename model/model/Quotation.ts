@@ -157,6 +157,24 @@ export default class Quotation {
     return checks;
   }
 
+  async getPlantillaDefaultByCLiente({
+    id_cliente,
+    id_esp,
+  }: {
+    id_cliente: number;
+    id_esp?: number;
+  }) {
+    let filtro = "";
+    if (id_esp) {
+      filtro += ` AND id_esp = '${id_esp}'`;
+    }
+    const sql = `SELECT * FROM plantilla_cabecera WHERE plantilla_por_defecto = 1 AND id_cli = '${id_cliente}' ${filtro} `;
+
+    const plantillas = await this.dbConnection.select(sql);
+
+    return plantillas;
+  }
+
   async getReporteQuotation(
     usuario: IUsuario,
     id_cliente: number,
@@ -173,53 +191,43 @@ export default class Quotation {
       nombreEspecie = especie.nombre;
     }
 
-    const sistema = bd_params._id === "EXPORT" ? "CURIMAPU_EXPORT" : "CURIMAPU_VEGETALES";
+    const sistema = bd_params._id === "EXPORT" ? "CURIMAPU_EXPORT" : "CURIMAPU_VEGETABLES";
 
     const anexosClass = new Anexo(this.dbConnection);
-    console.log("obtiene anexos ", moment().format("YYYY-MM-DD H:m:s"));
     const anexos = await anexosClass.getAnexosByIdCli(id_cliente, id_temporada, id_especie);
-    console.log("obtiene observaciones ", moment().format("YYYY-MM-DD H:m:s"));
     const observaciones = await anexosClass.getObservacionesByAnexo(anexos, usuario, sistema);
 
-    const formData = new FormData();
+    const plantillas = await this.getPlantillaDefaultByCLiente({ id_cliente, id_esp: id_especie });
 
-    // ✅ id_cliente;
-    // ✅ id_quotation;
-    // ✅ id_esp
-    // ✅ agrega_drive;
-    // ✅ envia_correo;
-    // ✅ nombre_correo;
-    // ✅ mail_correo;
-    // ✅ id_tempo
-    // ✅ tipo_informe;
-    // ✅ checks;
-    // ✅ plantillas;
-    // ✅ anexos;
-    // 🚩 observaciones;
+    const formData = new FormData();
 
     formData.append("id_tempo", Number(id_temporada));
     if (id_especie) {
       formData.append("id_esp", Number(id_especie));
     }
+
     formData.append("id_cliente", Number(id_cliente));
     formData.append("observaciones", JSON.stringify(observaciones));
     formData.append("id_usuario", usuario.id_usuario);
     formData.append("checks", JSON.stringify(checks));
     formData.append("anexos", JSON.stringify(anexos?.map((el) => el.id_ac) ?? []));
-    formData.append("tipo_informe", 1);
+    formData.append("tipo_informe", 2);
     formData.append("mail_correo", "");
     formData.append("nombre_correo", "");
     formData.append("envia_correo", "NO");
     formData.append("agrega_drive", "NO");
     formData.append("id_quotation", "");
-    formData.append("plantillas", JSON.stringify([]));
+    formData.append(
+      "plantillas",
+      JSON.stringify(
+        plantillas?.map((el) => ({ id_plantilla: el.id_plantilla, id_esp: el.id_esp })) ?? []
+      )
+    );
 
-    console.log("escribe pdf vacio ", moment().format("YYYY-MM-DD H:m:s"));
     const namePDf = `uploads/pdf/pdf_${id_cliente}_${moment().format("YYYYMMSSHHmmss")}.pdf`;
     const writer = fs.createWriteStream(namePDf);
 
     try {
-      console.log("hace peticion a servidor ", moment().format("YYYY-MM-DD H:m:s"));
       const { config, data } = await axios.post(
         `http://${bd_params.ip_host}/${bd_params.proyect_main_folder}/docs/pdf/ep_quotation_detalle.php`,
         formData,
