@@ -2,6 +2,7 @@ import { DatabaseService } from "../database/";
 import { IResumen, ISystemParameters, IUsuario } from "../../interfaces/";
 import { Constants } from "../../utils";
 import { Foraneo } from "./";
+import "dotenv/config";
 
 interface IParamsLC {
   usuario: IUsuario;
