@@ -1,61 +1,44 @@
-import { DatabaseService } from '../database/';
-import { IResumen, ISystemParameters, IUsuario } from '../../interfaces/';
-import { Constants } from '../../utils';
-import { Foraneo } from './';
-
+import { DatabaseService } from "../database/";
+import { IResumen, ISystemParameters, IUsuario } from "../../interfaces/";
+import { Constants } from "../../utils";
+import { Foraneo } from "./";
 
 interface IParamsLC {
-    usuario:IUsuario,
-    id_temporada:number;
-    id_especie:number;
-    etapa?:number;
-    limit?:number;
-    page?:number;
-    num_anexo?:string;
-    ready_batch?:string;
-    recomendaciones?:string;
-    agricultor?:string;
-    predio?:string;
-    lote?:string;
-    variedad?:string;
+  usuario: IUsuario;
+  id_temporada: number;
+  id_especie: number;
+  etapa?: number;
+  limit?: number;
+  page?: number;
+  num_anexo?: string;
+  ready_batch?: string;
+  recomendaciones?: string;
+  agricultor?: string;
+  predio?: string;
+  lote?: string;
+  variedad?: string;
 }
 
 export default class LibroCampo {
-  
+  constructor(private dbConnection: DatabaseService) {}
 
+  async getCabecera(params: IParamsLC) {
+    const { id_temporada, id_especie, usuario, etapa } = params;
 
-    constructor(private dbConnection: DatabaseService){}
+    let filtro = "";
+    let inner = "";
 
+    if (usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
+      if (usuario.usuarios_enlazados.length > 0) {
+        inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
 
+        filtro += ` AND ( ${usuario.usuarios_enlazados
+          .map((enlaces) => ` CPCM.id_cli = '${enlaces}' AND CPCM.ver = '1' `)
+          .join(` OR `)} ) `;
+      }
+    }
 
-    async getCabecera(  params:IParamsLC ){
-
-        const { id_temporada, id_especie, usuario, etapa } = params;
-
-
-        let filtro = '';
-        let inner = '';
-
-
-     
-
-        if(usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
-
-            if(usuario.usuarios_enlazados.length > 0){
-
-                inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
-
-                filtro += ` AND ( ${usuario.usuarios_enlazados.map( enlaces => 
-                    ` CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `).join(` OR `)} ) `;
-                    
-            }
-
-        }
-
-      
-
-
-        const sql = `SELECT 
+    const sql = `SELECT 
         PCM.id_prop_mat_cli,
         PCM.id_esp,
         PCM.id_prop,
@@ -76,34 +59,30 @@ export default class LibroCampo {
         ${filtro}
         ORDER BY PCM.orden ASC;`;
 
+    const cabecera: IResumen[] = await this.dbConnection.select(sql);
 
-        const cabecera:IResumen[] = await this.dbConnection.select( sql );
+    return cabecera;
+  }
 
-        return cabecera;
+  async getCabeceraCustom(params: {
+    id_temporada: number;
+    id_especie: number;
+    id_cliente: number;
+    etapa?: number[];
+  }) {
+    const { id_temporada, id_especie, id_cliente, etapa = [2, 3, 4] } = params;
 
+    let filtro = "";
+    let inner = "";
 
+    inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
+    filtro += ` AND CPCM.id_cli = '${id_cliente}' AND CPCM.ver = '1' `;
+
+    if (etapa.length > 0) {
+      filtro += ` AND ( ${etapa.map((el) => ` PCM.id_etapa = '${el}' `).join(` OR `)} )`;
     }
 
-
-    async getCabeceraCustom(  params:{id_temporada:number;id_especie:number;id_cliente:number; etapa?:number[]} ){
-
-        const { id_temporada, id_especie, id_cliente, etapa = [2, 3, 4] } = params;
-
-
-        let filtro = '';
-        let inner = '';
-
-
-        inner += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
-        filtro += ` AND CPCM.id_cli = '${ id_cliente }' AND CPCM.ver = '1' `;
-
-      
-        if(etapa.length > 0){
-            filtro += ` AND ( ${etapa.map(el => ` PCM.id_etapa = '${el}' `).join(` OR `)} )`;
-        }
-
-
-        const sql = `SELECT 
+    const sql = `SELECT 
         PCM.id_prop_mat_cli,
         PCM.id_esp,
         PCM.id_prop,
@@ -128,97 +107,90 @@ export default class LibroCampo {
         ${filtro}
         ORDER BY PCM.orden ASC;`;
 
+    const cabecera: IResumen[] = await this.dbConnection.select(sql);
 
-        const cabecera:IResumen[] = await this.dbConnection.select( sql );
+    return cabecera;
+  }
 
-        return cabecera;
+  async getData(params: IParamsLC) {
+    const {
+      id_temporada,
+      id_especie,
+      usuario,
+      limit,
+      page = 0,
+      num_anexo,
+      ready_batch,
+      recomendaciones,
+      variedad,
+      agricultor,
+      predio,
+      lote,
+    } = params;
 
+    const cabeceras: IResumen[] = await this.getCabecera(params);
 
+    let filtroPCM = ``;
+    let innerPCM = ``;
+    let filtro = ``;
+
+    if (usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE) {
+      innerPCM += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
+
+      filtroPCM += ` AND ( ${usuario.usuarios_enlazados
+        .map((enlaces) => ` CPCM.id_cli = '${enlaces}' AND CPCM.ver = '1' `)
+        .join(` OR `)} ) `;
     }
 
+    if (usuario.usuarios_enlazados.length > 0) {
+      let tmp = ``;
+      for (const enlaces of usuario.usuarios_enlazados) {
+        if (tmp.length > 0) tmp += ` OR `;
+        tmp += ` Q.id_cli = '${enlaces}' `;
+      }
 
-    async getData( params:IParamsLC ){
+      if (tmp.length > 0) {
+        filtro += ` AND ( ${tmp} ) `;
+      }
+    }
 
+    if (usuario.isUsuarioDetQuo) {
+      filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
+    }
 
-        const { id_temporada, id_especie, usuario, limit, page = 0,
-            num_anexo,
-            ready_batch,
-            recomendaciones,
-            variedad,
-            agricultor,
-            predio,
-            lote } = params;
+    if (variedad) {
+      filtro += ` AND materiales.nom_hibrido LIKE '%${variedad}%' `;
+    }
 
+    if (num_anexo) {
+      filtro += ` AND AC.num_anexo LIKE '%${num_anexo}%' `;
+    }
+    if (ready_batch) {
+      filtro += ` AND AC.ready_batch LIKE '%${ready_batch}%' `;
+    }
+    if (recomendaciones) {
+      filtro += ` AND AC.id_ac IN (SELECT id_ac FROM visita WHERE recome LIKE '%${recomendaciones}%' ) `;
+    }
 
-        const cabeceras:IResumen[] = await this.getCabecera( params );
+    if (agricultor) {
+      filtro += ` AND A.razon_social LIKE '%${agricultor}%' `;
+    }
 
-        let filtroPCM = ``;
-        let innerPCM = ``;
-        let filtro = ``;
+    if (predio) {
+      filtro += ` AND P.nombre LIKE '%${predio}%' `;
+    }
 
-    
-        if( usuario.id_tipo_usuario === Constants.USUARIO_CLIENTE){
+    if (lote) {
+      filtro += ` AND L.nombre LIKE '%${lote}%' `;
+    }
 
-            innerPCM += ` INNER JOIN cli_pcm CPCM USING (id_prop_mat_cli) `;
+    let limite = ``;
+    if (limit) {
+      const pagina = page > 0 ? (page - 1) * limit : 0;
+      limite = ` LIMIT ${pagina}, ${limit} `;
+    }
 
-            filtroPCM += ` AND ( ${usuario.usuarios_enlazados.map( enlaces => 
-                ` CPCM.id_cli = '${ enlaces }' AND CPCM.ver = '1' `).join(` OR `)} ) `;
-
-        }
-
-        if(usuario.usuarios_enlazados.length > 0){
-
-            let tmp = ``;
-            for (const enlaces of usuario.usuarios_enlazados) {
-                if(tmp.length > 0) tmp += ` OR `;
-                tmp += ` Q.id_cli = '${enlaces}' ` ;
-            }
-            
-            if(tmp.length > 0){
-                filtro += ` AND ( ${tmp} ) `;
-            }
-
-        }
-
-        if(usuario.isUsuarioDetQuo){
-            filtro += ` AND DQ.id_de_quo IN (SELECT id_de_quo FROM usuario_det_quo WHERE id_usuario = '${usuario.id_usuario}') `;
-        }
-
-        if(variedad){
-            filtro += ` AND materiales.nom_hibrido LIKE '%${variedad}%' `;
-        }
-
-        if( num_anexo ){
-            filtro += ` AND AC.num_anexo LIKE '%${num_anexo}%' `;
-        }
-        if(ready_batch){
-            filtro += ` AND AC.ready_batch LIKE '%${ready_batch}%' `;
-        }
-        if(recomendaciones){
-            filtro += ` AND AC.id_ac IN (SELECT id_ac FROM visita WHERE recome LIKE '%${recomendaciones}%' ) `;
-        }
-
-        if(agricultor){
-            filtro += ` AND A.razon_social LIKE '%${agricultor}%' `;
-        }
-
-        if(predio) {
-            filtro += ` AND P.nombre LIKE '%${predio}%' `;
-        }
-
-        if(lote){
-            filtro += ` AND L.nombre LIKE '%${lote}%' `;
-        }
-
-
-        
-        let limite = ``;
-        if( limit ){ 
-            const pagina = (page > 0) ? ( page - 1 ) * limit : 0;
-            limite = ` LIMIT ${pagina}, ${limit} `;
-         }
-
-        const sql = `SELECT 
+    const sql = `SELECT 
         AC.num_anexo,
         AC.id_ac,
         Q.id_cli,
@@ -245,18 +217,14 @@ export default class LibroCampo {
         INNER JOIN predio P ON (F.id_pred = P.id_pred)
         WHERE  Q.id_esp='${id_especie}' AND AC.destruido = 0 AND Q.id_tempo='${id_temporada}' ${filtro} ${limite} `;
 
+    const anexos = await this.dbConnection.select(sql);
 
+    if (anexos.length <= 0) return anexos;
 
-        const anexos = await this.dbConnection.select( sql );
+    const respuestaAnexos: any[] = [];
 
-        if(anexos.length <=  0) return anexos;
-
-
-        const respuestaAnexos:any[] = []
-
-        for (const anexo of anexos) {
-
-            const sql = `SELECT 
+    for (const anexo of anexos) {
+      const sql = `SELECT 
                 DVP.id_prop_mat_cli,
                 DVP.valor,
                 DVP.id_det_vis_prop
@@ -267,81 +235,83 @@ export default class LibroCampo {
                 INNER JOIN visita V ON (DVP.id_visita = V.id_visita)
                 WHERE V.id_ac='${anexo.id_ac}' AND PCM.aplica = 'SI' ${filtroPCM}
                 ORDER BY PCM.orden ASC `;
-            const datosVisita = await this.dbConnection.select( sql );
+      const datosVisita = await this.dbConnection.select(sql);
 
-            const tpmData = [];
+      const tpmData = [];
 
-            for( const cabecera of cabeceras ){
+      for (const cabecera of cabeceras) {
+        if (cabecera.foraneo === "NO") {
+          const elementos = datosVisita.filter(
+            (dato) => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli
+          );
+          elementos.sort((el, al) => al.id_det_vis_prop - el.id_det_vis_prop);
 
-                if(cabecera.foraneo === 'NO'){
-
-                    const elementos = datosVisita.filter( dato => dato.id_prop_mat_cli === cabecera.id_prop_mat_cli);
-                    elementos.sort((el, al) => al.id_det_vis_prop - el.id_det_vis_prop);
-
-                    if(elementos.length > 0) tpmData.push({...elementos[0], sp:cabecera.nombre_sub_propiedad});
-                    else tpmData.push({id_prop_mat_cli:cabecera.id_prop_mat_cli,id_det_vis_prop:null, valor:null, sp:cabecera.nombre_sub_propiedad})
-
-                }
-
-                if( cabecera.foraneo === 'SI'){
-                    const foraneo = new Foraneo( this.dbConnection );
-
-                    const datoForaneo = await foraneo.getForaneo(cabecera, anexo.id_ac);
-                    tpmData.push({
-                        id_prop_mat_cli:cabecera.id_prop_mat_cli, 
-                        id_det_vis_prop:null, 
-                        valor: datoForaneo?.data || '',
-                        sp:cabecera.nombre_sub_propiedad
-                    })
-                }
-
-            }
-
-            respuestaAnexos.push({
-                ...anexo,
-                data:tpmData
+          if (elementos.length > 0)
+            tpmData.push({ ...elementos[0], sp: cabecera.nombre_sub_propiedad });
+          else
+            tpmData.push({
+              id_prop_mat_cli: cabecera.id_prop_mat_cli,
+              id_det_vis_prop: null,
+              valor: null,
+              sp: cabecera.nombre_sub_propiedad,
             });
         }
 
-        return respuestaAnexos;
+        if (cabecera.foraneo === "SI") {
+          const foraneo = new Foraneo(this.dbConnection);
 
+          const datoForaneo = await foraneo.getForaneo(cabecera, anexo.id_ac);
+          tpmData.push({
+            id_prop_mat_cli: cabecera.id_prop_mat_cli,
+            id_det_vis_prop: null,
+            valor: datoForaneo?.data || "",
+            sp: cabecera.nombre_sub_propiedad,
+          });
+        }
+      }
+
+      respuestaAnexos.push({
+        ...anexo,
+        data: tpmData,
+      });
     }
 
+    return respuestaAnexos;
+  }
 
-    async getImagenes(id_anexo: number, systemParams:ISystemParameters ) {
-
-
-        const sql = `SELECT fotos.* FROM fotos 
+  async getImagenes(id_anexo: number, systemParams: ISystemParameters) {
+    const sql = `SELECT fotos.* FROM fotos 
         INNER JOIN visita USING (id_visita)
-        WHERE tipo = 'V' AND visita.id_ac = '${ id_anexo }' AND fotos.vista = 'cliente' `;
+        WHERE tipo = 'V' AND visita.id_ac = '${id_anexo}' AND fotos.vista = 'cliente' `;
 
-        // console.log(sql)
+    // console.log(sql)
 
-        const fotosVisitas = await  this.dbConnection.select( sql );
-        
-        const nuevasFotosVisitas = fotosVisitas.map( foto => {
+    const fotosVisitas = await this.dbConnection.select(sql);
 
-            const rutaFoto = foto.ruta_foto.replaceAll(`${systemParams.document_folder}/img_android`, `${systemParams.compressed_image_folder}`);
+    const nuevasFotosVisitas = fotosVisitas.map((foto) => {
+      const rutaFoto = foto.ruta_foto;
 
-            const rutaSegura = (systemParams.proyect_main_folder === 'curimapu')  ? `https://curiexport.zcloud.cl` : `https://curivegetables.zcloud.cl`;
-            const nuevaUrl = `${rutaSegura}/`+rutaFoto.replaceAll('../', '')
+      const rutaSegura = `${process.env.RUTA_ARCHIVOS}/${process.env.AMBIENTE}`;
+      const nuevaUrl =
+        `${rutaSegura}/` +
+        rutaFoto
+          .replaceAll("../", "")
+          .replaceAll(
+            `${systemParams.document_folder}/img_android`,
+            `${systemParams.document_folder}/img_android_comprimida`
+          );
 
-            
-            const urlImgOriginal =  `${rutaSegura}/core/models/mostrarImagen.php?ruta_imagen=${rutaFoto}`;
+      const urlImgOriginal = `${rutaSegura}/${rutaFoto}`;
 
-            return {
-                ...foto,
-                ruta_muestra_foto:nuevaUrl,
-                ruta_foto_original:urlImgOriginal
-            }
+      return {
+        ...foto,
+        ruta_muestra_foto: nuevaUrl,
+        ruta_foto_original: urlImgOriginal,
+      };
+    });
 
-        })
+    console.log(nuevasFotosVisitas);
 
-        console.log(nuevasFotosVisitas)
-
-        return nuevasFotosVisitas;
-
-    }
-
-
+    return nuevasFotosVisitas;
+  }
 }
