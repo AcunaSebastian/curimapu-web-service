@@ -302,7 +302,7 @@ export default class LibroCampo {
             `${systemParams.document_folder}/img_android_comprimida`
           );
 
-      const urlImgOriginal = `${rutaSegura}/${rutaFoto}`;
+      const urlImgOriginal = `${rutaSegura}/${rutaFoto.replaceAll("../", "")}`;
 
       return {
         ...foto,
