@@ -25,7 +25,7 @@ export class Traductor {
 
     try {
       const { data } = await axios.post(
-        "https://traductor.zproduccion.cl/traductor-api/api/v1/openai/translate",
+        "https://traductor-api.zproduccion.cl/api/v1/openai/translate",
         body
       );
 
